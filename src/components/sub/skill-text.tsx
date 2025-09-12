@@ -1,6 +1,4 @@
 "use client";
-
-import { SparklesIcon } from "@heroicons/react/24/solid";
 import { MotionDiv } from "@/lib/motionElements";
 import {
   slideInFromLeft,

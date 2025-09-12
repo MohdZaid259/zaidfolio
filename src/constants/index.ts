@@ -12,18 +12,18 @@ import {FaXTwitter } from 'react-icons/fa6'
 
 // Row 1 → 12 logos
 export const SKILL_DATA = [
-    { skill_name: "Next.js", image: "next.png", width: 130, height: 130 },
+    { skill_name: "Next.js", image: "next.png", width: 120, height: 120 },
   { skill_name: "JavaScript", image: "js.png", width: 65, height: 65 },
-  { skill_name: "TypeScript", image: "ts.png", width: 80, height: 80 },
-  { skill_name: "React", image: "react.png", width: 60, height: 60 },
-  { skill_name: "Node.js", image: "node.png", width: 60, height: 60 },
-  { skill_name: "Express.js", image: "express.png", width: 80, height: 80 },
-  { skill_name: "Redux", image: "redux.png", width: 80, height: 80 },
-  { skill_name: "Tailwind CSS", image: "tailwind.png", width: 80, height: 80 },
-  { skill_name: "Framer Motion", image: "framer.png", width: 80, height: 80 },
+  { skill_name: "TypeScript", image: "ts.png", width: 75, height: 75 },
+  { skill_name: "React", image: "react.png", width: 50, height: 50 },
+  { skill_name: "Node.js", image: "node.png", width: 50, height: 50 },
+  { skill_name: "Express.js", image: "express.png", width: 60, height: 60 },
+  { skill_name: "Redux", image: "redux.png", width: 70, height: 70 },
+  { skill_name: "Tailwind CSS", image: "tailwind.png", width: 60, height: 60 },
+  { skill_name: "Framer Motion", image: "framer.png", width: 60, height: 60 },
   { skill_name: "Axios", image: "axios.png", width: 120, height: 120 },
   { skill_name: "MongoDB", image: "mongodb.png", width: 60, height: 60 },
-    { skill_name: "Vercel", image: "vercel.png", width: 70, height: 70 },
+    { skill_name: "Vercel", image: "vercel.png", width: 50, height: 50 },
 
 ] as const;
 

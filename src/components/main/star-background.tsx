@@ -20,6 +20,7 @@ export const StarBackground = (props: PointsProps) => {
   });
 
   return (
+    // @ts-ignore
     <group rotation={[0, 0, Math.PI / 4]}>
       <Points
         ref={ref}
@@ -36,6 +37,7 @@ export const StarBackground = (props: PointsProps) => {
           depthWrite={false}
         />
       </Points>
+    {/* @ts-expect-error */}
     </group>
   );
 };

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { MotionDiv, MotionA } from "@/lib/motionElements";
 import Image from "next/image";
@@ -59,7 +59,9 @@ export const HeroContent = () => {
 
 
         <MotionA
-          href=''
+          href="/resumeFull.pdf"
+          target="_blank" 
+          rel="noopener noreferrer"
           variants={slideInFromLeft(1)}
           className="max-sm:-mt-4"
         >
