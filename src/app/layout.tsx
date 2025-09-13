@@ -4,7 +4,10 @@ import { Footer } from "@/components/main/footer";
 import { Navbar } from "@/components/main/navbar";
 import { StarsCanvas } from "@/components/main/star-background";
 import { cn } from "@/lib/utils";
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
+import VideoIntro from "@/components/sub/videoIntro";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -78,20 +81,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="overflow-x-hidden">
       <body
         className={cn(
-          "bg-[#030014] overflow-y-scroll overflow-x-hidden",
+          "bg-[#030014] overflow-y-scroll",
           inter.className
         )}
       >
-        {/* <video autoPlay muted loop playsInline>
-          <source src="video.webm" type="video/webm" />
-        </video> */}
+          {/* <VideoIntro /> */}
           <SmoothCursor />
           <StarsCanvas />
           <Navbar />
         {children}
+        {/* <SpeedInsights />
+        <Analytics /> */}
         <Footer />
       </body>
     </html>
