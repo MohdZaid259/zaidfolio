@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { MotionDiv, MotionSpan } from '@/lib/motionElements';
 import Image from 'next/image';
 import { projects } from '../../../public/projects/data';
+import type { PanInfo } from 'framer-motion';
 
 const variants = {
   enter: (direction: number) => ({
@@ -52,7 +53,10 @@ const ProjectCarousel = () => {
     setCurrentIndex([index, dir]);
   };
 
-  const handleDragEnd = (_: any, info: { offset: { x: number } }) => {
+  const handleDragEnd = (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
     const swipeThreshold = 80;
     if (info.offset.x < -swipeThreshold) {
       // swipe left → next
@@ -91,7 +95,7 @@ const ProjectCarousel = () => {
               transition={{ duration: 0.25, ease: 'easeInOut' }}
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
-              onDragEnd={handleDragEnd}
+              onDragEnd={handleDragEnd as any}
             >
               {/* Info */}
               <div className="w-full md:w-2/5 order-2 md:order-1">
