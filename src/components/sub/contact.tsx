@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 function ContactSection() {
   return (
-    <div className='relative min-h-92 flex justify-evenly items-start'>
+    <div className='relative min-h-92 flex justify-evenly items-start overflow-x-hidden'>
       <div className='absolute left-4 sm:left-6 md:left-20 lg:left-36 sm:top-16 md:top-24 lg:top-56 '>
         <div className="group relative max-w-max flex items-center mb-2 justify-center rounded-full px-2 pl-3 md:px-4 py-1 md:py-1.5 shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] ">
           <span

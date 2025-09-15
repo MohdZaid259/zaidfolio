@@ -7,7 +7,7 @@ export const Projects = () => {
   return (
     <section
       id="projects"
-      className="container flex flex-col items-center justify-center py-10"
+      className="container flex flex-col items-center justify-center py-10 overflow-x-hidden"
     >
       <div className="group relative max-w-max flex items-center mb-2 justify-center rounded-full px-2 pl-3 md:px-4 py-1 md:py-1.5 shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] ">
         <span
