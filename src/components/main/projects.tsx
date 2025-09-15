@@ -27,7 +27,7 @@ export const Projects = () => {
         </AnimatedGradientText>
         <ChevronRight className="ml-1 size-4 stroke-neutral-500 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
       </div>
-      <h1 className="text-[32px] md:text-[40px] text-center font-semibold text-white">
+      <h1 className="text-[32px] tracking-wider md:text-[40px] text-center font-semibold text-white">
         Projects That <AuroraText>Speak Volumes</AuroraText>
       </h1>
 

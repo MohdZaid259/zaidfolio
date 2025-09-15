@@ -35,7 +35,7 @@ export const SkillText = () => {
 
       <MotionDiv
         variants={slideInFromLeft(0.5)}
-        className="text-[32px] md:text-[40px] text-white font-bold mt-[10px] text-center mb-[15px]"
+        className="text-[32px] tracking-wider md:text-[40px] text-white font-bold mt-[10px] text-center mb-[15px]"
       >
         Building with{" "}
         <AuroraText>

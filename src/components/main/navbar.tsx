@@ -110,7 +110,7 @@ export const Navbar = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xl flex flex-col items-center justify-center text-gray-200"
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xl flex flex-col items-center justify-center text-gray-200"
             style={{
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',

@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@theme {
+  --font-inter: var(--font-inter), sans-serif;
+  --font-carter: var(--font-carter), cursive;
+  --font-tourney: var(--font-tourney), sans-serif;
+  --font-audiowide: var(--font-audiowide), cursive;
+  --font-baloo-bhai-2: var(--font-baloo-bhai-2), cursive;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 * {

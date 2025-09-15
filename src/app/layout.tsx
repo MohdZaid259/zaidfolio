@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { inter, carterOne, tourney, audiowide, balooBhai2 } from "@/lib/fonts";
 import { Footer } from "@/components/main/footer";
 import { Navbar } from "@/components/main/navbar";
 import { StarsCanvas } from "@/components/main/star-background";
@@ -7,10 +7,8 @@ import { cn } from "@/lib/utils";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
-import VideoIntro from "@/components/sub/videoIntro";
+import { SplashScreen } from "@/components/sub/videoIntro";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
@@ -20,6 +18,7 @@ export const metadata: Metadata = {
   description:
     "Portfolio of Zaid, a full-stack developer and creative designer. Explore projects, skills, and achievements in modern web development, UI/UX, and scalable applications.",
   keywords: [
+    "Mohd",
     "Zaid",
     "Full-Stack Developer",
     "Web Developer",
@@ -32,6 +31,14 @@ export const metadata: Metadata = {
     "TypeScript",
     "Portfolio",
     "Software Engineer",
+    "Freelance Developer",
+    "Creative Designer",
+    "Digital Solutions",
+    "Web Applications",
+    "Responsive Design",
+    "Open Source",
+    "Tech Enthusiast",
+    "Freelancer"
   ],
   authors: [{ name: "Zaid" }],
   creator: "Zaid",
@@ -81,20 +88,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="overflow-x-hidden">
+    <html lang="en" className={`${inter.variable} ${carterOne.variable} ${tourney.variable} ${audiowide.variable} ${balooBhai2.variable} overflow-x-hidden`}>
       <body
         className={cn(
           "bg-[#030014] overflow-y-scroll",
-          inter.className
+          inter.className,
         )}
       >
-          {/* <VideoIntro /> */}
-          <SmoothCursor />
-          <StarsCanvas />
-          <Navbar />
+        <SplashScreen />
+        <SmoothCursor />
+        <StarsCanvas />
+        <Navbar />
         {children}
-        {/* <SpeedInsights />
-        <Analytics /> */}
+        <SpeedInsights />
+        <Analytics />
         <Footer />
       </body>
     </html>

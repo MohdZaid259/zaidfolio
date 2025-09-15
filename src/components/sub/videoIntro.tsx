@@ -1,132 +1,218 @@
-"use client";
+'use client'
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MotionDiv, MotionP, MotionSpan } from "@/lib/motionElements";
 
-export default function VideoIntro({
-  onlyOnHome = true,
-}: {
-  readonly onlyOnHome?: boolean;
-}) {
-  const [visible, setVisible] = useState(true); // start as true to block SSR flash
-  const [showVideo, setShowVideo] = useState(false);
-  const [fadeOut, setFadeOut] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const videoRef = useRef<HTMLVideoElement>(null);
+export const SplashScreen = () => {
+  const [isVisible, setIsVisible] = useState(true);
 
-  // Decide whether to play intro
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    // Auto-hide splash after animation completes
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 3000);
 
-    const prefersReduced = window.matchMedia?.(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReduced) {
-      setVisible(false);
-      return;
-    }
+    return () => clearTimeout(timer);
+  }, []);
 
-    // @ts-expect-error Optional NetworkInformation
-    if (navigator?.connection?.saveData) {
-      setVisible(false);
-      return;
-    }
-
-    if (onlyOnHome && window.location?.pathname !== "/") {
-      setVisible(false);
-      return;
-    }
-
-    // Show video after checks
-    setShowVideo(true);
-  }, [onlyOnHome]);
-
-  // Track video progress
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    const onTime = () => {
-      if (video.duration && Number.isFinite(video.duration)) {
-        setProgress((video.currentTime / video.duration) * 100);
+  // Letter animation variants
+  const letterVariants = {
+    hidden: { 
+      opacity: 0,
+      y: 20,
+      scale: 0.8
+    },
+    visible: (i:any) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        delay: i * 0.08,
+        ease: [0.215, 0.61, 0.355, 1.0]
       }
-    };
-    video.addEventListener("timeupdate", onTime);
-    return () => video.removeEventListener("timeupdate", onTime);
-  }, [showVideo]);
-
-  const handleHide = () => {
-    setFadeOut(true);
-    setTimeout(() => {
-      setVisible(false);
-    }, 500);
+    })
   };
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    if (!showVideo) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" || e.key.toLowerCase() === "s") {
-        e.preventDefault();
-        handleHide();
+  // Container variants for the whole splash
+  const containerVariants = {
+    hidden: { opacity: 1 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        staggerChildren: 0.1
       }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [showVideo]);
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.95,
+      filter: "blur(10px)",
+      transition: {
+        duration: 0.8,
+        ease: [0.43, 0.13, 0.23, 0.96]
+      }
+    }
+  };
 
-  const bgTo = useMemo(() => "var(--background, #ffffff)", []);
+  // Backdrop animation
+  const backdropVariants = {
+    visible: {
+      opacity: 1
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: 0.8,
+        delay: 0.2
+      }
+    }
+  };
 
-  // If not visible at all, remove from DOM
-  if (!visible) return null;
-
-  // SSR initial block (black screen) before checks run
-  if (!showVideo) {
-    return <div className="fixed inset-0 bg-black z-[9999]" />;
-  }
+  const name = "MOHD ZAID"; 
+  const tagline = "Full Stack Developer"; 
 
   return (
-    <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-500 ${
-        fadeOut ? "opacity-0" : "opacity-100"
-      }`}
-    >
-      <div className="md:hidden absolute inset-0 bg-[#000b13] -z-[20]" />
-      {/* Video */}
-      <video
-        ref={videoRef}
-        src="/video.webm"
-        // poster="/intro-poster.png"
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-        onEnded={handleHide}
-        className="w-full h-full md:object-cover object-contain max-md:shadow-none"
-      />
+    <AnimatePresence>
+      {isVisible && (
+        <MotionDiv
+          className="fixed inset-0 z-[999] flex items-center justify-center overflow-hidden bg-black"
+          variants={backdropVariants}
+          initial="visible"
+          exit="exit"
+        >
+          {/* Animated gradient background */}
+          <MotionDiv 
+            className="absolute inset-0 opacity-20"
+            animate={{
+              background: [
+                "radial-gradient(circle at 20% 50%, #3b82f6 0%, transparent 50%)",
+                "radial-gradient(circle at 80% 50%, #8b5cf6 0%, transparent 50%)",
+                "radial-gradient(circle at 20% 50%, #3b82f6 0%, transparent 50%)",
+              ]
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
 
-      {/* Overlay instructions */}
-      <div className="max-md:hidden pointer-events-none absolute inset-x-0 top-0 flex justify-center pt-12">
-        <div className="rounded-full border border-white/15 bg-white/10 backdrop-blur px-3 py-1 text-white/90 text-xs">
-          Press S or Esc to skip
-        </div>
-      </div>
+          {/* Main content container */}
+          <MotionDiv
+            className="relative z-10 text-center"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            {/* Main name/logo with letter animation */}
+            <div className="mb-6 overflow-hidden">
+              <h1 className="text-5xl md:text-8xl font-bold tracking-tighter">
+                {name.split("").map((letter, index) => (
+                  <MotionSpan
+                    key={index}
+                    className="inline-block tracking-wider text-white"
+                    custom={index}
+                    variants={letterVariants}
+                    initial="hidden"
+                    animate="visible"
+                    
+                  >
+                    {letter === " " ? "\u00A0" : letter}
+                  </MotionSpan>
+                ))}
+              </h1>
+            </div>
 
-      {/* Progress bar */}
-      <div className="absolute left-0 right-0 bottom-0 h-1 bg-white/10">
-        <div
-          className="h-full bg-[var(--primary,#0c4377)] transition-[width] duration-200 ease-linear"
-          style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
-        />
-      </div>
+            {/* Animated line */}
+            <MotionDiv
+              className="mx-auto mb-6 h-px bg-gradient-to-r from-transparent via-white to-transparent"
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ 
+                width: "200px", 
+                opacity: 1,
+                transition: {
+                  duration: 1,
+                  delay: 0.8,
+                  ease: "easeOut"
+                }
+              }}
+            />
 
-      {/* Fade overlay */}
-      <div
-        className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${
-          fadeOut ? "opacity-100" : "opacity-0"
-        }`}
-        style={{
-          background: `radial-gradient(60% 60% at 50% 50%, ${bgTo} 0%, ${bgTo} 35%, rgba(255,255,255,0) 100%)`,
-        }}
-      />
-    </div>
+            {/* Tagline with fade effect */}
+            <MotionP
+              className="text-md md:text-xl text-gray-400 tracking-[0.2em] uppercase"
+              initial={{ opacity: 0, letterSpacing: "0.5em" }}
+              animate={{ 
+                opacity: 1, 
+                letterSpacing: "0.2em",
+                transition: {
+                  duration: 1,
+                  delay: 1.2,
+                  ease: "easeOut"
+                }
+              }}
+            >
+              {tagline}
+            </MotionP>
+
+            {/* Loading dots animation */}
+            <MotionDiv 
+              className="mt-12 flex justify-center space-x-2"
+              initial={{ opacity: 0 }}
+              animate={{ 
+                opacity: 1,
+                transition: { delay: 1.5 }
+              }}
+            >
+              {[0, 1, 2].map((i) => (
+                <MotionDiv
+                  key={i}
+                  className="h-2 w-2 rounded-full bg-white"
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    opacity: [0.5, 1, 0.5]
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    delay: i * 0.2
+                  }}
+                />
+              ))}
+            </MotionDiv>
+          </MotionDiv>
+
+          {/* Corner accents */}
+          <MotionDiv
+            className="absolute top-10 left-10"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ 
+              opacity: 0.3, 
+              scale: 1,
+              rotate: 45,
+              transition: { delay: 0.5, duration: 0.8 }
+            }}
+          >
+            <div className="h-20 w-20 border-t-2 border-l-2 border-white/30" />
+          </MotionDiv>
+
+          <MotionDiv
+            className="absolute bottom-10 right-10"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ 
+              opacity: 0.3, 
+              scale: 1,
+              rotate: 45,
+              transition: { delay: 0.5, duration: 0.8 }
+            }}
+          >
+            <div className="h-20 w-20 border-b-2 border-r-2 border-white/30" />
+          </MotionDiv>
+        </MotionDiv>
+      )}
+    </AnimatePresence>
   );
-}
+};

@@ -42,7 +42,7 @@ export const TextReveal: FC<TextRevealProps> = ({ children, className, heading, 
         )}
         
         {/* Text reveal content */}
-        <span className="flex flex-wrap p-0 md:p-5 text-base md:text-xl leading-relaxed text-white/50 dark:text-white/20 text-center">
+        <span className="flex flex-wrap p-0 md:p-5 font-baloo-bhai-2 text-base md:text-xl leading-relaxed text-white/50 dark:text-white/20 text-center">
           {words.map((word, i) => {
             const start = i / words.length;
             const end = start + 1 / words.length;

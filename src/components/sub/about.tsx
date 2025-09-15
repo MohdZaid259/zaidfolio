@@ -33,7 +33,7 @@ export default function AboutMe() {
             </div>
           }
           heading={
-            <h2 className="text-[32px] md:text-[40px] font-bold leading-tight max-sm:mb-6 ">
+            <h2 className="text-[32px] tracking-wider md:text-[40px] font-bold leading-tight max-sm:mb-6 ">
               Meet the{" "}
               <AuroraText>
                 Developer
@@ -78,7 +78,7 @@ export default function AboutMe() {
             </div>
           }
           heading={
-            <h2 className="text-[32px] md:text-[40px] font-bold leading-tight max-sm:mb-4 ">
+            <h2 className="text-[32px] tracking-wider md:text-[40px] font-bold leading-tight max-sm:mb-4 ">
               Meet the{" "}
               <AuroraText>
                 Developer

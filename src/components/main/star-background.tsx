@@ -14,8 +14,8 @@ export const StarBackground = (props: PointsProps) => {
 
   useFrame((_state, delta) => {
     if (ref.current) {
-      ref.current.rotation.x -= delta / 10;
-      ref.current.rotation.y -= delta / 15;
+      ref.current.rotation.x -= delta / 30;
+      ref.current.rotation.y -= delta / 45;
     }
   });
 

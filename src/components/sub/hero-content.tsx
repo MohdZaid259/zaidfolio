@@ -53,7 +53,7 @@ export const HeroContent = () => {
           </span>
         </MotionDiv>
 
-        <TextAnimate animation="blurIn" as='h1' className="text-base max-sm:w-[85%] md:text-lg text-gray-300 mb-5 -mt-4 max-w-[600px]">
+        <TextAnimate animation="blurIn" as='h1' className="text-base font-baloo-bhai-2 max-sm:w-[85%] md:text-xl text-gray-300 mb-5 -mt-4 max-w-[600px]">
           I build modern, scalable, and user-friendly web applications for startups and growing businesses.
         </TextAnimate>
 

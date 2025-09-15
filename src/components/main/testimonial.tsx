@@ -28,7 +28,7 @@ export default function Testimonials() {
         <ChevronRight className="ml-1 size-4 stroke-neutral-500 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
       </div>
 
-      <h1 className="text-[32px] md:text-[40px] font-semibold text-center text-white">
+      <h1 className="text-[32px] tracking-wider md:text-[40px] font-semibold text-center text-white">
         Innovation that {" "}<AuroraText>Drives Results</AuroraText>
       </h1>
 
