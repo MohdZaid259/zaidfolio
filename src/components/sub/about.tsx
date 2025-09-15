@@ -98,7 +98,7 @@ export default function AboutMe() {
         </TextReveal>
 
         {/* Stats */}
-        <div className="-mt-36 md:-mt-54 lg:-mt-40 md:mb-10 grid grid-cols-3 max-sm:gap-4 gap-0 text-center">
+        <div className="-mt-36 md:-mt-54 lg:-mt-36 md:mb-10 grid grid-cols-3 max-sm:gap-4 gap-0 text-center">
           <div>
             <AuroraText className="text-3xl md:text-4xl font-bold">
               50+

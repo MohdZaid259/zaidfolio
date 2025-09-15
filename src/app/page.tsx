@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/main/hero";
-import { Projects } from "@/components/main/projects";
-import { Skills } from "@/components/main/skills";
-import Testimonials from "@/components/main/testimonial";
-import AboutMe from "@/components/sub/about";
-import ContactSection from "@/components/sub/contact";
+import dynamic from "next/dynamic";
+
+const AboutMe = dynamic(() => import("@/components/sub/about"), { ssr: false });
+const Skills = dynamic(() => import("@/components/main/skills"), { ssr: false });
+const Projects = dynamic(() => import("@/components/main/projects"), { ssr: false });
+const Testimonials = dynamic(() => import("@/components/main/testimonial"), { ssr: false });
+const ContactSection = dynamic(() => import("@/components/sub/contact"), { ssr: false });
 
 export const metadata: Metadata = {
   title: "Portfolio | Zaid – Full-Stack Developer & Designer",

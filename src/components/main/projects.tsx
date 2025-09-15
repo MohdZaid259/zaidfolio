@@ -3,7 +3,7 @@ import { AnimatedGradientText } from "../magicui/animated-gradient-text";
 import { AuroraText } from "../magicui/aurora-text";
 import ProjectSection from "../sub/projectSection";
 
-export const Projects = () => {
+export default function Projects () {
   return (
     <section
       id="projects"
