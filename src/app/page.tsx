@@ -53,7 +53,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="h-full w-full overflow-hidden">
+    <main className="h-full w-full ">
       <div className="flex flex-col gap-10">
         <Hero />
         <AboutMe/>

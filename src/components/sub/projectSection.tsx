@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MotionDiv, MotionSpan } from '@/lib/motionElements';
 import Image from 'next/image';
@@ -20,13 +20,31 @@ const variants = {
 
 const ProjectCarousel = () => {
   const [[currentIndex, direction], setCurrentIndex] = useState<[number, number]>([0, 0]);
+  const [isActive, setIsActive] = useState(false); // track if in viewport
+  const carouselRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        setIsActive(entry.isIntersecting); // true when visible
+      },
+      { threshold: 0.4 } // trigger when 40% of section is visible
+    );
+
+    if (carouselRef.current) observer.observe(carouselRef.current);
+    return () => {
+      if (carouselRef.current) observer.unobserve(carouselRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isActive) return; // only run when in view
     const interval = setInterval(() => {
-      setCurrentIndex(([prev]) => [(prev + 1) % projects.length, 1]); // autoplay always forward
+      setCurrentIndex(([prev]) => [(prev + 1) % projects.length, 1]);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isActive,currentIndex]);
 
   const goToProject = (index: number) => {
     if (index === currentIndex) return;
@@ -46,7 +64,7 @@ const ProjectCarousel = () => {
   };
 
   return (
-    <div className="container mx-auto max-sm:mt-2 md:p-8 relative">
+    <div ref={carouselRef} className="container mx-auto max-sm:mt-2 md:p-8 relative">
       <div className="relative rounded-2xl overflow-hidden min-h-[400px] md:min-h-[500px]">
         {/* Project Number */}
         <MotionDiv
