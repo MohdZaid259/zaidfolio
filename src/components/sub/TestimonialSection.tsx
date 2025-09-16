@@ -5,7 +5,7 @@ export default function TestimonialSection() {
   {
     quote:
       "He delivered a fully functional product in less than a week, something we thought would take a month. The speed didn’t compromise quality at all; every detail was carefully thought through.",
-    name: "Bara Wafa",
+    name: "Baraa Al Arabi",
     designation: "Co-Founder at LS4IT",
     src: "https://media.istockphoto.com/id/1085634488/photo/united-arab-emirates-flag-close-up-waving-isolated-white-background.webp?a=1&b=1&s=612x612&w=0&k=20&c=fh1oOL_opJqtOl0XQri4f8z-NR8EO8p6wI1-ItFPdmY=",
   },

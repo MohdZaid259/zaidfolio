@@ -136,7 +136,7 @@ export default function Skills () {
           ))}
         </div>
       
-      <div className="w-full hidden md:block h-full absolute">
+      <div className="w-full hidden md:block md:mt-16 h-full absolute">
         <div className="w-full h-full z-[-10] opacity-30 absolute flex items-center justify-center bg-cover">
           <video
             className="w-full h-auto"

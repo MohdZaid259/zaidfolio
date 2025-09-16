@@ -73,7 +73,7 @@ const ProjectCarousel = () => {
         {/* Project Number */}
         <MotionDiv
           key={currentIndex}
-          className="max-sm:hidden absolute top-4 left-4 md:top-8 md:left-8 text-4xl md:text-8xl font-extrabold text-purple-700/25 z-10 font-mono"
+          className="max-sm:hidden absolute top-0 left-0 md:top-8 md:left-8 text-4xl md:text-8xl font-extrabold text-purple-700/25 z-10 font-mono"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -98,7 +98,7 @@ const ProjectCarousel = () => {
               onDragEnd={handleDragEnd as any}
             >
               {/* Info */}
-              <div className="w-full md:w-2/5 order-2 md:order-1">
+              <div className="w-full mt-6 md:w-2/5 order-2 md:order-1">
                 <MotionSpan
                   className="text-xl md:text-3xl text-white mb-2 font-bold leading-tight block"
                   initial={{ opacity: 0, y: 20 }}
