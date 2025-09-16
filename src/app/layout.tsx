@@ -46,14 +46,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://yourdomain.com",
+    url: "https://www.zaidfolio.space/",
     title: "Zaid | Full-Stack Developer & Designer",
     description:
       "Discover Zaid’s portfolio – showcasing expertise in web development, design, and scalable digital solutions.",
     siteName: "Zaid Portfolio",
     images: [
       {
-        url: "/logo.png",
+        url: "https://www.zaidfolio.space/logo.png",
         width: 1200,
         height: 630,
         alt: "Zaid Portfolio Preview",
@@ -65,12 +65,12 @@ export const metadata: Metadata = {
     title: "Zaid | Full-Stack Developer & Designer",
     description:
       "Check out Zaid’s portfolio: full-stack development, design, and creative problem-solving.",
-    images: ["/logo.png"],
-    creator: "@yourTwitterHandle",
+    images: ["https://www.zaidfolio.space/logo.png"],
+    creator: "@zaidrazvi09",
   },
-  metadataBase: new URL("https://yourdomain.com"),
+  metadataBase: new URL("https://www.zaidfolio.space/"),
   alternates: {
-    canonical: "https://yourdomain.com",
+    canonical: "https://www.zaidfolio.space/",
   },
   robots: {
     index: true,

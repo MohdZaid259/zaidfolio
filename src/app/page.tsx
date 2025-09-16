@@ -9,7 +9,7 @@ const Testimonials = dynamic(() => import("@/components/main/testimonial"), { ss
 const ContactSection = dynamic(() => import("@/components/sub/contact"), { ssr: false });
 
 export const metadata: Metadata = {
-  title: "Portfolio | Zaid – Full-Stack Developer & Designer",
+  title: "Zaid | Full-Stack Developer & Designer",
   description:
     "Welcome to Zaid's portfolio. Explore modern web development projects, UI/UX designs, and creative problem-solving in full-stack development. Let's build something amazing together.",
   keywords: [
@@ -28,15 +28,15 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     type: "website",
-    locale: "en_US",
-    url: "https://yourdomain.com",
-    title: "Zaid Portfolio – Full-Stack Developer & Designer",
+    locale: "en_IN",
+    url: "https://www.zaidfolio.space/",
+    title: "Zaid | Full-Stack Developer & Designer",
     description:
       "Discover Zaid’s work in full-stack development and creative design. Professional portfolio showcasing projects, skills, and digital solutions.",
     siteName: "Zaid Portfolio",
     images: [
       {
-        url: "https://yourdomain.com/og-image.png",
+        url: "https://www.zaidfolio.space/logo.png",
         width: 1200,
         height: 630,
         alt: "Zaid Portfolio Homepage Preview",
@@ -45,11 +45,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zaid Portfolio – Full-Stack Developer & Designer",
+    title: "Zaid | Full-Stack Developer & Designer",
     description:
       "Explore Zaid’s portfolio of full-stack development and creative design projects.",
-    images: ["https://yourdomain.com/og-image.png"],
-    creator: "@yourTwitterHandle",
+    images: ["https://www.zaidfolio.space/logo.png"],
+    creator: "@zaidrazvi09",
   },
 };
 
