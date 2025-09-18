@@ -95,7 +95,6 @@ export default function RootLayout({
         )}
       >
         <SplashScreen />
-        {/* <SmoothCursor /> */}
         <StarsCanvas />
         <Navbar />
         {children}
