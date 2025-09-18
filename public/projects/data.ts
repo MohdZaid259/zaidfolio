@@ -36,20 +36,28 @@ export const projects: Project[] = [
   },
   {
     id: 4,
-    name: 'NextGen E-Commerce',
-    description: 'AI-powered e-commerce app featuring Razorpay integration, intelligent chatbot, and real-time order management.',
-    image: '/projects/nextgen.png',
-    technologies: ['React', 'Firebase', 'Razorpay', 'AI Chatbot'],
-    live: 'https://nextgen-herbals.vercel.app/',
-    github: 'https://github.com/MohdZaid259/NextGen.git'
-  },
-  {
-    id: 5,
     name: 'YouTube Clone',
     description: 'Full-stack Next.js YouTube clone with custom backend, seamless API integration, and advanced video streaming experience.',
     image: '/projects/yt.png',
     technologies: ['Next.js', 'Node.js', 'YouTube API', 'MongoDB'],
     live: 'https://yt-frontend-three.vercel.app/',
     github: 'https://github.com/MohdZaid259/Youtube.git'
+  },
+  {
+    id: 5,
+    name: 'Rukn Al Haya',
+    description: 'Rukn Al Haya is a one-stop technical service platform built with Next.js and Tailwind CSS. It delivers a fast, responsive, and engaging user experience',
+    image: '/projects/alhaya.png',
+    technologies: ['Next.js', 'Tailwind'],
+    live: 'https://www.alhaya.tech/',
+  },
+  {
+    id: 6,
+    name: 'NextGen E-Commerce',
+    description: 'AI-powered e-commerce app featuring Razorpay integration, intelligent chatbot, and real-time order management.',
+    image: '/projects/nextgen.png',
+    technologies: ['React', 'Firebase', 'Razorpay', 'AI Chatbot'],
+    live: 'https://nextgen-herbals.vercel.app/',
+    github: 'https://github.com/MohdZaid259/NextGen.git'
   },
 ];

@@ -24,7 +24,7 @@ export const TextReveal: FC<TextRevealProps> = ({ children, className, heading, 
   const words = children.split(" ");
 
   return (
-    <div ref={targetRef} className={cn("relative z-0 h-[140vh]", className)}>
+    <div ref={targetRef} className={cn("relative z-0 h-[140vh] cursor-default", className)}>
       {/* Sticky wrapper keeps content pinned in middle */}
       <div className="sticky top-[45%] -translate-y-[45%] mx-auto flex flex-col items-center justify-center w-full">
         {/* Badge that scrolls with content */}

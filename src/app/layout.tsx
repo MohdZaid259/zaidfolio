@@ -6,7 +6,6 @@ import { StarsCanvas } from "@/components/main/star-background";
 import { cn } from "@/lib/utils";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
-import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { SplashScreen } from "@/components/sub/videoIntro";
 import "./globals.css";
 
@@ -96,7 +95,7 @@ export default function RootLayout({
         )}
       >
         <SplashScreen />
-        <SmoothCursor />
+        {/* <SmoothCursor /> */}
         <StarsCanvas />
         <Navbar />
         {children}

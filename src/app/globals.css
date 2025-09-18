@@ -11,10 +11,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-* {
-  cursor: none !important;
-}
-
 html {
   scroll-behavior: smooth;
 }
