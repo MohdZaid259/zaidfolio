@@ -4,7 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MotionDiv, MotionSpan } from '@/lib/motionElements';
 import Image from 'next/image';
-import { projects } from '../../../public/projects/data';
+import Link from 'next/link';
+import { projects } from '@/data/projects';
 import type { PanInfo } from 'framer-motion';
 
 const variants = {
@@ -100,7 +101,15 @@ const ProjectCarousel = () => {
               {/* Info */}
               <div className="w-full mt-6 md:w-2/5 order-2 md:order-1">
                 <MotionSpan
-                  className="text-xl md:text-3xl text-white mb-2 font-bold leading-tight block"
+                  className="text-xs uppercase tracking-widest text-purple-400 mb-2 block"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {projects[currentIndex].kind}
+                </MotionSpan>
+                <MotionSpan
+                  className="text-xl md:text-3xl text-white mb-1 font-bold leading-tight block"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
@@ -108,60 +117,66 @@ const ProjectCarousel = () => {
                   {projects[currentIndex].name}
                 </MotionSpan>
                 <MotionSpan
-                  className="text-base md:text-lg text-gray-400 font-baloo-bhai-2 leading-relaxed mb-0 block"
+                  className="text-sm text-gray-400 mb-3 block"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  My role: {projects[currentIndex].role}
+                </MotionSpan>
+                <MotionSpan
+                  className="text-base md:text-lg text-gray-300 font-baloo-bhai-2 leading-relaxed mb-3 block"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
                 >
-                  {projects[currentIndex].description}
+                  {projects[currentIndex].summary}
                 </MotionSpan>
                 <MotionDiv
-                  className="flex gap-4 flex-wrap justify-center md:justify-start  max-sm:mb-0 mb-4"
+                  className="flex gap-2 flex-wrap justify-center md:justify-start mb-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
                 >
-                  {projects[currentIndex].technologies.map((tech, i) => (
-                    <span key={i} className="text-white py-1 rounded-full text-sm font-medium">
+                  {projects[currentIndex].technologies.map((tech) => (
+                    <span key={tech} className="text-gray-200 px-2.5 py-0.5 rounded-full text-xs font-medium border border-white/15 bg-white/5">
                       {tech}
                     </span>
                   ))}
                 </MotionDiv>
-                <div className='flex justify-start items-center max-sm:justify-center gap-4'>
-                  <MotionDiv
-                    className="flex gap-4 flex-wrap justify-center md:justify-start"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.6 }}
+                <MotionDiv
+                  className="flex gap-5 flex-wrap items-center justify-center md:justify-start text-sm font-medium"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <Link
+                    href={`/work/${projects[currentIndex].slug}`}
+                    className="text-white bg-purple-700/70 hover:bg-purple-600 px-4 py-1.5 rounded-full transition"
                   >
-                    {projects[currentIndex].live ? (
-                      <a
-                        href={projects[currentIndex].live}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-purple-700 hover:text-purple-500 hover:underline py-1 rounded-full text-sm font-medium"
-                      >
-                        Live Link
-                      </a>
-                    ) : (
-                      <span className="text-purple-800 text-sm font-medium">
-                        Coming Soon
-                      </span>
-                    )}
-                  </MotionDiv>
-                  <MotionDiv
-                    className="flex gap-4 flex-wrap justify-center md:justify-start"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.6 }}
-                  >
-                    {projects[currentIndex].github && (
-                      <a href={projects[currentIndex].github} target="_blank" rel="noopener noreferrer" className="text-purple-700 hover:text-purple-500 hover:underline py-1 rounded-full text-sm font-medium">
-                        GitHub Repo
-                      </a>
-                    )}
-                  </MotionDiv>
-                </div>
+                    Read case study
+                  </Link>
+                  {projects[currentIndex].live && (
+                    <a
+                      href={projects[currentIndex].live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-400 hover:text-purple-300 hover:underline"
+                    >
+                      Live site ↗
+                    </a>
+                  )}
+                  {projects[currentIndex].github && (
+                    <a
+                      href={projects[currentIndex].github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-purple-400 hover:text-purple-300 hover:underline"
+                    >
+                      {projects[currentIndex].githubLabel ?? 'GitHub'} ↗
+                    </a>
+                  )}
+                </MotionDiv>
               </div>
 
               {/* Main Image */}
@@ -171,7 +186,8 @@ const ProjectCarousel = () => {
                   alt={projects[currentIndex].name}
                   width={800}
                   height={500}
-                  priority
+                  priority={currentIndex === 0}
+                  unoptimized={projects[currentIndex].image.endsWith('.svg')}
                   className="w-auto h-auto object-contain rounded-md"
                 />
               </MotionDiv>
@@ -183,13 +199,13 @@ const ProjectCarousel = () => {
         <div className="hidden md:flex absolute right-8 bottom-8 flex-row gap-2">
           {projects.map((project, index) => (
             <MotionDiv
-              key={project.id}
+              key={project.slug}
               className={`w-20 h-14 relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
                 index === currentIndex ? 'opacity-100' : 'opacity-40'
               }`}
               onClick={() => goToProject(index)}
             >
-              <Image src={project.image} alt={project.name} fill sizes="100px" className="object-cover" />
+              <Image src={project.image} alt={project.name} fill sizes="100px" unoptimized={project.image.endsWith('.svg')} className="object-cover" />
             </MotionDiv>
           ))}
         </div>

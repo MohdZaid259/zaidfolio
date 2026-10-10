@@ -64,17 +64,16 @@ interface WordProps {
   range: [number, number];
 }
 
+// Each word is rendered once and fades from 30% to full opacity, so screen
+// readers and crawlers see the sentence a single time.
 const Word: FC<WordProps> = ({ children, progress, range }) => {
-  const opacity = useTransform(progress, range, [0, 1]);
+  const opacity = useTransform(progress, range, [0.3, 1]);
   return (
-    <span className="relative mx-1 lg:mx-1.5">
-      <span className="absolute opacity-30">{children}</span>
-      <motion.span
-        style={{ opacity }}
-        className="text-white dark:text-black"
-      >
-        {children}
-      </motion.span>
-    </span>
+    <motion.span
+      style={{ opacity }}
+      className="mx-1 lg:mx-1.5 text-white dark:text-black"
+    >
+      {children}
+    </motion.span>
   );
 };

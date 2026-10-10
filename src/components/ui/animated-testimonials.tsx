@@ -2,14 +2,12 @@
 
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "motion/react";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import type { Testimonial } from "@/data/testimonials";
 
-type Testimonial = {
-  quote: string;
-  name: string;
-  designation: string;
-  src: string;
-};
+const initials = (name: string) =>
+  name.split(" ").map((part) => part[0]).slice(0, 2).join("").toUpperCase();
 export const AnimatedTestimonials = ({
   testimonials,
   autoplay = false,
@@ -79,12 +77,7 @@ export const AnimatedTestimonials = ({
                   }}
                   className="absolute inset-0 origin-bottom"
                 >
-                  <motion.img
-                    src={testimonial.src}
-                    alt={testimonial.name}
-                    width={500}
-                    height={500}
-                    draggable={false}
+                  <motion.div
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={0.2}
@@ -98,8 +91,24 @@ export const AnimatedTestimonials = ({
                         handlePrev();
                       }
                     }}
-                    className="h-full w-full rounded-3xl object-cover object-center"
-                  />
+                    className="h-full w-full overflow-hidden rounded-3xl"
+                  >
+                    {testimonial.src ? (
+                      <img
+                        src={testimonial.src}
+                        alt={testimonial.name}
+                        draggable={false}
+                        className="h-full w-full object-cover object-center"
+                      />
+                    ) : (
+                      <div
+                        aria-hidden
+                        className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet-700 via-purple-800 to-blue-800 text-5xl font-bold tracking-wider text-white/90 md:text-8xl"
+                      >
+                        {initials(testimonial.name)}
+                      </div>
+                    )}
+                  </motion.div>
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -130,7 +139,21 @@ export const AnimatedTestimonials = ({
             </h3>
             <p className="text-sm text-gray-400 max-sm:text-center dark:text-neutral-500">
               {testimonials[active].designation}
+              {testimonials[active].linkedin && (
+                <>
+                  {" · "}
+                  <a href={testimonials[active].linkedin} target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline">
+                    LinkedIn
+                  </a>
+                </>
+              )}
             </p>
+            <Link
+              href={`/work/${testimonials[active].projectSlug}`}
+              className="mt-1 inline-block text-sm text-purple-400 hover:text-purple-300 hover:underline max-sm:block max-sm:text-center"
+            >
+              See the project →
+            </Link>
             <motion.p className="mt-8 text-base md:text-xl font-baloo-bhai-2 text-gray-300 dark:text-neutral-300">
               {testimonials[active].quote.split(" ").map((word, index) => (
                 <motion.span
@@ -160,12 +183,14 @@ export const AnimatedTestimonials = ({
           <div className="flex self-end max-sm:mr-8 gap-4 pt-6 md:pt-0">
             <button
               onClick={handlePrev}
+              aria-label="Previous testimonial"
               className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-transparent dark:bg-neutral-800"
             >
               <IconArrowLeft className="h-full w-full text-white transition-transform duration-300 group-hover/button:rotate-20 dark:text-neutral-400" />
             </button>
             <button
               onClick={handleNext}
+              aria-label="Next testimonial"
               className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800"
             >
               <IconArrowRight className="h-[90%] w-[90%] text-black transition-transform duration-300 group-hover/button:-rotate-20 dark:text-neutral-400" />

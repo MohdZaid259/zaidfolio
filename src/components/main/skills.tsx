@@ -1,6 +1,7 @@
 import { SkillDataProvider } from "@/components/sub/skill-data-provider";
 import { SkillText } from "@/components/sub/skill-text";
 import {
+  SKILL_GROUPS,
   BACKEND_SKILL,
   FRONTEND_SKILL,
   FULLSTACK_SKILL,
@@ -136,11 +137,21 @@ export default function Skills () {
           ))}
         </div>
       
+      {/* Grouped stack, kept in sync with the resume */}
+      <dl className="mt-12 w-full max-w-4xl grid grid-cols-1 gap-x-8 gap-y-4 px-4 sm:grid-cols-2">
+        {SKILL_GROUPS.map(({ group, items }) => (
+          <div key={group} className="rounded-xl border border-white/10 bg-[#030014]/70 p-4 backdrop-blur-sm">
+            <dt className="text-xs uppercase tracking-widest text-purple-400">{group}</dt>
+            <dd className="mt-2 text-sm text-gray-200 leading-relaxed">{items.join(" · ")}</dd>
+          </div>
+        ))}
+      </dl>
+
       <div className="w-full hidden md:block md:mt-16 h-full absolute">
         <div className="w-full h-full z-[-10] opacity-30 absolute flex items-center justify-center bg-cover">
           <video
             className="w-full h-auto"
-            preload="false"
+            preload="none"
             playsInline
             loop
             muted

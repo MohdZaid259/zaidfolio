@@ -10,6 +10,15 @@ import { FaWhatsapp } from "react-icons/fa";
 import {FaLinkedinIn  } from 'react-icons/fa'
 import {FaXTwitter } from 'react-icons/fa6'
 
+export const SKILL_GROUPS = [
+  { group: "Backend", items: ["Node.js", "Fastify", "Express.js", "REST APIs", "JSON Patch"] },
+  { group: "Data", items: ["PostgreSQL", "Drizzle", "MongoDB", "MySQL", "Redis", "BullMQ"] },
+  { group: "AI / GenAI", items: ["LLMs", "RAG", "Embeddings", "Vector search", "OpenAI", "OpenRouter", "MCP"] },
+  { group: "Cloud / DevOps", items: ["Docker", "Docker Compose", "Azure", "AWS S3", "GitHub Actions", "Vercel"] },
+  { group: "Security", items: ["OAuth 2.0", "OIDC", "JWT", "Azure Entra", "RBAC", "PostgreSQL RLS", "CORS"] },
+  { group: "Frontend", items: ["React", "Next.js", "TypeScript", "Redux", "Tailwind CSS"] },
+] as const;
+
 // Row 1 → 12 logos
 export const SKILL_DATA = [
     { skill_name: "Next.js", image: "next.png", width: 120, height: 120 },
@@ -199,19 +208,23 @@ export const FOOTER_DATA = [
 
 export const NAV_LINKS = [
   {
-    title: "About me",
-    link: "#about-me",
+    title: "About",
+    link: "/#about-me",
   },
   {
-    title: "Skills",
-    link: "#skills",
+    title: "Experience",
+    link: "/#experience",
   },
   {
     title: "Projects",
-    link: "#projects",
+    link: "/#projects",
   },
   {
-    title: "Contact Us",
-    link: "#contact",
+    title: "Skills",
+    link: "/#skills",
+  },
+  {
+    title: "Contact",
+    link: "/#contact",
   },
 ] as const;

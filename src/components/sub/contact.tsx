@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 function ContactSection() {
   return (
-    <div className='relative min-h-92 flex justify-evenly items-start overflow-x-hidden'>
+    <section id='contact' className='relative min-h-92 flex justify-evenly items-start overflow-x-hidden scroll-mt-24'>
       <div className='absolute left-4 sm:left-6 md:left-20 lg:left-36 sm:top-16 md:top-24 lg:top-56 '>
         <div className="group relative max-w-max flex items-center mb-2 justify-center rounded-full px-2 pl-3 md:px-4 py-1 md:py-1.5 shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] ">
           <span
@@ -31,7 +31,7 @@ function ContactSection() {
         <h1 className="text-[32px] sm:text-[40px] font-semibold text-white">
           Let's have a <AuroraText>Convo</AuroraText>
         </h1>
-        <p className='text-gray-300 '>Have an idea, project, or just a question? I’d love to hear from you.</p>
+        <p className='text-gray-300 '>Hiring, have a project in mind, or just want to talk shop? I’d love to hear from you.</p>
           <div className="flex gap-6 mt-6">
             {SOCIALSFOOTER.map(({ link, name, icon: Icon }) => (
               <Link
@@ -39,6 +39,7 @@ function ContactSection() {
                 target="_blank"
                 rel="noreferrer noopener"
                 key={name}
+                aria-label={name}
                 className="group relative flex flex-col items-center"
               >
                 <Icon className="h-6 w-6 md:h-8 md:w-8 text-white hover:text-violet-500 transition-transform duration-500 group-hover:translate-y-2" />
@@ -53,7 +54,7 @@ function ContactSection() {
       <div className='hidden sm:block'>
         <ThreeDModel/>
       </div>
-    </div>
+    </section>
   )
 }
 

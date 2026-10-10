@@ -48,7 +48,7 @@ export const Navbar = () => {
         {/* Navbar Container */}
         <div className="w-full h-full flex items-center justify-between m-auto md:px-[10px]">
           {/* Logo */}
-          <Link href="#about-me" className="flex items-center">
+          <Link href="/" aria-label="Home" className="flex items-center">
             <Image
               src="/logo.png"
               alt="Logo"
@@ -61,7 +61,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex w-[500px] h-full flex-row items-center justify-between md:mr-20">
+          <div className="hidden md:flex w-[560px] h-full flex-row items-center justify-between md:mr-20">
             <div className="flex items-center justify-between w-full h-auto border-[rgba(112,66,248,0.38)] bg-[rgba(3,0,20,0.37)] mr-[15px] px-[20px] py-[10px] rounded-full text-gray-200">
               {NAV_LINKS.map((link) => (
                 <Link
@@ -83,6 +83,7 @@ export const Navbar = () => {
                 target="_blank"
                 rel="noreferrer noopener"
                 key={name}
+                aria-label={name}
               >
                 <Icon className="h-6 w-6 text-white" />
               </Link>
@@ -91,6 +92,7 @@ export const Navbar = () => {
 
           {/* Hamburger */}
           <button
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             className="md:hidden text-white focus:outline-none text-3xl"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >

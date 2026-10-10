@@ -1,6 +1,6 @@
 'use client'
 
-import { MotionDiv, MotionA } from "@/lib/motionElements";
+import { MotionDiv } from "@/lib/motionElements";
 import Image from "next/image";
 import { AnimatedGradientText } from "../magicui/animated-gradient-text";
 import {
@@ -34,7 +34,7 @@ export const HeroContent = () => {
           />
           🎉 <hr className="mx-2 h-4 w-px shrink-0 bg-neutral-500" />
           <AnimatedGradientText className="text-xs md:text-sm font-medium">
-            Full-Stack Web Developer
+            Full-Stack Software Engineer · AI · Backend
           </AnimatedGradientText>
           <ChevronRight
               className="ml-1 size-4 stroke-neutral-500 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5"
@@ -48,29 +48,31 @@ export const HeroContent = () => {
           <span>
             Hello. I'm
               <MorphingText 
-                texts={["Mohd Zaid", "Developer", "Freelancer"]}
+                texts={["Mohd Zaid", "an Engineer", "a Builder"]}
               />
           </span>
         </MotionDiv>
 
         <TextAnimate animation="blurIn" as='h1' className="text-base font-baloo-bhai-2 max-sm:w-[85%] md:text-xl text-gray-300 mb-5 -mt-4 max-w-[600px]">
-          I build modern, scalable, and user-friendly web applications for startups and growing businesses.
+          I build backend systems, multi-tenant SaaS and AI-powered products. Currently at PGC Digital, shipping 10xTA.
         </TextAnimate>
 
 
-        <MotionA
-          href="/resumeFull.pdf"
-          target="_blank" 
-          rel="noopener noreferrer"
-          variants={slideInFromLeft(1)}
-          className="max-sm:-mt-4"
-        >
-          <ShimmerButton className="shadow-2xl">
-            <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white lg:text-lg">
-              View Resume
-            </span>
-          </ShimmerButton>
-        </MotionA>
+        <MotionDiv variants={slideInFromLeft(1)} className="flex flex-wrap items-center gap-4 max-sm:-mt-4">
+          <a href="/resumeFull.pdf" target="_blank" rel="noopener noreferrer">
+            <ShimmerButton className="shadow-2xl">
+              <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white lg:text-lg">
+                View Resume
+              </span>
+            </ShimmerButton>
+          </a>
+          <a
+            href="#contact"
+            className="rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white transition hover:border-purple-400 hover:bg-white/5 lg:text-lg"
+          >
+            Get in touch
+          </a>
+        </MotionDiv>
       </div>
 
       <MotionDiv

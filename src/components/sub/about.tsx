@@ -5,7 +5,7 @@ import { TextReveal } from "../magicui/text-reveal";
 
 export default function AboutMe() {
   return (
-    <section className="container relative text-white py-10 px-4 md:px-20">
+    <section id="about-me" className="container relative text-white py-10 px-4 md:px-20 scroll-mt-10">
       {/* Content with Badge, Title and Text that scroll together */}
       <div className="mt-44 space-y-12">
         <TextReveal 
@@ -41,17 +41,14 @@ export default function AboutMe() {
             </h2>
           }
         >
-          I'm Zaid, a full-stack freelance developer who thrives on turning
-          bold ideas into digital realities. Over the years, I've partnered
-          with startups, businesses, and individuals to craft websites and
-          applications that don't just look good — but work seamlessly and
-          deliver results.
-          
-          My freelancing journey has taught me the value of clear
-          communication, on-time delivery, and building lasting relationships
-          with clients across the globe. Whether it's a brand-new website, a
-          feature-rich app, or reliable hosting, I bring a mix of creativity,
-          technical expertise, and business sense to every project.
+          I'm Zaid, a full-stack software engineer at PGC Digital. I work on
+          10xTA, a multi-service recruitment platform, building Fastify APIs,
+          multi-tenant isolation with PostgreSQL row-level security, Azure Entra
+          auth, and AI workflows for resume ranking and interviews. Before that
+          I freelanced for international clients, owning each project from the
+          first call to deployment, and built the backend of IntelliPrompt, an
+          AI prompt SaaS. I like backend problems, AI products, and shipping
+          things people actually use.
         </TextReveal>
         <TextReveal 
           className="block md:hidden py-0 my-0 space-y-0"
@@ -86,38 +83,33 @@ export default function AboutMe() {
             </h2>
           }
         >
-          I'm Zaid, a full-stack freelance developer who thrives on turning
-          bold ideas into digital realities. Over the years, I've partnered
-          with startups, businesses, and individuals to craft websites and
-          applications that don't just look good — but work seamlessly and
-          deliver results.
-          
-          My freelancing journey has taught me the value of clear
-          communication, on-time delivery, and building lasting relationships
-          with clients across the globe. 
+          I'm Zaid, a full-stack software engineer at PGC Digital, building
+          the backend of 10xTA, a multi-tenant recruitment platform. Before
+          that I freelanced for international clients and built the backend of
+          IntelliPrompt, an AI prompt SaaS.
         </TextReveal>
 
         {/* Stats */}
         <div className="-mt-36 md:-mt-54 lg:-mt-36 md:mb-10 grid grid-cols-3 max-sm:gap-4 gap-0 text-center">
           <div>
             <AuroraText className="text-3xl md:text-4xl font-bold">
-              50+
+              10+
             </AuroraText>
-            <p className="text-sm text-gray-400 mt-1">Completed Projects</p>
+            <p className="text-sm text-gray-400 mt-1">Projects Delivered</p>
           </div>
 
           <div>
             <AuroraText className="text-3xl md:text-4xl font-bold">
-              98.7%
+              5+
             </AuroraText>
-            <p className="text-sm text-gray-400 mt-1">Client Satisfaction</p>
+            <p className="text-sm text-gray-400 mt-1">International Clients</p>
           </div>
 
           <div>
             <AuroraText className="text-3xl md:text-4xl font-bold">
-              3+
+              3
             </AuroraText>
-            <p className="text-sm text-gray-400 mt-1">Years Experience</p>
+            <p className="text-sm text-gray-400 mt-1">AI Workflows Integrated</p>
           </div>
         </div>
       </div>

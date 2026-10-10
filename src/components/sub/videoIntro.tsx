@@ -2,19 +2,32 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 import { MotionDiv, MotionP, MotionSpan } from "@/lib/motionElements";
 
 export const SplashScreen = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  const pathname = usePathname();
+  const [isVisible, setIsVisible] = useState(pathname === '/');
 
   useEffect(() => {
+    // Only greet on the first home-page visit of a session; case studies open straight away
+    let seen = false;
+    try {
+      seen = sessionStorage.getItem('splash-seen') === '1';
+      sessionStorage.setItem('splash-seen', '1');
+    } catch {}
+    if (pathname !== '/' || seen) {
+      setIsVisible(false);
+      return;
+    }
+
     // Auto-hide splash after animation completes
     const timer = setTimeout(() => {
       setIsVisible(false);
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [pathname]);
 
   // Letter animation variants
   const letterVariants = {
