@@ -1,231 +1,158 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { MotionDiv, MotionSpan } from '@/lib/motionElements';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { projects } from '@/data/projects';
-import type { PanInfo } from 'framer-motion';
+import type { Project } from '@/data/projects';
 
-const variants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 100 : -100,
-    opacity: 0,
-  }),
-  center: { x: 0, opacity: 1 },
-  exit: (direction: number) => ({
-    x: direction > 0 ? -100 : 100,
-    opacity: 0,
-  }),
-};
+export type CarouselProject = Pick<
+  Project,
+  'slug' | 'name' | 'kind' | 'role' | 'summary' | 'image' | 'technologies' | 'live' | 'github' | 'githubLabel'
+>;
 
-const ProjectCarousel = () => {
-  const [[currentIndex, direction], setCurrentIndex] = useState<[number, number]>([0, 0]);
-  const [isActive, setIsActive] = useState(false); // track if in viewport
-  const carouselRef = useRef<HTMLDivElement | null>(null);
+/**
+ * Auto-advancing project carousel (CSS animations, no animation library).
+ * Autoplay runs only while the carousel is on screen, and pauses on hover,
+ * keyboard focus, and for users who prefer reduced motion.
+ */
+export default function ProjectCarousel({ projects }: { projects: CarouselProject[] }) {
+  const [[index, direction], setState] = useState<[number, number]>([0, 1]);
+  const [inView, setInView] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const touchX = useRef<number | null>(null);
+  const count = projects.length;
+
+  const go = (next: number, dir: number) => setState([(next + count) % count, dir]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        setIsActive(entry.isIntersecting); // true when visible
-      },
-      { threshold: 0.4 } // trigger when 40% of section is visible
-    );
-
-    if (carouselRef.current) observer.observe(carouselRef.current);
-    return () => {
-      if (carouselRef.current) observer.unobserve(carouselRef.current);
-    };
+    const el = rootRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => setInView(Boolean(entry?.isIntersecting)), { threshold: 0.4 });
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    if (!isActive) return; // only run when in view
-    const interval = setInterval(() => {
-      setCurrentIndex(([prev]) => [(prev + 1) % projects.length, 1]);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [isActive,currentIndex]);
+    if (!inView || paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const timer = setTimeout(() => go(index + 1, 1), 6000);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, paused, index]);
 
-  const goToProject = (index: number) => {
-    if (index === currentIndex) return;
-    const dir = index > currentIndex ? 1 : -1;
-    setCurrentIndex([index, dir]);
-  };
-
-  const handleDragEnd = (
-    event: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo
-  ) => {
-    const swipeThreshold = 80;
-    if (info.offset.x < -swipeThreshold) {
-      // swipe left → next
-      setCurrentIndex(([prev]) => [(prev + 1) % projects.length, 1]);
-    } else if (info.offset.x > swipeThreshold) {
-      // swipe right → previous
-      setCurrentIndex(([prev]) => [(prev - 1 + projects.length) % projects.length, -1]);
-    }
-  };
+  const project = projects[index]!;
+  const linkClass = 'inline-flex min-h-11 items-center px-1 text-purple-300 hover:text-purple-200 hover:underline';
 
   return (
-    <div ref={carouselRef} className="container mx-auto max-sm:mt-2 md:p-8 relative">
-      <div className="relative rounded-2xl overflow-hidden min-h-[400px] md:min-h-[500px]">
-        {/* Project Number */}
-        <MotionDiv
-          key={currentIndex}
-          className="max-sm:hidden absolute top-0 left-0 md:top-8 md:left-8 text-4xl md:text-8xl font-extrabold text-purple-700/25 z-10 font-mono"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          {String(currentIndex + 1).padStart(2, '0')}
-        </MotionDiv>
+    <div
+      ref={rootRef}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Projects"
+      className="container relative mx-auto max-sm:mt-2 md:p-8"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      onTouchStart={(e) => (touchX.current = e.touches[0]?.clientX ?? null)}
+      onTouchEnd={(e) => {
+        const start = touchX.current;
+        const end = e.changedTouches[0]?.clientX;
+        if (start == null || end == null) return;
+        if (end - start < -60) go(index + 1, 1);
+        if (end - start > 60) go(index - 1, -1);
+      }}
+    >
+      <div className="relative min-h-[400px] overflow-hidden rounded-2xl md:min-h-[500px]">
+        {/* Decorative watermark number, drawn via CSS content so it isn't treated as page text */}
+        <div
+          key={`n-${index}`}
+          aria-hidden
+          data-n={String(index + 1).padStart(2, '0')}
+          className="rise-in absolute left-0 top-0 z-10 font-mono text-4xl font-extrabold text-purple-700/25 before:content-[attr(data-n)] max-sm:hidden md:left-8 md:top-8 md:text-8xl"
+        />
 
-        {/* Main Content */}
-        <div className="p-4 md:p-8 flex items-center min-h-[350px] md:min-h-[450px] overflow-hidden">
-          <AnimatePresence mode="wait" custom={direction}>
-            <MotionDiv
-              key={currentIndex}
-              className="flex flex-col md:flex-row w-full gap-6 items-center text-center md:text-left"
-              custom={direction}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              onDragEnd={handleDragEnd as any}
-            >
-              {/* Info */}
-              <div className="w-full mt-6 md:w-2/5 order-2 md:order-1">
-                <MotionSpan
-                  className="text-xs uppercase tracking-widest text-purple-400 mb-2 block"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
+        <div className="flex min-h-[350px] items-center overflow-hidden p-4 md:min-h-[450px] md:p-8">
+          <div
+            key={index}
+            aria-live="polite"
+            className={`${direction > 0 ? 'slide-from-right' : 'slide-from-left'} flex w-full flex-col items-center gap-6 text-center md:flex-row md:text-left`}
+          >
+            <div className="order-2 mt-6 w-full md:order-1 md:w-2/5">
+              <p className="mb-2 text-xs uppercase tracking-widest text-purple-300">{project.kind}</p>
+              <h3 className="mb-1 text-xl font-bold leading-tight text-white md:text-3xl">{project.name}</h3>
+              <p className="mb-3 text-sm text-gray-400">My role: {project.role}</p>
+              <p className="mb-3 text-base leading-relaxed text-gray-300 md:text-lg">{project.summary}</p>
+              <ul className="mb-4 flex flex-wrap justify-center gap-2 md:justify-start" aria-label="Stack">
+                {project.technologies.map((tech) => (
+                  <li key={tech} className="rounded-full border border-white/15 bg-white/5 px-2.5 py-0.5 text-xs font-medium text-gray-200">
+                    {tech}
+                  </li>
+                ))}
+              </ul>
+              <div className="flex flex-wrap items-center justify-center gap-4 text-sm font-medium md:justify-start">
+                <Link
+                  href={`/work/${project.slug}`}
+                  className="inline-flex min-h-11 items-center rounded-full bg-purple-700/70 px-5 text-white transition hover:bg-purple-600"
                 >
-                  {projects[currentIndex].kind}
-                </MotionSpan>
-                <MotionSpan
-                  className="text-xl md:text-3xl text-white mb-1 font-bold leading-tight block"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  {projects[currentIndex].name}
-                </MotionSpan>
-                <MotionSpan
-                  className="text-sm text-gray-400 mb-3 block"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  My role: {projects[currentIndex].role}
-                </MotionSpan>
-                <MotionSpan
-                  className="text-base md:text-lg text-gray-300 font-baloo-bhai-2 leading-relaxed mb-3 block"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  {projects[currentIndex].summary}
-                </MotionSpan>
-                <MotionDiv
-                  className="flex gap-2 flex-wrap justify-center md:justify-start mb-4"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                >
-                  {projects[currentIndex].technologies.map((tech) => (
-                    <span key={tech} className="text-gray-200 px-2.5 py-0.5 rounded-full text-xs font-medium border border-white/15 bg-white/5">
-                      {tech}
-                    </span>
-                  ))}
-                </MotionDiv>
-                <MotionDiv
-                  className="flex gap-5 flex-wrap items-center justify-center md:justify-start text-sm font-medium"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                >
-                  <Link
-                    href={`/work/${projects[currentIndex].slug}`}
-                    className="text-white bg-purple-700/70 hover:bg-purple-600 px-4 py-1.5 rounded-full transition"
-                  >
-                    Read case study
-                  </Link>
-                  {projects[currentIndex].live && (
-                    <a
-                      href={projects[currentIndex].live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-purple-400 hover:text-purple-300 hover:underline"
-                    >
-                      Live site ↗
-                    </a>
-                  )}
-                  {projects[currentIndex].github && (
-                    <a
-                      href={projects[currentIndex].github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-purple-400 hover:text-purple-300 hover:underline"
-                    >
-                      {projects[currentIndex].githubLabel ?? 'GitHub'} ↗
-                    </a>
-                  )}
-                </MotionDiv>
+                  Read case study
+                </Link>
+                {project.live && (
+                  <a href={project.live} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                    Live site ↗
+                  </a>
+                )}
+                {project.github && (
+                  <a href={project.github} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                    {project.githubLabel ?? 'GitHub'} ↗
+                  </a>
+                )}
               </div>
+            </div>
 
-              {/* Main Image */}
-              <MotionDiv className="w-full md:w-3/5 flex justify-center items-center order-1 md:order-2">
-                <Image
-                  src={projects[currentIndex].image}
-                  alt={projects[currentIndex].name}
-                  width={800}
-                  height={500}
-                  priority={currentIndex === 0}
-                  unoptimized={projects[currentIndex].image.endsWith('.svg')}
-                  className="w-auto h-auto object-contain rounded-md"
-                />
-              </MotionDiv>
-            </MotionDiv>
-          </AnimatePresence>
+            <div className="order-1 flex w-full items-center justify-center md:order-2 md:w-3/5">
+              <Image
+                src={project.image}
+                alt={`${project.name} screenshot`}
+                width={800}
+                height={500}
+                sizes="(max-width: 768px) 92vw, 60vw"
+                unoptimized={project.image.endsWith('.svg')}
+                className="h-auto w-auto rounded-md object-contain"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Thumbnails (desktop) */}
-        <div className="hidden md:flex absolute right-8 bottom-8 flex-row gap-2">
-          {projects.map((project, index) => (
-            <MotionDiv
-              key={project.slug}
-              className={`w-20 h-14 relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
-                index === currentIndex ? 'opacity-100' : 'opacity-40'
+        <div className="absolute bottom-8 right-8 hidden flex-row gap-2 lg:flex">
+          {projects.map((p, i) => (
+            <button
+              key={p.slug}
+              onClick={() => go(i, i > index ? 1 : -1)}
+              aria-label={`Show ${p.name}`}
+              className={`relative h-14 w-20 cursor-pointer overflow-hidden rounded-lg transition-all duration-300 hover:opacity-80 ${
+                i === index ? 'opacity-100 ring-2 ring-purple-400/70' : 'opacity-40'
               }`}
-              onClick={() => goToProject(index)}
             >
-              <Image src={project.image} alt={project.name} fill sizes="100px" unoptimized={project.image.endsWith('.svg')} className="object-cover" />
-            </MotionDiv>
+              <Image src={p.image} alt="" fill sizes="80px" unoptimized={p.image.endsWith('.svg')} className="object-cover" />
+            </button>
           ))}
         </div>
       </div>
 
-      {/* Progress Indicators */}
-      <div className="absolute md:bottom-20 bottom-1 left-1/2 -translate-x-1/2 md:left-36 flex gap-2 z-20">
-        {projects.map((_, idx) => (
+      <div className="absolute -bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1 lg:bottom-16 lg:left-36 lg:translate-x-0">
+        {projects.map((p, i) => (
           <button
-            key={idx}
-            onClick={() => goToProject(idx)}
-            aria-label={`Go to project ${idx + 1}`}
-            className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
-              currentIndex === idx ? 'bg-white w-6 sm:w-8' : 'bg-white/20 w-3 sm:w-5'
-            }`}
-          />
+            key={p.slug}
+            onClick={() => go(i, i > index ? 1 : -1)}
+            aria-label={`Show ${p.name}`}
+            aria-current={i === index}
+            className="flex h-11 min-w-6 cursor-pointer items-center sm:min-w-8"
+          >
+            <span className={`h-1 w-full rounded-full transition-all duration-300 ${i === index ? 'bg-white' : 'bg-white/25'}`} />
+          </button>
         ))}
       </div>
     </div>
   );
-};
-
-export default ProjectCarousel;
+}

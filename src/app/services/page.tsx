@@ -56,10 +56,10 @@ export default function ServicesPage() {
               ))}
             </div>
             <div className="mt-auto pt-5 text-sm">
-              <span className="text-gray-500">Proof: </span>
+              <span className="text-gray-400">Proof: </span>
               {service.proof.map((p, i) => (
                 <span key={p.href + p.label}>
-                  {i > 0 && <span className="text-gray-600"> · </span>}
+                  {i > 0 && <span className="text-gray-400"> · </span>}
                   <Link href={p.href} className="text-purple-300 hover:underline">
                     {p.label}
                   </Link>

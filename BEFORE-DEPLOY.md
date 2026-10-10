@@ -12,8 +12,9 @@ Everything here needs a decision or fact only you have. Nothing is live yet.
         --description "Multi-tenant Fastify + Drizzle starter with PostgreSQL Row-Level Security"
       ```
       Then check the Actions tab: CI should pass. The portfolio links to this URL.
-- [ ] **Review the two draft notes** in `content/notes/` and set `draft: false`. Until then `/notes` is empty
-      in production and the home page "Engineering Notes" strip is hidden.
+- [ ] **Review the four draft notes** in `content/notes/` (RLS multi-tenancy, debugging 401/403, RAG ingestion
+      pipeline, GitHub Actions CI) and set `draft: false` on each one you're happy with. Until then `/notes` is
+      empty in production and the home page "Engineering Notes" strip is hidden. Preview them with `npm run dev`.
 - [ ] **Add `MESH_API_KEY`** in Vercel → Settings → Environment Variables (the chat returns
       "isn't configured yet" without it). Consider rotating the key, since it was shared in a chat.
 - [ ] **Confirm the 3 testimonials** in `src/data/testimonials.ts` are real and approved. Adding a `linkedin`
@@ -36,3 +37,11 @@ This folder's git history is local (it was a downloaded zip). To deploy through 
 then let Vercel build. `npm run build` passes locally.
 
 Never run `npm run dev` and `npm start` at the same time; they share the `.next` folder.
+
+## Good to know
+
+- The hero's black-hole video only loads on desktop (1024px+), after the page has loaded, and never on Save-Data,
+  slow connections or reduced-motion. Everyone else sees the CSS version, so phones never download it.
+- Skills shown on the site come from `SKILL_GROUPS` in `src/constants/index.ts`; the chat assistant reads the same list.
+- Lighthouse (production build, local): desktop 100/100/100/100; mobile 95–98 performance, 100 accessibility,
+  best practices and SEO.

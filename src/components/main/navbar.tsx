@@ -1,197 +1,127 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { NAV_LINKS, SOCIALS } from "@/constants";
-import  {ScrollProgress} from "@/components/magicui/scroll-progress";
 import clsx from "clsx";
-import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
-import { MotionDiv } from "@/lib/motionElements";
+import { Menu, X } from "lucide-react";
+import { NAV_LINKS, SOCIALS } from "@/constants";
 
 export const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [shrink, setShrink] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const heroHeight = document.getElementById("hero")?.offsetHeight || 0;
-      setShrink(window.scrollY > heroHeight - 50);
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setShrink(window.scrollY > window.innerHeight * 0.6);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Prevent body scroll when mobile menu is open
+  // Lock page scroll and allow Escape while the mobile menu is open
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    
-    // Cleanup on unmount
+    if (!isMobileMenuOpen) return;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setIsMobileMenuOpen(false);
+    window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
     };
   }, [isMobileMenuOpen]);
 
   return (
     <>
-      <div
+      <header
         className={clsx(
-          "fixed top-0 left-1/2 -translate-x-1/2 z-50 h-[50px] md:h-[65px] shadow-lg shadow-[#2A0E61]/50 bg-[#03001427] backdrop-blur-md max-sm:px-10 px-20 transition-all duration-500 flex justify-center items-center overflow-hidden",
-          shrink ? "md:w-[80%] w-full md:rounded-2xl" : "w-full"
+          "fixed left-1/2 top-0 z-50 flex h-[56px] -translate-x-1/2 items-center justify-center overflow-hidden bg-[#03001427] px-5 shadow-lg shadow-[#2A0E61]/50 backdrop-blur-md transition-all duration-500 md:h-[65px] md:px-10",
+          shrink ? "w-full md:top-2 md:w-[86%] md:rounded-2xl" : "w-full"
         )}
       >
-        {/* Navbar Container */}
-        <div className="w-full h-full flex items-center justify-between m-auto md:px-[10px]">
-          {/* Logo */}
-          <Link href="/" aria-label="Home" className="flex items-center">
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={80}
-              height={80}
-              draggable={false}
-              className="cursor-pointer "
-            />
-            <div className="min-w-44"></div>
+        <nav aria-label="Main" className="flex h-full w-full items-center justify-between">
+          <Link href="/" aria-label="Home" className="flex shrink-0 items-center">
+            <Image src="/logo.png" alt="" width={44} height={45} draggable={false} />
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex w-[700px] h-full flex-row items-center justify-between md:mr-20">
-            <div className="flex items-center justify-between w-full h-auto border-[rgba(112,66,248,0.38)] bg-[rgba(3,0,20,0.37)] mr-[15px] px-[20px] py-[10px] rounded-full text-gray-200">
-              {NAV_LINKS.map((link) => (
+          <ul className="hidden items-center gap-1 rounded-full border border-[rgba(112,66,248,0.38)] bg-[rgba(3,0,20,0.37)] px-3 py-1.5 text-sm text-gray-200 lg:flex">
+            {NAV_LINKS.map((link) => (
+              <li key={link.title}>
                 <Link
-                  key={link.title}
                   href={link.link}
-                  className="cursor-pointer px-3 py-1 rounded-2xl hover:border-white border border-transparent transition"
+                  className="block rounded-2xl border border-transparent px-3 py-1.5 transition hover:border-white/60"
                 >
                   {link.title}
                 </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Socials */}
-          <div className="hidden md:flex flex-row gap-5">
-            {SOCIALS.map(({ link, name, icon: Icon }) => (
-              <Link
-                href={link}
-                target="_blank"
-                rel="noreferrer noopener"
-                key={name}
-                aria-label={name}
-              >
-                <Icon className="h-6 w-6 text-white" />
-              </Link>
+              </li>
             ))}
-          </div>
+          </ul>
 
-          {/* Hamburger */}
-          <button
-            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-            className="md:hidden text-white focus:outline-none text-3xl"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={30} /> : "☰"}
-          </button>
-        </div>
-
-        <div className="md:hidden block">
-          <ScrollProgress />
-        </div>
-      </div>
-
-      {/* Mobile Fullscreen Menu - Moved outside the navbar container */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <MotionDiv
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xl flex flex-col items-center justify-center text-gray-200"
-            style={{
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-            }}
-          >
-            <button
-              className="absolute right-9 top-3 text-white focus:outline-none text-3xl z-50"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <X size={30} />
-            </button>
-            
-            {/* Links with staggered animation */}
-            <MotionDiv
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              variants={{
-                visible: { transition: { staggerChildren: 0.1 } },
-                hidden: {},
-              }}
-              className="flex flex-col gap-8 text-2xl"
-            >
-              {NAV_LINKS.map((link) => (
-                <motion.div
-                  key={link.title}
-                  variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
+          <ul className="hidden items-center gap-1 lg:flex">
+            {SOCIALS.map(({ link, name, icon: Icon }) => (
+              <li key={name}>
+                <a
+                  href={link}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label={name}
+                  className="flex size-10 items-center justify-center rounded-full text-white transition hover:bg-white/10"
                 >
-                  <Link
-                    href={link.link}
-                    className="hover:text-[rgb(112,66,248)] transition"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.title}
-                  </Link>
-                </motion.div>
-              ))}
-            </MotionDiv>
+                  <Icon className="size-5" />
+                </a>
+              </li>
+            ))}
+          </ul>
 
-            {/* Socials */}
-            <div className="mt-10">
-              <MotionDiv
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                viewport={{ once: true, amount: 0.2 }} 
-                variants={{
-                  visible: { transition: { staggerChildren: 0.2 } },
-                  hidden: {},
-                }}
-                className="flex gap-8"
-              >
-                {SOCIALS.map(({ link, name, icon: Icon }) => (
-                  <motion.div
-                    key={name}
-                    variants={{
-                      hidden: { opacity: 0, y: 20 },
-                      visible: { opacity: 1, y: 0 },
-                    }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                  >
-                    <Link
-                      href={link}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      key={name}
-                    >
-                      <Icon className="h-7 w-7 mx-2" />
-                    </Link>
-                  </motion.div>
-                ))}
-              </MotionDiv>
-            </div>
-          </MotionDiv>
-        )}
-      </AnimatePresence>
+          <button
+            aria-label="Open menu"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
+            className="flex size-11 items-center justify-center text-white lg:hidden"
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            <Menu className="size-7" />
+          </button>
+        </nav>
+        <div aria-hidden className="scroll-progress lg:hidden" />
+      </header>
+
+      {isMobileMenuOpen && (
+        <div
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+          className="menu-in fixed inset-0 z-[70] flex flex-col items-center justify-center bg-black/60 text-gray-200 backdrop-blur-xl"
+        >
+          <button
+            className="absolute right-4 top-2 flex size-11 items-center justify-center text-white"
+            aria-label="Close menu"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X className="size-7" />
+          </button>
+
+          <ul className="flex flex-col items-center gap-6 text-2xl">
+            {NAV_LINKS.map((link, i) => (
+              <li key={link.title} className="menu-item-in" style={{ animationDelay: `${i * 50}ms` }}>
+                <Link href={link.link} className="transition hover:text-[rgb(112,66,248)]" onClick={() => setIsMobileMenuOpen(false)}>
+                  {link.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <ul className="mt-10 flex gap-6">
+            {SOCIALS.map(({ link, name, icon: Icon }) => (
+              <li key={name}>
+                <a href={link} target="_blank" rel="noreferrer noopener" aria-label={name} className="flex size-11 items-center justify-center">
+                  <Icon className="size-7" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </>
   );
 };

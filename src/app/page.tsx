@@ -1,32 +1,45 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/main/hero";
-import dynamic from "next/dynamic";
+import AboutMe from "@/components/sub/about";
+import Experience from "@/components/main/experience";
+import Projects from "@/components/main/projects";
+import Skills from "@/components/main/skills";
+import Testimonials from "@/components/main/testimonial";
 import LatestNotes from "@/components/main/latest-notes";
-
-const AboutMe = dynamic(() => import("@/components/sub/about"), { ssr: false });
-const Experience = dynamic(() => import("@/components/main/experience"), { ssr: false });
-const Skills = dynamic(() => import("@/components/main/skills"), { ssr: false });
-const Projects = dynamic(() => import("@/components/main/projects"), { ssr: false });
-const Testimonials = dynamic(() => import("@/components/main/testimonial"), { ssr: false });
-const ContactSection = dynamic(() => import("@/components/sub/contact"), { ssr: false });
+import ContactSection from "@/components/sub/contact";
+import { profile } from "@/data/profile";
 
 export const metadata: Metadata = {
-  title: { absolute: "Mohd Zaid | Full-Stack Software Engineer" },
-  description: "Mohd Zaid is a full-stack software engineer building backend systems, multi-tenant SaaS and AI-powered products with Node.js, Fastify, PostgreSQL, Next.js and Azure.",
+  title: { absolute: "Mohd Zaid | AI Full-Stack Engineer" },
+  description:
+    "Mohd Zaid is an AI full-stack engineer building backend systems, multi-tenant SaaS and AI products with Node.js, Fastify, PostgreSQL, Next.js, Docker and Azure.",
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: profile.name,
+  jobTitle: "AI Full-Stack Software Engineer",
+  url: "https://www.zaidfolio.space/",
+  email: `mailto:${profile.contact.email}`,
+  worksFor: { "@type": "Organization", name: "PGC Digital" },
+  sameAs: [profile.contact.linkedin, profile.contact.github, "https://x.com/zaidrazvi09"],
+  knowsAbout: ["Node.js", "Fastify", "PostgreSQL", "Multi-tenant SaaS", "RAG", "LLMs", "Docker", "Azure", "Next.js"],
 };
 
 export default function Home() {
   return (
     <main className="h-full w-full">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
       <div className="flex flex-col gap-10">
         <Hero />
-        <AboutMe/>
+        <AboutMe />
         <Experience />
         <Projects />
         <Skills />
-        <Testimonials/>
+        <Testimonials />
         <LatestNotes />
-        <ContactSection/>
+        <ContactSection />
       </div>
     </main>
   );

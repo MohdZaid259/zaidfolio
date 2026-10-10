@@ -35,7 +35,7 @@ export function EnquiryForm({ services }: { services: { id: string; title: strin
   };
 
   const field =
-    "mt-1 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-purple-400 focus:outline-none";
+    "mt-1 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-purple-400 focus:outline-none";
 
   return (
     <form onSubmit={onSubmit} className="grid gap-4 sm:grid-cols-2">
@@ -44,7 +44,7 @@ export function EnquiryForm({ services }: { services: { id: string; title: strin
         <input name="name" required autoComplete="name" className={field} />
       </label>
       <label className="text-sm text-gray-300">
-        Company <span className="text-gray-500">(optional)</span>
+        Company <span className="text-gray-400">(optional)</span>
         <input name="company" autoComplete="organization" className={field} />
       </label>
       <label className="text-sm text-gray-300 sm:col-span-2">
@@ -59,11 +59,11 @@ export function EnquiryForm({ services }: { services: { id: string; title: strin
         </select>
       </label>
       <label className="text-sm text-gray-300">
-        Timeline <span className="text-gray-500">(optional)</span>
+        Timeline <span className="text-gray-400">(optional)</span>
         <input name="timeline" placeholder="e.g. live by March" className={field} />
       </label>
       <label className="text-sm text-gray-300">
-        Budget <span className="text-gray-500">(optional)</span>
+        Budget <span className="text-gray-400">(optional)</span>
         <input name="budget" placeholder="a range is fine" className={field} />
       </label>
       <label className="text-sm text-gray-300 sm:col-span-2">
@@ -83,7 +83,7 @@ export function EnquiryForm({ services }: { services: { id: string; title: strin
         >
           <Mail className="size-4" /> Write the email
         </button>
-        <p className="text-xs text-gray-500">Opens your email app with this filled in. Nothing is stored on this site.</p>
+        <p className="text-xs text-gray-400">Opens your email app with this filled in. Nothing is stored on this site.</p>
       </div>
       {sent && (
         <p className="text-sm text-gray-300 sm:col-span-2" role="status">

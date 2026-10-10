@@ -48,7 +48,7 @@ export default function NotesList({ notes }: { notes: NoteMeta[] }) {
         {visible.map((note) => (
           <li key={note.slug}>
             <Link href={`/notes/${note.slug}`} className="group block py-7">
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-400">
                 {formatDate(note.date)} · {note.readingMinutes} min read
                 {note.draft && <span className="ml-2 rounded bg-yellow-500/20 px-1.5 py-0.5 text-yellow-300">Draft</span>}
               </p>

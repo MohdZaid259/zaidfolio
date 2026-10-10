@@ -69,7 +69,7 @@ export default async function NotePage({ params }: { params: { slug: string } })
           )}
 
           <header className="mt-8">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-400">
               <time dateTime={note.date}>{formatDate(note.date)}</time>
               {note.updated && <> · Updated <time dateTime={note.updated}>{formatDate(note.updated)}</time></>}
               {" · "}
@@ -102,13 +102,13 @@ export default async function NotePage({ params }: { params: { slug: string } })
           <nav className="mt-12 grid gap-4 border-t border-white/10 pt-8 sm:grid-cols-2" aria-label="More notes">
             {older ? (
               <Link href={`/notes/${older.slug}`} className="group">
-                <span className="block text-xs uppercase tracking-widest text-gray-500">Older</span>
+                <span className="block text-xs uppercase tracking-widest text-gray-400">Older</span>
                 <span className="text-white group-hover:underline">{older.title}</span>
               </Link>
             ) : <span />}
             {newer && (
               <Link href={`/notes/${newer.slug}`} className="group sm:text-right">
-                <span className="block text-xs uppercase tracking-widest text-gray-500">Newer</span>
+                <span className="block text-xs uppercase tracking-widest text-gray-400">Newer</span>
                 <span className="text-white group-hover:underline">{newer.title}</span>
               </Link>
             )}
@@ -118,7 +118,7 @@ export default async function NotePage({ params }: { params: { slug: string } })
         {note.headings.length > 0 && (
           <aside className="hidden lg:block">
             <nav className="sticky top-28 text-sm" aria-label="Table of contents">
-              <p className="text-xs uppercase tracking-widest text-gray-500">On this page</p>
+              <p className="text-xs uppercase tracking-widest text-gray-400">On this page</p>
               <ul className="mt-3 space-y-2 border-l border-white/10">
                 {note.headings.map((h) => (
                   <li key={h.id} className={h.depth === 3 ? "pl-6" : "pl-3"}>

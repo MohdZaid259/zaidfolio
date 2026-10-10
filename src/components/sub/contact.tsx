@@ -1,62 +1,59 @@
-import React from 'react'
-import ThreeDModel from '../ui/threeDModel'
-import { AnimatedGradientText } from '../magicui/animated-gradient-text'
-import { ChevronRight } from 'lucide-react'
-import { AuroraText } from '../magicui/aurora-text'
+import Link from "next/link";
+import { Mail } from "lucide-react";
 import { SOCIALSFOOTER } from "@/constants";
-import Link from 'next/link'
+import { SectionHeading } from "../ui/section-heading";
+
+const EMAIL = "razvizaid259@gmail.com";
 
 function ContactSection() {
   return (
-    <section id='contact' className='relative min-h-92 flex justify-evenly items-start overflow-x-hidden scroll-mt-24'>
-      <div className='absolute left-4 sm:left-6 md:left-20 lg:left-36 sm:top-16 md:top-24 lg:top-56 '>
-        <div className="group relative max-w-max flex items-center mb-2 justify-center rounded-full px-2 pl-3 md:px-4 py-1 md:py-1.5 shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] ">
-          <span
-            className="absolute inset-0 block h-full w-full animate-gradient rounded-[inherit] bg-gradient-to-r from-[#ffaa40]/50 via-[#9c40ff]/50 to-[#ffaa40]/50 bg-[length:300%_100%] p-[1px]"
-            style={{
-              WebkitMask:
-                "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-              WebkitMaskComposite: "destination-out",
-              mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-              maskComposite: "subtract",
-              WebkitClipPath: "padding-box",
-            }}
-          />
-          👋 <hr className="mx-2 h-4 w-px shrink-0 bg-neutral-500" />
-          <AnimatedGradientText className="text-xs sm:text-sm font-medium">
-            Say Hello
-          </AnimatedGradientText>
-          <ChevronRight className="ml-1 size-4 stroke-neutral-500 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
+    <section id="contact" aria-labelledby="contact-heading" className="container relative mx-auto scroll-mt-24 px-4 py-16">
+      {/* Decorative planet with an orbiting moon, CSS only */}
+      <div aria-hidden className="pointer-events-none absolute -top-6 right-[8%] hidden size-40 md:block">
+        <div className="absolute inset-6 rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-600 to-indigo-900 shadow-[0_0_80px_rgb(168_85_247/0.55)]" />
+        <div className="orbit" style={{ ["--inset" as string]: "0", ["--speed" as string]: "14s" }}>
+          <div style={{ ["--angle" as string]: "0deg", ["--radius" as string]: "80px" }}>
+            <div className="m-[15px] size-3.5 rounded-full bg-sky-300 shadow-[0_0_14px_#7dd3fc]" />
+          </div>
         </div>
-        <h1 className="text-[32px] sm:text-[40px] font-semibold text-white">
-          Let's have a <AuroraText>Convo</AuroraText>
-        </h1>
-        <p className='text-gray-300 '>Hiring, have a project in mind, or just want to talk shop? I’d love to hear from you.</p>
-          <div className="flex gap-6 mt-6">
-            {SOCIALSFOOTER.map(({ link, name, icon: Icon }) => (
-              <Link
+      </div>
+
+      <SectionHeading id="contact-heading" emoji="👋" eyebrow="Say Hello" title="Let's have a" highlight="Convo" />
+
+      <div className="spotlight reveal mx-auto mt-10 max-w-2xl rounded-3xl border border-white/10 bg-[#0a0720]/70 p-6 text-center backdrop-blur-sm md:p-10">
+        <p className="text-lg text-gray-300">
+          Hiring, have a project in mind, or just want to talk shop? I&apos;d love to hear from you.
+        </p>
+        <a
+          href={`mailto:${EMAIL}`}
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-purple-600 px-6 py-3 font-medium text-white transition hover:bg-purple-500"
+        >
+          <Mail aria-hidden className="size-5" /> {EMAIL}
+        </a>
+        <p className="mt-4 text-sm text-gray-400">
+          Freelance project?{" "}
+          <Link href="/services" className="font-medium text-purple-300 hover:underline">
+            See services
+          </Link>
+        </p>
+        <ul className="mt-8 flex justify-center gap-3">
+          {SOCIALSFOOTER.map(({ link, name, icon: Icon }) => (
+            <li key={name}>
+              <a
                 href={link}
                 target="_blank"
                 rel="noreferrer noopener"
-                key={name}
                 aria-label={name}
-                className="group relative flex flex-col items-center"
+                className="flex size-11 items-center justify-center rounded-full border border-white/10 text-white transition hover:-translate-y-0.5 hover:border-purple-400 hover:text-purple-300"
               >
-                <Icon className="h-6 w-6 md:h-8 md:w-8 text-white hover:text-violet-500 transition-transform duration-500 group-hover:translate-y-2" />
-
-                {/* underline animation */}
-                <div className="w-8 h-0.5 bg-gradient-to-r from-blue-500 to-violet-500 mt-2 opacity-0 transform scale-x-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-x-100"></div>
-              </Link>
-            ))}
-          </div>
-        <p className='text-gray-300 mt-4'>Freelance project? <a href='/services' className='font-semibold text-purple-300 hover:underline'>See services and start an enquiry →</a></p>
-        <p className='text-gray-300 mt-2'>or mail at <a href='mailto:razvizaid259@gmail.com'  target='_blank' rel='noreferrer noopener' className='transition-transform font-semibold duration-500 text-transparent bg-clip-text bg-gradient-to-br from-violet-500 to-blue-500'>razvizaid259@gmail.com</a></p>
-      </div>
-      <div className='hidden sm:block'>
-        <ThreeDModel/>
+                <Icon className="size-5" />
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
-  )
+  );
 }
 
-export default ContactSection
+export default ContactSection;

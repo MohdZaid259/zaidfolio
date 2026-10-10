@@ -1,199 +1,106 @@
 "use client";
 
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
-import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useRef, useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { Testimonial } from "@/data/testimonials";
 
 const initials = (name: string) =>
   name.split(" ").map((part) => part[0]).slice(0, 2).join("").toUpperCase();
-export const AnimatedTestimonials = ({
-  testimonials,
-  autoplay = false,
-}: {
-  testimonials: Testimonial[];
-  autoplay?: boolean;
-}) => {
+
+// Deterministic tilt so server and client render the same markup
+const tilt = (i: number) => ((i * 7) % 21) - 10;
+
+/** Stacked testimonial cards; CSS transitions only. */
+export const AnimatedTestimonials = ({ testimonials }: { testimonials: Testimonial[] }) => {
   const [active, setActive] = useState(0);
-  const randomRotations = useMemo(
-    () => testimonials.map(() => Math.floor(Math.random() * 21) - 10),
-    [testimonials]
-  );
-
-  const handleNext = () => {
-    setActive((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const handlePrev = () => {
-    setActive((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
-  const isActive = (index: number) => {
-    return index === active;
-  };
-
-  useEffect(() => {
-    if (autoplay) {
-      const interval = setInterval(handleNext, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [autoplay]);
+  const touchX = useRef<number | null>(null);
+  const count = testimonials.length;
+  const next = () => setActive((i) => (i + 1) % count);
+  const prev = () => setActive((i) => (i - 1 + count) % count);
+  const current = testimonials[active]!;
 
   return (
-    <div className="mx-auto max-w-sm px-4 py-10 md:py-20 font-sans antialiased md:max-w-5xl md:px-8 lg:px-12">
-      <div className="relative grid grid-cols-1 md:gap-40 md:grid-cols-2">
-        <div>
-          <div className="relative h-40 w-40 mx-auto md:h-80 md:w-full">
-            <AnimatePresence>
-              {testimonials.map((testimonial, index) => (
-                <motion.div
-                  key={index}
-                  initial={{
-                    opacity: 0,
-                    scale: 0.9,
-                    z: -100,
-                    rotate: randomRotations[index], // ✅ stable
-                  }}
-                  animate={{
-                    opacity: isActive(index) ? 1 : 0.7,
-                    scale: isActive(index) ? 1 : 0.95,
-                    z: isActive(index) ? 0 : -100,
-                    rotate: isActive(index) ? 0 : randomRotations[index],
-                    zIndex: isActive(index)
-                      ? 40
-                      : testimonials.length + 2 - index,
-                    y: isActive(index) ? [0, -80, 0] : 0,
-                  }}
-                  exit={{
-                    opacity: 0,
-                    scale: 0.9,
-                    z: 100,
-                    rotate: randomRotations[index], // ✅ stable
-                  }}
-                  transition={{
-                    duration: 0.4,
-                    ease: "easeInOut",
-                  }}
-                  className="absolute inset-0 origin-bottom"
-                >
-                  <motion.div
-                    drag="x"
-                    dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={0.2}
-                    onDragEnd={(
-                      event: MouseEvent | TouchEvent | PointerEvent,
-                      info: { offset: { x: number; y: number } }
-                    ) => {
-                      if (info.offset.x < -100) {
-                        handleNext();
-                      } else if (info.offset.x > 100) {
-                        handlePrev();
-                      }
-                    }}
-                    className="h-full w-full overflow-hidden rounded-3xl"
-                  >
-                    {testimonial.src ? (
-                      <img
-                        src={testimonial.src}
-                        alt={testimonial.name}
-                        draggable={false}
-                        className="h-full w-full object-cover object-center"
-                      />
-                    ) : (
-                      <div
-                        aria-hidden
-                        className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet-700 via-purple-800 to-blue-800 text-5xl font-bold tracking-wider text-white/90 md:text-8xl"
-                      >
-                        {initials(testimonial.name)}
-                      </div>
-                    )}
-                  </motion.div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+    <div className="mx-auto max-w-sm px-4 py-10 md:max-w-5xl md:px-8 md:py-20 lg:px-12">
+      <div className="relative grid grid-cols-1 md:grid-cols-2 md:gap-32">
+        <div
+          className="relative mx-auto h-40 w-40 md:h-80 md:w-full"
+          onTouchStart={(e) => (touchX.current = e.touches[0]?.clientX ?? null)}
+          onTouchEnd={(e) => {
+            const start = touchX.current;
+            const end = e.changedTouches[0]?.clientX;
+            if (start == null || end == null) return;
+            if (end - start < -50) next();
+            if (end - start > 50) prev();
+          }}
+        >
+          {testimonials.map((t, i) => {
+            const isActive = i === active;
+            return (
+              <div
+                key={t.name}
+                aria-hidden
+                className="absolute inset-0 origin-bottom transition-[transform,opacity] duration-500 ease-out"
+                style={{
+                  transform: isActive ? "rotate(0deg) scale(1)" : `rotate(${tilt(i)}deg) scale(0.95)`,
+                  opacity: isActive ? 1 : 0.6,
+                  zIndex: isActive ? 40 : count + 2 - i,
+                }}
+              >
+                {t.src ? (
+                  <img src={t.src} alt="" draggable={false} className="h-full w-full rounded-3xl object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center rounded-3xl bg-gradient-to-br from-violet-700 via-purple-800 to-blue-800 text-5xl font-bold tracking-wider text-white/90 md:text-8xl">
+                    {initials(t.name)}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
+
         <div className="flex flex-col justify-between py-4">
-          <motion.div
-            key={active}
-            initial={{
-              y: 20,
-              opacity: 0,
-            }}
-            animate={{
-              y: 0,
-              opacity: 1,
-            }}
-            exit={{
-              y: -20,
-              opacity: 0,
-            }}
-            transition={{
-              duration: 0.2,
-              ease: "easeInOut",
-            }}
-          >
-            <h3 className="text-2xl font-bold max-sm:text-center text-white dark:text-white">
-              {testimonials[active].name}
-            </h3>
-            <p className="text-sm text-gray-400 max-sm:text-center dark:text-neutral-500">
-              {testimonials[active].designation}
-              {testimonials[active].linkedin && (
+          <div key={active} aria-live="polite" className="quote-in">
+            <h3 className="text-2xl font-bold text-white max-sm:text-center">{current.name}</h3>
+            <p className="text-sm text-gray-400 max-sm:text-center">
+              {current.designation}
+              {current.linkedin && (
                 <>
                   {" · "}
-                  <a href={testimonials[active].linkedin} target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline">
+                  <a href={current.linkedin} target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline">
                     LinkedIn
                   </a>
                 </>
               )}
             </p>
             <Link
-              href={`/work/${testimonials[active].projectSlug}`}
-              className="mt-1 inline-block text-sm text-purple-400 hover:text-purple-300 hover:underline max-sm:block max-sm:text-center"
+              href={`/work/${current.projectSlug}`}
+              className="mt-1 inline-flex min-h-11 items-center text-sm text-purple-300 hover:text-purple-200 hover:underline max-sm:flex max-sm:justify-center"
             >
               See the project →
             </Link>
-            <motion.p className="mt-8 text-base md:text-xl font-baloo-bhai-2 text-gray-300 dark:text-neutral-300">
-              {testimonials[active].quote.split(" ").map((word, index) => (
-                <motion.span
-                  key={index}
-                  initial={{
-                    filter: "blur(10px)",
-                    opacity: 0,
-                    y: 5,
-                  }}
-                  animate={{
-                    filter: "blur(0px)",
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.2,
-                    ease: "easeInOut",
-                    delay: 0.02 * index,
-                  }}
-                  className="inline-block"
-                >
+            <blockquote className="mt-6 text-base text-gray-300 md:text-xl">
+              {current.quote.split(" ").map((word, index) => (
+                <span key={index} className="word-in inline-block" style={{ animationDelay: `${index * 20}ms` }}>
                   {word}&nbsp;
-                </motion.span>
+                </span>
               ))}
-            </motion.p>
-          </motion.div>
-          <div className="flex self-end max-sm:mr-8 gap-4 pt-6 md:pt-0">
+            </blockquote>
+          </div>
+          <div className="flex gap-4 self-end pt-6 max-sm:mr-8 md:pt-0">
             <button
-              onClick={handlePrev}
+              onClick={prev}
               aria-label="Previous testimonial"
-              className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-transparent dark:bg-neutral-800"
+              className="group/button flex h-11 w-11 items-center justify-center rounded-full border border-white/20 hover:border-white/50"
             >
-              <IconArrowLeft className="h-full w-full text-white transition-transform duration-300 group-hover/button:rotate-20 dark:text-neutral-400" />
+              <ArrowLeft className="h-5 w-5 text-white transition-transform duration-300 group-hover/button:-translate-x-0.5" />
             </button>
             <button
-              onClick={handleNext}
+              onClick={next}
               aria-label="Next testimonial"
-              className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800"
+              className="group/button flex h-11 w-11 items-center justify-center rounded-full bg-white hover:bg-gray-200"
             >
-              <IconArrowRight className="h-[90%] w-[90%] text-black transition-transform duration-300 group-hover/button:-rotate-20 dark:text-neutral-400" />
+              <ArrowRight className="h-5 w-5 text-black transition-transform duration-300 group-hover/button:translate-x-0.5" />
             </button>
           </div>
         </div>

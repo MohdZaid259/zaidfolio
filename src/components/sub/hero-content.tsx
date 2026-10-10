@@ -1,93 +1,48 @@
-'use client'
-
-import { MotionDiv } from "@/lib/motionElements";
-import Image from "next/image";
-import { AnimatedGradientText } from "../magicui/animated-gradient-text";
-import {
-  slideInFromLeft,
-  slideInFromRight,
-} from "@/lib/motion";
 import { ChevronRight } from "lucide-react";
-import { MorphingText } from "../magicui/morphing-text";
-import { TextAnimate } from "../magicui/text-animate";
-import { ShimmerButton } from "../magicui/shimmer-button";
+import { AnimatedGradientText } from "../magicui/animated-gradient-text";
+import { ShimmerLink } from "../magicui/shimmer-button";
+import { TechOrbit } from "./tech-orbit";
 
 export const HeroContent = () => {
   return (
-    <MotionDiv
-      initial="hidden"
-      animate="visible"
-      className="flex flex-row container flex-wrap md:flex-nowrap items-center justify-center pl-6 mt-10 md:mt-40 z-[20]"
-    >
-      <div className="h-full w-full flex flex-col gap-4 justify-center m-auto mt-24 text-start">
-        <div className="group relative max-w-max flex items-center justify-center rounded-full px-2 pl-3 md:px-4 py-1 md:py-1.5 shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 max-sm:-mb-2 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] ">
-          <span
-            className="absolute inset-0 block h-full w-full animate-gradient rounded-[inherit] bg-gradient-to-r from-[#ffaa40]/50 via-[#9c40ff]/50 to-[#ffaa40]/50 bg-[length:300%_100%] p-[1px]"
-            style={{
-              WebkitMask:
-                "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-              WebkitMaskComposite: "destination-out",
-              mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-              maskComposite: "subtract",
-              WebkitClipPath: "padding-box",
-            }}
-          />
-          🎉 <hr className="mx-2 h-4 w-px shrink-0 bg-neutral-500" />
-          <AnimatedGradientText className="text-xs md:text-sm font-medium">
-            Full-Stack Software Engineer · AI · Backend
+    <div className="container z-[20] mx-auto mt-28 flex flex-col items-center gap-10 px-6 md:mt-40 lg:flex-row lg:justify-between">
+      <div className="hero-in flex max-w-[620px] flex-col items-start gap-5">
+        <div className="relative flex items-center rounded-full px-3 py-1 shadow-[inset_0_-8px_10px_#8fdfff1f] md:px-4 md:py-1.5">
+          <span aria-hidden className="pill-border absolute inset-0 rounded-[inherit]" />
+          <span aria-hidden>⚡</span>
+          <hr className="mx-2 h-4 w-px shrink-0 border-0 bg-neutral-500" />
+          <AnimatedGradientText className="text-xs font-medium md:text-sm">
+            AI Full-Stack Engineer · Backend · DevOps
           </AnimatedGradientText>
-          <ChevronRight
-              className="ml-1 size-4 stroke-neutral-500 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5"
-            />
+          <ChevronRight aria-hidden className="ml-1 size-4 stroke-neutral-500" />
         </div>
 
-        <MotionDiv
-          variants={slideInFromLeft(0.5)}
-          className="flex flex-col gap-6 mt-2 text-2xl md:text-5xl text-extbold font-extrabold tracking-wide text-white max-w-[600px] w-auto h-auto"
-        >
-          <span>
-            Hello. I'm
-              <MorphingText 
-                texts={["Mohd Zaid", "an Engineer", "a Builder"]}
-              />
+        <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-6xl">
+          Hello, I&apos;m
+          <span className="mt-1 block bg-gradient-to-r from-violet-400 via-fuchsia-400 to-sky-400 bg-clip-text pb-1 text-transparent">
+            Mohd Zaid
           </span>
-        </MotionDiv>
+        </h1>
 
-        <TextAnimate animation="blurIn" as='h1' className="text-base font-baloo-bhai-2 max-sm:w-[85%] md:text-xl text-gray-300 mb-5 -mt-4 max-w-[600px]">
-          I build backend systems, multi-tenant SaaS and AI-powered products. Currently at PGC Digital, shipping 10xTA.
-        </TextAnimate>
+        <p className="max-w-[560px] text-base leading-relaxed text-gray-300 md:text-xl">
+          I build backend systems, multi-tenant SaaS and AI-powered products, and ship them with Docker, CI/CD and
+          the cloud. Currently at PGC Digital, building 10xTA.
+        </p>
 
-
-        <MotionDiv variants={slideInFromLeft(1)} className="flex flex-wrap items-center gap-4 max-sm:-mt-4">
-          <a href="/resumeFull.pdf" target="_blank" rel="noopener noreferrer">
-            <ShimmerButton className="shadow-2xl">
-              <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white lg:text-lg">
-                View Resume
-              </span>
-            </ShimmerButton>
-          </a>
+        <div className="flex flex-wrap items-center gap-4">
+          <ShimmerLink href="/resumeFull.pdf" target="_blank" rel="noopener noreferrer" className="shadow-2xl">
+            <span className="text-sm font-medium leading-none tracking-tight text-white lg:text-base">View Resume</span>
+          </ShimmerLink>
           <a
             href="#contact"
-            className="rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white transition hover:border-purple-400 hover:bg-white/5 lg:text-lg"
+            className="rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white transition hover:border-purple-400 hover:bg-white/5 lg:text-base"
           >
             Get in touch
           </a>
-        </MotionDiv>
+        </div>
       </div>
 
-      <MotionDiv
-        variants={slideInFromRight(0.8)}
-        className="w-full h-full flex justify-start max-sm:mt-6 max-sm:-ml-12 -mr-6 lg:-mr-48 items-center"
-      >
-        <Image
-          src="/hero-bg.svg"
-          alt="work icons"
-          height={550}
-          width={550}
-          draggable={false}
-          className="select-none"
-        />
-      </MotionDiv>
-    </MotionDiv>
+      <TechOrbit />
+    </div>
   );
 };

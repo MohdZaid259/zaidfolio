@@ -43,17 +43,17 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
 
       <dl className="mt-8 grid grid-cols-1 gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-sm sm:grid-cols-2">
         <div>
-          <dt className="text-gray-500">My role</dt>
+          <dt className="text-gray-400">My role</dt>
           <dd className="mt-1 text-white">{project.role}</dd>
         </div>
         {project.period && (
           <div>
-            <dt className="text-gray-500">When</dt>
+            <dt className="text-gray-400">When</dt>
             <dd className="mt-1 text-white">{project.period}</dd>
           </div>
         )}
         <div className="sm:col-span-2">
-          <dt className="text-gray-500">Stack</dt>
+          <dt className="text-gray-400">Stack</dt>
           <dd className="mt-2 flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
               <span key={tech} className="rounded-full border border-white/15 bg-white/5 px-2.5 py-0.5 text-xs text-gray-200">
@@ -63,7 +63,9 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
           </dd>
         </div>
         {(project.live || project.github) && (
-          <div className="flex flex-wrap gap-5 sm:col-span-2">
+          <div className="sm:col-span-2">
+            <dt className="sr-only">Links</dt>
+            <dd className="flex flex-wrap gap-5">
             {project.live && (
               <a href={project.live} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-purple-400 hover:text-purple-300">
                 Live site <ArrowUpRight className="size-4" />
@@ -74,6 +76,7 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
                 {project.githubLabel ?? "Source on GitHub"} <ArrowUpRight className="size-4" />
               </a>
             )}
+            </dd>
           </div>
         )}
       </dl>

@@ -1,79 +1,16 @@
-"use client";
+import type { FC } from "react";
 
-import { motion, MotionValue, useScroll, useTransform } from "motion/react";
-import { ComponentPropsWithoutRef, FC, ReactNode, useRef } from "react";
-import { cn } from "@/lib/utils";
-
-export interface TextRevealProps extends ComponentPropsWithoutRef<"div"> {
-  children: string;
-  heading?: ReactNode;
-  badge?: ReactNode;
-}
-
-export const TextReveal: FC<TextRevealProps> = ({ children, className, heading, badge }) => {
-  const targetRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    offset: ["start center", "end end"],
-  });
-
-  if (typeof children !== "string") {
-    throw new Error("TextReveal: children must be a string");
-  }
-
-  const words = children.split(" ");
-
-  return (
-    <div ref={targetRef} className={cn("relative z-0 h-[140vh] cursor-default", className)}>
-      {/* Sticky wrapper keeps content pinned in middle */}
-      <div className="sticky top-[45%] -translate-y-[45%] mx-auto flex flex-col items-center justify-center w-full">
-        {/* Badge that scrolls with content */}
-        {badge && (
-          <div className="text-center text-sm">
-            {badge}
-          </div>
-        )}
-        
-        {/* Title that scrolls with text */}
-        {heading && (
-          <div className="text-center">
-            {heading}
-          </div>
-        )}
-        
-        {/* Text reveal content */}
-        <span className="flex flex-wrap p-0 md:p-5 font-baloo-bhai-2 text-base md:text-xl leading-relaxed text-white/50 dark:text-white/20 text-center">
-          {words.map((word, i) => {
-            const start = i / words.length;
-            const end = start + 1 / words.length;
-            return (
-              <Word key={i} progress={scrollYProgress} range={[start, end]}>
-                {word}
-              </Word>
-            );
-          })}
-        </span>
-      </div>
-    </div>
-  );
-};
-
-interface WordProps {
-  children: ReactNode;
-  progress: MotionValue<number>;
-  range: [number, number];
-}
-
-// Each word is rendered once and fades from 30% to full opacity, so screen
-// readers and crawlers see the sentence a single time.
-const Word: FC<WordProps> = ({ children, progress, range }) => {
-  const opacity = useTransform(progress, range, [0.3, 1]);
-  return (
-    <motion.span
-      style={{ opacity }}
-      className="mx-1 lg:mx-1.5 text-white dark:text-black"
-    >
-      {children}
-    </motion.span>
-  );
-};
+/**
+ * Words brighten from gray to white as they scroll into view, using CSS
+ * scroll-driven animations. Browsers without support show the text in white.
+ * Server-rendered, no JavaScript.
+ */
+export const TextReveal: FC<{ children: string; className?: string }> = ({ children, className }) => (
+  <p className={`flex max-w-4xl flex-wrap justify-center text-center text-lg leading-relaxed text-white md:text-2xl ${className ?? ""}`}>
+    {children.split(/\s+/).map((word, i) => (
+      <span key={i} className="reveal-word mx-1 lg:mx-1.5">
+        {word}
+      </span>
+    ))}
+  </p>
+);

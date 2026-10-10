@@ -1,166 +1,108 @@
-import { SkillDataProvider } from "@/components/sub/skill-data-provider";
-import { SkillText } from "@/components/sub/skill-text";
+import type { IconType } from "react-icons";
 import {
-  SKILL_GROUPS,
-  BACKEND_SKILL,
-  FRONTEND_SKILL,
-  FULLSTACK_SKILL,
-  OTHER_SKILL,
-  SKILL_DATA,
-} from "@/constants";
+  SiAmazons3,
+  SiAnthropic,
+  SiDocker,
+  SiDrizzle,
+  SiExpress,
+  SiFastify,
+  SiGithubactions,
+  SiGooglegemini,
+  SiJsonwebtokens,
+  SiMongodb,
+  SiMysql,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiOpenai,
+  SiPostgresql,
+  SiPython,
+  SiReact,
+  SiRedis,
+  SiRedux,
+  SiTypescript,
+  SiVercel,
+} from "react-icons/si";
+import { VscAzure } from "react-icons/vsc";
+import {
+  FileSearch,
+  KeyRound,
+  ListOrdered,
+  Lock,
+  Network,
+  Plug,
+  Route,
+  ShieldCheck,
+  UsersRound,
+  Waypoints,
+  Workflow,
+  type LucideIcon,
+} from "lucide-react";
+import { SKILL_GROUPS } from "@/constants";
+import { SectionHeading } from "../ui/section-heading";
 
-export default function Skills () {
+const ICONS: Record<string, { icon: IconType | LucideIcon; color: string }> = {
+  OpenAI: { icon: SiOpenai, color: "#ffffff" },
+  Claude: { icon: SiAnthropic, color: "#d97757" },
+  Gemini: { icon: SiGooglegemini, color: "#8e75ff" },
+  RAG: { icon: FileSearch, color: "#c4b5fd" },
+  Embeddings: { icon: Waypoints, color: "#c4b5fd" },
+  OpenRouter: { icon: Route, color: "#c4b5fd" },
+  MCP: { icon: Plug, color: "#c4b5fd" },
+  "Node.js": { icon: SiNodedotjs, color: "#5fa04e" },
+  TypeScript: { icon: SiTypescript, color: "#3178c6" },
+  Fastify: { icon: SiFastify, color: "#ffffff" },
+  "Express.js": { icon: SiExpress, color: "#ffffff" },
+  Python: { icon: SiPython, color: "#ffd43b" },
+  "REST APIs": { icon: Network, color: "#93c5fd" },
+  BullMQ: { icon: ListOrdered, color: "#f87171" },
+  PostgreSQL: { icon: SiPostgresql, color: "#699eca" },
+  Drizzle: { icon: SiDrizzle, color: "#c5f74f" },
+  MongoDB: { icon: SiMongodb, color: "#47a248" },
+  Redis: { icon: SiRedis, color: "#ff4438" },
+  MySQL: { icon: SiMysql, color: "#4479a1" },
+  Docker: { icon: SiDocker, color: "#2496ed" },
+  "GitHub Actions": { icon: SiGithubactions, color: "#2088ff" },
+  Azure: { icon: VscAzure, color: "#0089d6" },
+  "AWS S3": { icon: SiAmazons3, color: "#569a31" },
+  Vercel: { icon: SiVercel, color: "#ffffff" },
+  "CI/CD": { icon: Workflow, color: "#93c5fd" },
+  "Azure Entra ID": { icon: ShieldCheck, color: "#0089d6" },
+  "OAuth 2.0 / OIDC": { icon: KeyRound, color: "#fbbf24" },
+  JWT: { icon: SiJsonwebtokens, color: "#fb7185" },
+  RBAC: { icon: UsersRound, color: "#a5b4fc" },
+  "PostgreSQL RLS": { icon: Lock, color: "#699eca" },
+  "Next.js": { icon: SiNextdotjs, color: "#ffffff" },
+  React: { icon: SiReact, color: "#61dafb" },
+  Redux: { icon: SiRedux, color: "#764abc" },
+};
+
+export default function Skills() {
   return (
-    <section
-      id="skills"
-      style={{ transform: "scale(0.9)" }}
-      className="container flex flex-col items-center justify-center gap-3 h-full relative overflow-hidden py-10"
-    >
-      <SkillText />
-      
-      {/* Mobile layout */}
-      <div className="grid grid-cols-4 gap-6 md:hidden mt-6 place-items-center">
-        {SKILL_DATA.map((skill, i) => (
-          <SkillDataProvider
-            key={skill.skill_name}
-            src={skill.image}
-            name={skill.skill_name}
-            width={skill.width}
-            height={skill.height}
-            index={i}
-          />
-        ))}
+    <section id="skills" aria-labelledby="skills-heading" className="container mx-auto scroll-mt-20 px-4 py-10">
+      <SectionHeading id="skills-heading" emoji="⚓" eyebrow="The Stack" title="What I" highlight="Build With" />
 
-        {FRONTEND_SKILL.map((skill, i) => (
-          <SkillDataProvider
-            key={skill.skill_name}
-            src={skill.image}
-            name={skill.skill_name}
-            width={skill.width}
-            height={skill.height}
-            index={i}
-          />
-        ))}
-
-        {BACKEND_SKILL.map((skill, i) => (
-          <SkillDataProvider
-            key={skill.skill_name}
-            src={skill.image}
-            name={skill.skill_name}
-            width={skill.width}
-            height={skill.height}
-            index={i}
-          />
-        ))}
-
-        {FULLSTACK_SKILL.map((skill, i) => (
-          <SkillDataProvider
-            key={skill.skill_name}
-            src={skill.image}
-            name={skill.skill_name}
-            width={skill.width}
-            height={skill.height}
-            index={i}
-          />
-        ))}
-
-        {OTHER_SKILL.map((skill, i) => (
-          <SkillDataProvider
-            key={skill.skill_name}
-            src={skill.image}
-            name={skill.skill_name}
-            width={skill.width}
-            height={skill.height}
-            index={i}
-          />
-        ))}
-      </div>
-
-        <div className="hidden md:flex flex-row justify-around flex-wrap mt-4 gap-10 items-center">
-          {SKILL_DATA.map((skill, i) => (
-            <SkillDataProvider
-              key={skill.skill_name}
-              src={skill.image}
-              name={skill.skill_name}
-              width={skill.width}
-              height={skill.height}
-              index={i}
-            />
-          ))}
-        </div>
-        <div className="hidden md:flex flex-row justify-around flex-wrap gap-10 items-center">
-          {FRONTEND_SKILL.map((skill, i) => (
-            <SkillDataProvider
-              key={skill.skill_name}
-              src={skill.image}
-              name={skill.skill_name}
-              width={skill.width}
-              height={skill.height}
-              index={i}
-            />
-          ))}
-        </div>
-        <div className="hidden md:flex flex-row justify-around flex-wrap gap-10 items-center">
-          {BACKEND_SKILL.map((skill, i) => (
-            <SkillDataProvider
-              key={skill.skill_name}
-              src={skill.image}
-              name={skill.skill_name}
-              width={skill.width}
-              height={skill.height}
-              index={i}
-            />
-          ))}
-        </div>
-        <div className="hidden md:flex flex-row justify-around flex-wrap gap-10 items-center">
-          {FULLSTACK_SKILL.map((skill, i) => (
-            <SkillDataProvider
-              key={skill.skill_name}
-              src={skill.image}
-              name={skill.skill_name}
-              width={skill.width}
-              height={skill.height}
-              index={i}
-            />
-          ))}
-        </div>
-        <div className="hidden md:flex flex-row justify-around flex-wrap mt-4 gap-5 items-center">
-          {OTHER_SKILL.map((skill, i) => (
-            <SkillDataProvider
-              key={skill.skill_name}
-              src={skill.image}
-              name={skill.skill_name}
-              width={skill.width}
-              height={skill.height}
-              index={i}
-            />
-          ))}
-        </div>
-      
-      {/* Grouped stack, kept in sync with the resume */}
-      <dl className="mt-12 w-full max-w-4xl grid grid-cols-1 gap-x-8 gap-y-4 px-4 sm:grid-cols-2">
+      <div className="mx-auto mt-12 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {SKILL_GROUPS.map(({ group, items }) => (
-          <div key={group} className="rounded-xl border border-white/10 bg-[#030014]/70 p-4 backdrop-blur-sm">
-            <dt className="text-xs uppercase tracking-widest text-purple-400">{group}</dt>
-            <dd className="mt-2 text-sm text-gray-200 leading-relaxed">{items.join(" · ")}</dd>
+          <div key={group} className="spotlight reveal rounded-2xl border border-white/10 bg-[#0a0720]/70 p-5 backdrop-blur-sm">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-purple-300">{group}</h3>
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {items.map((name) => {
+                const entry = ICONS[name];
+                const Icon = entry?.icon;
+                return (
+                  <li
+                    key={name}
+                    className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1.5 text-sm text-gray-200 transition hover:-translate-y-0.5 hover:border-purple-400/50 hover:bg-purple-500/10"
+                  >
+                    {Icon && <Icon aria-hidden className="size-4 shrink-0" style={{ color: entry.color }} />}
+                    {name}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         ))}
-      </dl>
-
-      <div className="w-full hidden md:block md:mt-16 h-full absolute">
-        <div className="w-full h-full z-[-10] opacity-30 absolute flex items-center justify-center bg-cover">
-          <video
-            className="w-full h-auto"
-            preload="none"
-            playsInline
-            loop
-            muted
-            autoPlay
-          >
-            <source src="/videos/skills-bg.webm" type="video/webm" />
-          </video>
-        </div>
       </div>
     </section>
   );
-};
+}
