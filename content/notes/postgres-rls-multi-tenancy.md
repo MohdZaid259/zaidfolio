@@ -245,4 +245,8 @@ The last test looks paranoid, but it's the one that guards the other three.
 - [ ] Views use `security_invoker`, and `SECURITY DEFINER` functions are audited
 - [ ] Integration tests run as the app role and assert cross-tenant reads and writes fail
 
+## Try it
+
+Everything above is packaged as a runnable, MIT-licensed starter with 20 isolation tests: [fastify-drizzle-rls-starter](https://github.com/MohdZaid259/fastify-drizzle-rls-starter). Clone it, run `npm test`, then switch the connection to a superuser and watch the isolation tests fail.
+
 RLS doesn't replace authorization in your API. Whether a user can *do* something is still your code's job. What it removes is the most dangerous class of multi-tenant bug: one forgotten `WHERE` clause.
