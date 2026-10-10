@@ -1,7 +1,6 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "zaidfolio", "runtimeExecutable": "npm", "runtimeArgs": ["run", "start"], "port": 3000 },
-    { "name": "zaidfolio-dev", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev", "--", "-p", "3001"], "port": 3001 }
+    { "name": "zaidfolio", "runtimeExecutable": "npm", "runtimeArgs": ["run", "start"], "port": 3000 }
   ]
 }
