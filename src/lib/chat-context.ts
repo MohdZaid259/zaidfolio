@@ -2,6 +2,7 @@ import { profile } from "@/data/profile";
 import { experience } from "@/data/experience";
 import { projects } from "@/data/projects";
 import { testimonials } from "@/data/testimonials";
+import { faqs, services } from "@/data/services";
 import { getAllNotes } from "@/lib/notes";
 
 const SITE = "https://www.zaidfolio.space";
@@ -36,6 +37,13 @@ function buildKnowledge(): string {
 
   lines.push("## Education", ...profile.education.map((e) => `- ${e}`), "");
   lines.push("## Certifications", ...profile.certifications.map((c) => `- ${c}`), "");
+
+  lines.push(`## Freelance services (details and enquiry form: ${SITE}/services)`);
+  for (const s of services) {
+    lines.push(`- ${s.title}: ${s.summary} Includes: ${s.includes.join("; ")}.`);
+  }
+  faqs.forEach((f) => lines.push(`- Q: ${f.q} A: ${f.a}`));
+  lines.push("");
 
   lines.push("## Client testimonials");
   testimonials.forEach((t) => lines.push(`- ${t.name} (${t.designation}): "${t.quote}"`));

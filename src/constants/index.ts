@@ -228,6 +228,10 @@ export const NAV_LINKS = [
     link: "/notes",
   },
   {
+    title: "Services",
+    link: "/services",
+  },
+  {
     title: "Contact",
     link: "/#contact",
   },

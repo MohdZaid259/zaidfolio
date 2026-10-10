@@ -49,7 +49,8 @@ function ContactSection() {
               </Link>
             ))}
           </div>
-        <p className='text-gray-300 mt-4'>or mail at <a href='mailto:razvizaid259@gmail.com'  target='_blank' rel='noreferrer noopener' className='transition-transform font-semibold duration-500 text-transparent bg-clip-text bg-gradient-to-br from-violet-500 to-blue-500'>razvizaid259@gmail.com</a></p>
+        <p className='text-gray-300 mt-4'>Freelance project? <a href='/services' className='font-semibold text-purple-300 hover:underline'>See services and start an enquiry →</a></p>
+        <p className='text-gray-300 mt-2'>or mail at <a href='mailto:razvizaid259@gmail.com'  target='_blank' rel='noreferrer noopener' className='transition-transform font-semibold duration-500 text-transparent bg-clip-text bg-gradient-to-br from-violet-500 to-blue-500'>razvizaid259@gmail.com</a></p>
       </div>
       <div className='hidden sm:block'>
         <ThreeDModel/>
