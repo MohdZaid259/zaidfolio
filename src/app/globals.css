@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @theme {
   --font-inter: var(--font-inter), sans-serif;
@@ -277,4 +278,54 @@ html {
 ::view-transition-old(root), ::view-transition-new(root) {
     animation: none;
     mix-blend-mode: normal;
+}
+/* ---------- Notes (rendered markdown) ---------- */
+.note-prose {
+  --tw-prose-invert-body: #d1d5db;
+  --tw-prose-invert-headings: #fff;
+  --tw-prose-invert-links: #c4b5fd;
+  --tw-prose-invert-code: #e9d5ff;
+  --tw-prose-invert-quote-borders: #7c3aed;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+}
+.note-prose h2,
+.note-prose h3 {
+  scroll-margin-top: 6rem;
+}
+.note-prose .heading-anchor {
+  margin-left: 0.4rem;
+  color: #6b7280;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 150ms;
+}
+.note-prose h2:hover .heading-anchor,
+.note-prose h3:hover .heading-anchor,
+.note-prose .heading-anchor:focus {
+  opacity: 1;
+}
+.note-prose :not(pre) > code {
+  background: rgba(139, 92, 246, 0.15);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.35rem;
+  font-weight: 500;
+}
+.note-prose :not(pre) > code::before,
+.note-prose :not(pre) > code::after {
+  content: none;
+}
+.note-prose pre {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+.note-prose pre code {
+  display: grid;
+}
+.note-prose table {
+  display: block;
+  overflow-x: auto;
 }

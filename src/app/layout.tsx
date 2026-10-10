@@ -59,6 +59,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.zaidfolio.space/"),
   alternates: {
     canonical: "/",
+    types: { "application/rss+xml": "/notes/rss.xml" },
   },
   robots: {
     index: true,

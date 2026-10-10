@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/main/hero";
 import dynamic from "next/dynamic";
+import LatestNotes from "@/components/main/latest-notes";
 
 const AboutMe = dynamic(() => import("@/components/sub/about"), { ssr: false });
 const Experience = dynamic(() => import("@/components/main/experience"), { ssr: false });
@@ -24,6 +25,7 @@ export default function Home() {
         <Projects />
         <Skills />
         <Testimonials/>
+        <LatestNotes />
         <ContactSection/>
       </div>
     </main>
