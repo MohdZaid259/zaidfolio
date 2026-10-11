@@ -377,42 +377,6 @@ html {
   to { opacity: 1; }
 }
 
-/* Black hole behind the hero: a spinning accretion ring, flattened into a disk.
-   Shown everywhere; on fast desktop connections the video fades in over it. */
-.blackhole {
-  --size: min(1000px, 130vw);
-  position: absolute;
-  left: 50%;
-  top: calc(var(--size) / -2 + 30px);
-  width: var(--size);
-  aspect-ratio: 1;
-  translate: -50% 0;
-  scale: 1 0.4;
-  pointer-events: none;
-}
-.blackhole::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, #7c3aed, #f0abfc, #60a5fa, #a855f7, #ffffff, #c084fc, #7c3aed);
-  -webkit-mask: radial-gradient(closest-side, transparent 50%, #000 57%, #000 70%, transparent 100%);
-  mask: radial-gradient(closest-side, transparent 50%, #000 57%, #000 70%, transparent 100%);
-  filter: blur(6px) saturate(1.2);
-  opacity: 0.85;
-  animation: hole-spin 24s linear infinite;
-}
-.blackhole::after {
-  content: "";
-  position: absolute;
-  inset: 12%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, transparent 55%, rgb(168 85 247 / 0.45), transparent);
-  filter: blur(40px);
-}
-@keyframes hole-spin {
-  to { rotate: 360deg; }
-}
 
 /* Hero atom: three tilted elliptical orbits; icons travel along them like electrons.
    Each plane is rotated; each electron follows an ellipse path and counter-rotates
