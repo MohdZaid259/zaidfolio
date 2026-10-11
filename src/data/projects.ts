@@ -43,7 +43,7 @@ export const projects: Project[] = [
     role: 'Solo — architecture, backend, frontend',
     summary:
       'AI document chat: upload several documents, process them in the background, and get answers grounded in their content.',
-    image: '/projects/docly.svg',
+    image: '/projects/docly.webp',
     technologies: ['Node.js', 'Express', 'MongoDB', 'AWS S3', 'BullMQ', 'Redis', 'OpenAI Embeddings'],
     live: 'https://docly-ai.vercel.app/',
     github: 'https://github.com/MohdZaid259/Docly',
