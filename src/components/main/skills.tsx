@@ -70,7 +70,7 @@ const RATIO: Record<string, number> = {
 function LogoItem({ logo, delay }: { logo: Logo; delay: number }) {
   return (
     <li
-      className="skill-logo group relative flex h-16 items-center justify-center"
+      className="skill-logo group relative flex items-center justify-center"
       style={{ "--i": delay } as CSSProperties}
     >
       {"png" in logo ? (
@@ -79,14 +79,14 @@ function LogoItem({ logo, delay }: { logo: Logo; delay: number }) {
           alt={logo.name}
           width={logo.width}
           height={Math.round(logo.width * (RATIO[logo.png] ?? 1))}
-          className={`h-auto transition duration-300 group-hover:scale-110 ${logo.invert ? "invert" : ""}`}
-          style={{ width: logo.width }}
+          className={`logo-img transition duration-300 group-hover:scale-110 ${logo.invert ? "invert" : ""}`}
+          style={{ "--w": logo.width } as CSSProperties}
         />
       ) : (
         <logo.icon
           role="img"
           aria-label={logo.name}
-          className="size-14 transition duration-300 group-hover:scale-110"
+          className="logo-icon transition duration-300 group-hover:scale-110"
           style={{ color: logo.color }}
         />
       )}
@@ -113,9 +113,10 @@ export default function Skills() {
           <LazyVideo src="/videos/skills-bg.webm" className="h-auto w-full" />
         </div>
 
-        <div className="flex flex-col items-center gap-8 md:gap-10">
+        {/* Inverted pyramid: rows never wrap; sizes and gaps scale with the viewport */}
+        <div className="logo-pyramid">
           {ROWS.map((row, r) => (
-            <ul key={r} className="flex w-full flex-wrap items-center justify-center gap-x-8 gap-y-6 sm:gap-x-12">
+            <ul key={r}>
               {row.map((logo) => (
                 <LogoItem key={logo.name} logo={logo} delay={index++ % 10} />
               ))}
