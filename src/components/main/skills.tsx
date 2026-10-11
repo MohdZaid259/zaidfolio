@@ -116,7 +116,7 @@ export default function Skills() {
         {/* Inverted pyramid: rows never wrap; sizes and gaps scale with the viewport */}
         <div className="logo-pyramid">
           {ROWS.map((row, r) => (
-            <ul key={r}>
+            <ul key={r} role="list">
               {row.map((logo) => (
                 <LogoItem key={logo.name} logo={logo} delay={index++ % 10} />
               ))}

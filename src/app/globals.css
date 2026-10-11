@@ -635,6 +635,23 @@ html {
   width: calc(56 * var(--u));
   height: calc(56 * var(--u));
 }
+/* Phones: the pyramid would make logos tiny, so show a simple 4-column grid instead */
+@media (max-width: 639px) {
+  .logo-pyramid {
+    --u: 0.62px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 28px 12px;
+    width: 100%;
+    justify-items: center;
+  }
+  .logo-pyramid > ul {
+    display: contents;
+  }
+  .logo-pyramid li {
+    height: 44px;
+  }
+}
 
 
 /* Projects carousel: the active segment fills over 6s, then the next project shows */
