@@ -287,10 +287,6 @@ describe("tenant isolation", () => {
 
 That last test looks paranoid. It's the one that keeps the other three honest.
 
-## Try it yourself
-
-I packaged everything above into a runnable, MIT-licensed starter with 20 isolation tests: [fastify-drizzle-rls-starter](https://github.com/MohdZaid259/fastify-drizzle-rls-starter). Clone it, run `npm test`, then point it at a superuser connection and watch the isolation tests fail. It's a surprisingly satisfying way to understand why each piece is there.
-
 ## The short version
 
 - [ ] Every tenant table has `tenant_id NOT NULL`, indexes lead on it

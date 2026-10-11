@@ -57,28 +57,6 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: 'fastify-rls-starter',
-    name: 'Fastify + Drizzle RLS Starter',
-    kind: 'Open source · MIT',
-    role: 'Author',
-    summary:
-      'A multi-tenant API starter where PostgreSQL Row-Level Security enforces tenant isolation, so no query depends on remembering WHERE tenant_id = ?.',
-    image: '/projects/rls-starter.svg',
-    technologies: ['Fastify', 'Drizzle', 'PostgreSQL', 'RLS', 'jose', 'Vitest', 'GitHub Actions'],
-    github: 'https://github.com/MohdZaid259/fastify-drizzle-rls-starter',
-    context:
-      'Most multi-tenant SaaS apps isolate customers with a tenant_id filter in application code, and one forgotten filter is a data leak. This starter packages the database-enforced pattern I use at work into something anyone can clone, run in a few minutes, and verify with tests.',
-    built: [
-      'RLS policies enabled and forced on every tenant table, with the tenant set per transaction from a verified JWT claim, which stays safe with pooled connections.',
-      'tenant_id filled in by Postgres from the transaction context, so application code never writes it and routes contain no tenant filters.',
-      'Least-privilege roles: an owner for migrations, plus read/write and read-only roles for the API that cannot bypass RLS.',
-      'Tenant-scoped foreign keys and per-tenant unique constraints, closing the two gaps RLS alone leaves open.',
-      'Postgres errors mapped to proper HTTP statuses (403, 404, 409, 422), with specific reasons logged server-side.',
-      '20 integration tests against real Postgres, run as the API role. Switching to a superuser makes the isolation tests fail, which proves they test something.',
-      'Docker Compose, migration and tenant-provisioning scripts, and GitHub Actions CI with a schema-drift check.',
-    ],
-  },
-  {
     slug: 'intelliprompt',
     name: 'IntelliPrompt',
     kind: 'Team product · AI SaaS',

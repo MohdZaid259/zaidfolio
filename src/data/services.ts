@@ -64,7 +64,6 @@ export const services: Service[] = [
     stack: ["Fastify", "PostgreSQL", "Drizzle", "Redis", "Docker", "Azure", "GitHub Actions"],
     proof: [
       { label: "Work at PGC Digital", href: "/#experience" },
-      { label: "Open-source RLS starter", href: "/work/fastify-rls-starter" },
       { label: "Engineering notes", href: "/notes" },
     ],
   },

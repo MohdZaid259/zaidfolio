@@ -58,6 +58,7 @@ export const SOCIALSFOOTER = [
   }
 ]
 export const NAV_LINKS = [
+  { title: "Home", link: "/" },
   { title: "Projects", link: "/#projects" },
   { title: "Notes", link: "/notes" },
   { title: "Services", link: "/services" },

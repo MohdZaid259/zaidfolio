@@ -4,14 +4,6 @@ Everything here needs a decision or fact only you have. Nothing is live yet.
 
 ## Must do
 
-- [ ] **Publish the starter repo** under `MohdZaid259`. The GitHub CLI on this machine is logged in as
-      `mohdzaid08` (company "Vallora"), so it wasn't pushed. From `Downloads/fastify-drizzle-rls-starter`:
-      ```bash
-      gh auth login                # sign in as MohdZaid259
-      gh repo create MohdZaid259/fastify-drizzle-rls-starter --public --source=. --push \
-        --description "Multi-tenant Fastify + Drizzle starter with PostgreSQL Row-Level Security"
-      ```
-      Then check the Actions tab: CI should pass. The portfolio links to this URL.
 - [ ] **Review the four draft notes** in `content/notes/` (RLS multi-tenancy, debugging 401/403, RAG ingestion
       pipeline, GitHub Actions CI) and set `draft: false` on each one you're happy with. Until then `/notes` is
       empty in production and the home page "Engineering Notes" strip is hidden. Preview them with `npm run dev`.
