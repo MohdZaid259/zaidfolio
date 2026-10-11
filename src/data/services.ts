@@ -99,7 +99,7 @@ export const process = [
 export const faqs = [
   {
     q: "Do you work with clients outside India?",
-    a: "Yes. Freelance work so far has been for international clients, including businesses in the UAE.",
+    a: "Yes. Freelance work so far has been for international clients, including businesses in the UAE and Saudi Arabia.",
   },
   {
     q: "What should I include in my first message?",

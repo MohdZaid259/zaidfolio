@@ -102,10 +102,10 @@ export const projects: Project[] = [
   {
     slug: 'ls4it',
     name: 'LS4IT',
-    kind: 'Client work · UAE',
+    kind: 'Client work · Saudi Arabia',
     role: 'Freelance full-stack developer',
     summary:
-      'Website for a UAE-based fabric manufacturing and supply company, with CMS-managed content in multiple languages.',
+      'Website for a Saudi-based fabric manufacturing and supply company, with CMS-managed content in multiple languages.',
     image: '/projects/lsit.png',
     technologies: ['Next.js', 'Hygraph', 'i18n', 'Tailwind'],
     live: 'https://ls4it.com',

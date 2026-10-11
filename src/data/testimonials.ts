@@ -12,9 +12,15 @@ export interface Testimonial {
   linkedin?: string;
 }
 
-// Photo: Engin Akyurt on Pexels (Pexels License, free to use)
-// https://www.pexels.com/photo/the-national-flag-of-united-arab-emirates-15652234/
-const UAE_FLAG = "/testimonials/uae-flag.webp";
+// Flag photos from Pexels (Pexels License, free to use), saved locally:
+// UAE   https://www.pexels.com/photo/the-national-flag-of-united-arab-emirates-15652234/ (Engin Akyurt)
+// Saudi https://www.pexels.com/photo/flag-of-saudi-arabia-15483696/
+// India https://www.pexels.com/photo/close-up-shot-of-the-flag-of-india-13225044/
+const FLAG_PHOTO = {
+  AE: "/testimonials/uae-flag.webp",
+  SA: "/testimonials/saudi-flag.webp",
+  IN: "/testimonials/india-flag.webp",
+};
 
 export const testimonials: Testimonial[] = [
   {
@@ -23,8 +29,8 @@ export const testimonials: Testimonial[] = [
     name: "Baraa Al Arabi",
     designation: "Co-Founder, LS4IT",
     projectSlug: "ls4it",
-    country: "AE",
-    src: UAE_FLAG,
+    country: "SA",
+    src: FLAG_PHOTO.SA,
   },
   {
     quote:
@@ -32,8 +38,8 @@ export const testimonials: Testimonial[] = [
     name: "Shakeel Siddiqui",
     designation: "Shareholder, Rukn Al Haya",
     projectSlug: "rukn-al-haya",
-    country: "AE",
-    src: UAE_FLAG,
+    country: "IN",
+    src: FLAG_PHOTO.IN,
   },
   {
     quote:
@@ -42,6 +48,6 @@ export const testimonials: Testimonial[] = [
     designation: "Owner, RD Tech Group",
     projectSlug: "rd-tech",
     country: "AE",
-    src: UAE_FLAG,
+    src: FLAG_PHOTO.AE,
   },
 ];
