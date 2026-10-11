@@ -645,3 +645,70 @@ html {
 @keyframes carousel-fill {
   to { width: 100%; }
 }
+
+/* Intro splash (first load per session). Hidden instantly for repeat visits. */
+html[data-splash="seen"] #splash {
+  display: none;
+}
+.splash-letter {
+  display: inline-block;
+  animation: splash-letter 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  animation-delay: calc(var(--i) * 80ms);
+}
+@keyframes splash-letter {
+  from { opacity: 0; transform: translateY(20px) scale(0.8); }
+}
+.splash-line {
+  animation: splash-line 1s ease-out 0.8s both;
+}
+@keyframes splash-line {
+  from { width: 0; opacity: 0; }
+  to { width: 200px; opacity: 1; }
+}
+.splash-tagline {
+  letter-spacing: 0.2em;
+  animation: splash-tagline 1s ease-out 1.2s both;
+}
+@keyframes splash-tagline {
+  from { opacity: 0; letter-spacing: 0.5em; }
+}
+.splash-dots {
+  animation: fade-in 0.4s ease-out 1.5s both;
+}
+.splash-dot {
+  animation: splash-dot 1.5s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 200ms);
+}
+@keyframes splash-dot {
+  0%, 100% { scale: 1; opacity: 0.5; }
+  50% { scale: 1.5; opacity: 1; }
+}
+.splash-glow {
+  background: radial-gradient(circle at 20% 50%, #3b82f6 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, #8b5cf6 0%, transparent 50%);
+  animation: splash-glow 2.5s ease-in-out infinite alternate;
+}
+@keyframes splash-glow {
+  from { transform: translateX(-6%); }
+  to { transform: translateX(6%); }
+}
+.splash-corner {
+  opacity: 0.3;
+  rotate: 45deg;
+  animation: splash-corner 0.8s ease-out 0.5s both;
+}
+@keyframes splash-corner {
+  from { opacity: 0; scale: 0; rotate: 0deg; }
+}
+.splash-exit {
+  animation: fade-out 0.8s ease 0.2s forwards;
+}
+.splash-exit .splash-content {
+  animation: splash-content-out 0.8s cubic-bezier(0.43, 0.13, 0.23, 0.96) forwards;
+}
+@keyframes splash-content-out {
+  to { opacity: 0; scale: 0.95; filter: blur(10px); }
+}
+@keyframes fade-out {
+  to { opacity: 0; }
+}

@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 import { AskChat } from "@/components/sub/ask-chat";
 import { Spotlight } from "@/components/ui/spotlight";
+import { SplashScreen } from "@/components/sub/splash-screen";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -70,13 +71,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} overflow-x-hidden`}>
+    <html lang="en" className={`${inter.variable} overflow-x-hidden`} suppressHydrationWarning>
       <body
         className={cn(
           "bg-[#030014] overflow-y-scroll",
           inter.className,
         )}
       >
+        <SplashScreen />
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-black">
           Skip to content
         </a>
