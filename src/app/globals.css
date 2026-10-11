@@ -636,26 +636,3 @@ html {
   height: calc(56 * var(--u));
 }
 
-/* Big waving flag on testimonial cards: strips rise/fall and shade in sequence */
-.waving-flag {
-  display: flex;
-  width: 118%;
-  height: 74%;
-  margin-left: -6%;
-}
-.waving-flag > span {
-  flex: 1;
-  margin-right: -0.5px; /* hide sub-pixel seams between strips */
-  background: var(--flag-bg);
-  background-size: calc(var(--n) * 100%) 100%;
-  background-position: calc(var(--i) / (var(--n) - 1) * 100%) 0;
-  animation: flag-ripple 2.8s ease-in-out infinite;
-  animation-delay: calc(var(--i) * -0.035s);
-}
-.waving-flag-paused > span {
-  animation-play-state: paused;
-}
-@keyframes flag-ripple {
-  0%, 100% { transform: translateY(-3.5%); filter: brightness(1.1); }
-  50% { transform: translateY(3.5%); filter: brightness(0.8); }
-}

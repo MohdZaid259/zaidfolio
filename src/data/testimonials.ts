@@ -12,6 +12,10 @@ export interface Testimonial {
   linkedin?: string;
 }
 
+// Photo: Engin Akyurt on Pexels (Pexels License, free to use)
+// https://www.pexels.com/photo/the-national-flag-of-united-arab-emirates-15652234/
+const UAE_FLAG = "/testimonials/uae-flag.webp";
+
 export const testimonials: Testimonial[] = [
   {
     quote:
@@ -20,6 +24,7 @@ export const testimonials: Testimonial[] = [
     designation: "Co-Founder, LS4IT",
     projectSlug: "ls4it",
     country: "AE",
+    src: UAE_FLAG,
   },
   {
     quote:
@@ -28,6 +33,7 @@ export const testimonials: Testimonial[] = [
     designation: "Shareholder, Rukn Al Haya",
     projectSlug: "rukn-al-haya",
     country: "AE",
+    src: UAE_FLAG,
   },
   {
     quote:
@@ -36,5 +42,6 @@ export const testimonials: Testimonial[] = [
     designation: "Owner, RD Tech Group",
     projectSlug: "rd-tech",
     country: "AE",
+    src: UAE_FLAG,
   },
 ];

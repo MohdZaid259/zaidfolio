@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { Testimonial } from "@/data/testimonials";
-import { Flag, WavingFlag, countryName } from "./flag";
+import { Flag, countryName } from "./flag";
 
 // Deterministic tilt so server and client render the same markup
 const tilt = (i: number) => ((i * 7) % 21) - 10;
@@ -45,10 +45,17 @@ export const AnimatedTestimonials = ({ testimonials }: { testimonials: Testimoni
                   zIndex: isActive ? 40 : count + 2 - i,
                 }}
               >
-                {t.src ? (
-                  <img src={t.src} alt="" draggable={false} className="h-full w-full rounded-3xl object-cover" />
-                ) : (
-                  <WavingFlag code={t.country} paused={!isActive} className="rounded-3xl shadow-2xl shadow-black/50" />
+                {t.src && (
+                  <img
+                    src={t.src}
+                    alt=""
+                    width={900}
+                    height={675}
+                    loading="lazy"
+                    decoding="async"
+                    draggable={false}
+                    className="h-full w-full rounded-3xl object-cover shadow-2xl shadow-black/50"
+                  />
                 )}
               </div>
             );
