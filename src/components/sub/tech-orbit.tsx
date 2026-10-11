@@ -4,10 +4,7 @@ import {
   SiAmazonwebservices,
   SiAnthropic,
   SiDocker,
-  SiDrizzle,
-  SiExpress,
   SiFastify,
-  SiGit,
   SiGithubactions,
   SiGooglegemini,
   SiMongodb,
@@ -15,11 +12,9 @@ import {
   SiNodedotjs,
   SiOpenai,
   SiPostgresql,
-  SiPython,
   SiReact,
   SiRedis,
   SiTypescript,
-  SiVercel,
 } from "react-icons/si";
 import { VscAzure } from "react-icons/vsc";
 
@@ -28,52 +23,52 @@ type Item = { icon: IconType; label: string; color: string };
 // The ellipse every orbit uses, in the atom's 460x460 coordinate space
 const ELLIPSE = { cx: 230, cy: 230, rx: 200, ry: 74 };
 
-const ORBITS: { tilt: number; speed: string; reverse?: boolean; items: Item[] }[] = [
+// Collision-free choreography. Every icon moves at the same speed in the same
+// direction, so the pattern repeats exactly. With 5 icons per orbit, starting
+// icon i of orbit o at (i / 5 - o / 30) of the loop keeps every pair of icons at
+// least ~62px apart (40px icons), even where the orbits cross. Found by simulating
+// one full period and verified against the browser's rendered positions; changing
+// counts, speeds, tilts or the ellipse path needs a re-check.
+const LOOP_SECONDS = 30;
+const ORBIT_OFFSET = -1 / 30;
+
+const ORBITS: { tilt: number; items: Item[] }[] = [
   {
     tilt: 0,
-    speed: "26s",
     items: [
       { icon: SiOpenai, label: "OpenAI", color: "#ffffff" },
       { icon: SiAnthropic, label: "Claude", color: "#d97757" },
       { icon: SiGooglegemini, label: "Gemini", color: "#8e75ff" },
-      { icon: SiPython, label: "Python", color: "#ffd43b" },
       { icon: SiNextdotjs, label: "Next.js", color: "#ffffff" },
       { icon: SiReact, label: "React", color: "#61dafb" },
     ],
   },
   {
     tilt: 60,
-    speed: "32s",
-    reverse: true,
     items: [
       { icon: SiPostgresql, label: "PostgreSQL", color: "#699eca" },
+      { icon: SiNodedotjs, label: "Node.js", color: "#5fa04e" },
       { icon: SiFastify, label: "Fastify", color: "#ffffff" },
       { icon: SiRedis, label: "Redis", color: "#ff4438" },
       { icon: SiMongodb, label: "MongoDB", color: "#47a248" },
-      { icon: SiDrizzle, label: "Drizzle", color: "#c5f74f" },
-      { icon: SiNodedotjs, label: "Node.js", color: "#5fa04e" },
-      { icon: SiExpress, label: "Express", color: "#ffffff" },
     ],
   },
   {
     tilt: 120,
-    speed: "29s",
     items: [
       { icon: SiDocker, label: "Docker", color: "#2496ed" },
       { icon: VscAzure, label: "Azure", color: "#0089d6" },
-      { icon: SiGithubactions, label: "GitHub Actions", color: "#2088ff" },
       { icon: SiAmazonwebservices, label: "AWS", color: "#ff9900" },
-      { icon: SiVercel, label: "Vercel", color: "#ffffff" },
-      { icon: SiGit, label: "Git", color: "#f05032" },
+      { icon: SiGithubactions, label: "GitHub Actions", color: "#2088ff" },
       { icon: SiTypescript, label: "TypeScript", color: "#3178c6" },
     ],
   },
 ];
 
 /**
- * Decorative atom: a glowing nucleus with three tilted orbits, tools travelling
- * along them like electrons (alternating directions). CSS animation only; the
- * same tools are listed accessibly in the Skills section.
+ * Decorative atom: three tilted orbits with tools travelling along them like
+ * electrons, choreographed so they never touch. CSS animation only; the same
+ * tools are listed accessibly in the Skills section.
  */
 export function TechOrbit() {
   return (
@@ -82,7 +77,7 @@ export function TechOrbit() {
       <div className="absolute left-0 top-0 size-[460px] origin-top-left scale-[0.7] sm:scale-100">
         <div className="absolute inset-[28%] rounded-full bg-violet-600/30 blur-3xl" />
 
-        {ORBITS.map((orbit) => (
+        {ORBITS.map((orbit, o) => (
           <div key={orbit.tilt} className="atom-plane" style={{ "--tilt": `${orbit.tilt}deg` } as CSSProperties}>
             {/* The visible orbit line */}
             <svg viewBox="0 0 460 460" className="absolute inset-0 size-full overflow-visible">
@@ -104,9 +99,8 @@ export function TechOrbit() {
                 className="electron"
                 style={
                   {
-                    "--start": `${(100 / orbit.items.length) * i}%`,
-                    "--speed": orbit.speed,
-                    "--dir": orbit.reverse ? "reverse" : "normal",
+                    "--start": `${(((i / orbit.items.length + o * ORBIT_OFFSET) % 1) + 1) % 1 * 100}%`,
+                    "--speed": `${LOOP_SECONDS}s`,
                   } as CSSProperties
                 }
               >
