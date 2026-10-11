@@ -51,12 +51,6 @@ function ContactSection() {
             {EMAIL}
           </a>
         </p>
-        <p className="mt-2 text-sm text-gray-400">
-          Freelance project?{" "}
-          <Link href="/services" className="text-purple-300 underline underline-offset-2 hover:text-purple-200">
-            See services
-          </Link>
-        </p>
       </div>
 
       <div className="hidden shrink-0 sm:block">

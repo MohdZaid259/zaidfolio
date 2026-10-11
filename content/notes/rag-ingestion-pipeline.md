@@ -1,7 +1,7 @@
 ---
 title: "Your RAG demo works. Your RAG product won't (yet): building an ingestion pipeline that survives real documents"
 description: "Chat-with-your-documents is easy to demo and hard to ship. What I learned building Docly: why ingestion must leave the request, idempotent queue jobs, chunking that helps retrieval, batched embeddings, and answers that admit when the documents don't say."
-date: 2026-10-09
+date: 2026-5-19
 tags: ["AI", "Backend"]
 draft: true
 ---

@@ -6,10 +6,10 @@ import { Send, X } from "lucide-react";
 type Message = { role: "user" | "assistant"; content: string };
 
 const SUGGESTIONS = [
-  "What does Zaid work on at PGC Digital?",
-  "What's his experience with AI and RAG?",
-  "Has he built multi-tenant systems?",
-  "Which projects show his backend skills?",
+  "What do you work on at PGC Digital?",
+  "What's your experience with AI and RAG?",
+  "Have you built multi-tenant systems?",
+  "Which projects show your backend skills?",
 ];
 
 const URL_RE = /(https?:\/\/[^\s)]+[^\s).,!?])/g;
@@ -106,13 +106,13 @@ export default function AskChatPanel({ open, setOpen }: { open: boolean; setOpen
       {open && (
           <div
             role="dialog"
-            aria-label="Ask about Zaid"
+            aria-label="Ask about Me"
             className="chat-in fixed inset-x-3 bottom-3 z-[60] flex max-h-[80vh] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0b0620]/95 shadow-2xl shadow-black/60 backdrop-blur-xl sm:inset-x-auto sm:right-5 sm:bottom-5 sm:w-[400px]"
           >
             <header className="flex items-start justify-between gap-3 border-b border-white/10 px-4 py-3">
               <div>
-                <p className="font-semibold text-white">Ask about Zaid</p>
-                <p className="text-xs text-gray-400">AI answers from his resume, projects and notes.</p>
+                <p className="font-semibold text-white">Ask about Me</p>
+                <p className="text-xs text-gray-400">AI answers from my resume, projects and notes.</p>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -126,7 +126,7 @@ export default function AskChatPanel({ open, setOpen }: { open: boolean; setOpen
             <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4" aria-live="polite">
               {messages.length === 0 && (
                 <div>
-                  <p className="text-sm text-gray-300">Hi! Ask anything about Zaid&apos;s experience, projects or skills.</p>
+                  <p className="text-sm text-gray-300">Hi! Ask me anything about my experience, projects or skills.</p>
                   <div className="mt-3 flex flex-col gap-2">
                     {SUGGESTIONS.map((s) => (
                       <button

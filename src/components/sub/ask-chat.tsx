@@ -23,7 +23,7 @@ export function AskChat() {
           className="menu-in fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-full border border-purple-400/40 bg-[#120a2e]/90 px-4 py-3 text-sm font-medium text-white shadow-lg shadow-purple-900/40 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-purple-300"
         >
           <MessageCircle aria-hidden className="size-5 text-purple-300" />
-          Ask about Zaid
+          Ask about Me
         </button>
       )}
       {loaded && <AskChatPanel open={open} setOpen={setOpen} />}

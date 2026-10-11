@@ -1,7 +1,7 @@
 ---
 title: "\"It says 401\": a field guide to debugging auth from browser to database"
 description: "In a distributed app, an auth error can start in five places and show up in a sixth. A calm, layer-by-layer method for 401s, 403s and fake CORS errors with Azure Entra ID, plus the logging that turns hour-long hunts into five-minute fixes."
-date: 2026-10-10
+date: 2026-9-10
 tags: ["Security"]
 draft: true
 ---

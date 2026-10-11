@@ -122,7 +122,6 @@ export function TechOrbit() {
         ))}
 
         {/* Nucleus */}
-        <div className="nucleus absolute left-1/2 top-1/2 size-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,#fff7ed_0%,#fdba74_18%,#f97316_38%,#c026d3_70%,#6d28d9_100%)] shadow-[0_0_60px_18px_rgb(249_115_22/0.45),0_0_120px_40px_rgb(168_85_247/0.35)]" />
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ export const HeroContent = () => {
           <span aria-hidden>⚡</span>
           <hr className="mx-2 h-4 w-px shrink-0 border-0 bg-neutral-500" />
           <AnimatedGradientText className="text-xs font-medium md:text-sm">
-            AI Full-Stack Engineer · Backend · DevOps
+            AI Full-Stack Engineer · DevOps
           </AnimatedGradientText>
           <ChevronRight aria-hidden className="ml-1 size-4 stroke-neutral-500" />
         </div>
@@ -35,12 +35,6 @@ export const HeroContent = () => {
           <ShimmerLink href="/resumeFull.pdf" target="_blank" rel="noopener noreferrer" className="shadow-2xl">
             <span className="text-sm font-medium leading-none tracking-tight text-white lg:text-base">View Resume</span>
           </ShimmerLink>
-          <a
-            href="#contact"
-            className="rounded-full border border-white/20 px-6 py-3 text-sm font-medium text-white transition hover:border-purple-400 hover:bg-white/5 lg:text-base"
-          >
-            Get in touch
-          </a>
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 ---
 title: "A CI pipeline people actually trust: GitHub Actions for TypeScript services"
 description: "Green should mean 'safe to merge', and it should get there fast. A practical GitHub Actions setup for TypeScript APIs: check order, real databases in CI, caching, multi-service repos, environment approvals, keyless cloud deploys, and the habits that keep it trustworthy."
-date: 2026-10-08
+date: 2026-7-28
 tags: ["DevOps"]
 draft: true
 ---
