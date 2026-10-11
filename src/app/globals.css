@@ -420,7 +420,7 @@ html {
   inset: var(--inset, 0);
   border-radius: 9999px;
   border: 1px dashed rgb(168 85 247 / 0.25);
-  animation: orbit-spin var(--speed, 40s) linear infinite;
+  animation: orbit-spin var(--speed, 40s) linear infinite var(--dir, normal);
 }
 .orbit > * {
   position: absolute;
@@ -430,8 +430,13 @@ html {
   transform: rotate(var(--angle)) translate(var(--radius)) rotate(calc(-1 * var(--angle)));
   margin: -22px 0 0 -22px;
 }
+/* Icons spin the opposite way to their ring so they always stay upright */
 .orbit > * > * {
-  animation: orbit-spin var(--speed, 40s) linear infinite reverse;
+  animation: orbit-spin var(--speed, 40s) linear infinite var(--counter, reverse);
+}
+.orbit-ccw {
+  --dir: reverse;
+  --counter: normal;
 }
 @keyframes orbit-spin {
   to { rotate: 360deg; }
