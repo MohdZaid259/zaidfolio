@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
 // SVG flags (emoji flags render as plain letters on Windows). Add countries as needed.
@@ -13,6 +14,9 @@ const FLAGS = {
         <rect width="3" height="6" fill="#ff0000" />
       </>
     ),
+    // Same flag as a CSS background, used by the waving flag strips
+    background:
+      "linear-gradient(to right, #e4002b 0 25%, transparent 25%), linear-gradient(to bottom, #00843d 0 33.34%, #f5f5f5 33.34% 66.67%, #111 66.67%)",
   },
 } as const;
 
@@ -35,22 +39,33 @@ export function Flag({ code, className = "" }: { code: CountryCode; className?: 
   );
 }
 
-/** Round glossy flag badge with a gentle wave and a light sweep. Decorative. */
-export function FlagBadge({ code, className = "" }: { code: CountryCode; className?: string }) {
+
+const STRIPS = 72;
+
+/**
+ * Large flag waving in the wind: the flag is cut into vertical strips that rise and
+ * fall in sequence, with light and shade moving across them like fabric folds.
+ * CSS animation only. Decorative.
+ */
+export function WavingFlag({
+  code,
+  className = "",
+  paused = false,
+}: {
+  code: CountryCode;
+  className?: string;
+  paused?: boolean;
+}) {
   return (
-    <span
+    <div
       aria-hidden
-      className={cn(
-        "flag-badge relative inline-flex size-14 overflow-hidden rounded-full border-2 border-white/70 shadow-[0_0_24px_rgb(255_255_255/0.25)] md:size-16",
-        className,
-      )}
+      className={cn("flex h-full w-full items-center justify-center overflow-hidden bg-gradient-to-b from-white to-slate-200", className)}
     >
-      <svg viewBox="1.5 0 6 6" className="flag-wave size-full" preserveAspectRatio="xMidYMid slice">
-        {FLAGS[code].svg}
-      </svg>
-      {/* Glossy highlight and a sweeping shine */}
-      <span className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_30%_25%,rgb(255_255_255/0.55),transparent_45%)]" />
-      <span className="flag-shine absolute inset-0" />
-    </span>
+      <div className={cn("waving-flag", paused && "waving-flag-paused")} style={{ "--flag-bg": FLAGS[code].background, "--n": STRIPS } as CSSProperties}>
+        {Array.from({ length: STRIPS }, (_, i) => (
+          <span key={i} style={{ "--i": i } as CSSProperties} />
+        ))}
+      </div>
+    </div>
   );
 }

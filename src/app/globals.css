@@ -636,27 +636,26 @@ html {
   height: calc(56 * var(--u));
 }
 
-/* Testimonial flag badge: pops in on the active card, waves gently, light sweeps across */
-.pop-in {
-  animation: pop-in 450ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+/* Big waving flag on testimonial cards: strips rise/fall and shade in sequence */
+.waving-flag {
+  display: flex;
+  width: 118%;
+  height: 74%;
+  margin-left: -6%;
 }
-@keyframes pop-in {
-  from { scale: 0; rotate: -25deg; }
+.waving-flag > span {
+  flex: 1;
+  margin-right: -0.5px; /* hide sub-pixel seams between strips */
+  background: var(--flag-bg);
+  background-size: calc(var(--n) * 100%) 100%;
+  background-position: calc(var(--i) / (var(--n) - 1) * 100%) 0;
+  animation: flag-ripple 2.8s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.035s);
 }
-.flag-wave {
-  transform-origin: left center;
-  animation: flag-wave 3.2s ease-in-out infinite;
+.waving-flag-paused > span {
+  animation-play-state: paused;
 }
-@keyframes flag-wave {
-  0%, 100% { transform: skewY(0deg) scale(1.08); }
-  50% { transform: skewY(-4deg) scale(1.12); }
-}
-.flag-shine {
-  background: linear-gradient(115deg, transparent 35%, rgb(255 255 255 / 0.55) 50%, transparent 65%);
-  background-size: 250% 100%;
-  animation: flag-shine 3.5s ease-in-out infinite;
-}
-@keyframes flag-shine {
-  0%, 60% { background-position: 150% 0; }
-  100% { background-position: -100% 0; }
+@keyframes flag-ripple {
+  0%, 100% { transform: translateY(-3.5%); filter: brightness(1.1); }
+  50% { transform: translateY(3.5%); filter: brightness(0.8); }
 }
