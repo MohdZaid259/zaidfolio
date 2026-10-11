@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { Testimonial } from "@/data/testimonials";
+import { Flag, FlagBadge, countryName } from "./flag";
 
 const initials = (name: string) =>
   name.split(" ").map((part) => part[0]).slice(0, 2).join("").toUpperCase();
@@ -47,6 +48,7 @@ export const AnimatedTestimonials = ({ testimonials }: { testimonials: Testimoni
                   zIndex: isActive ? 40 : count + 2 - i,
                 }}
               >
+                {isActive && <FlagBadge code={t.country} className="pop-in absolute -right-3 -top-3 z-10" />}
                 {t.src ? (
                   <img src={t.src} alt="" draggable={false} className="h-full w-full rounded-3xl object-cover" />
                 ) : (
@@ -72,6 +74,10 @@ export const AnimatedTestimonials = ({ testimonials }: { testimonials: Testimoni
                   </a>
                 </>
               )}
+            </p>
+            <p className="mt-2 flex items-center gap-2 text-sm text-gray-300 max-sm:justify-center">
+              <Flag code={current.country} />
+              {countryName(current.country)}
             </p>
             <Link
               href={`/work/${current.projectSlug}`}

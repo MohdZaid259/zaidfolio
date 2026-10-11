@@ -1,8 +1,12 @@
+import type { CountryCode } from "@/components/ui/flag";
+
 export interface Testimonial {
   quote: string;
   name: string;
   designation: string;
   projectSlug: string;
+  // ISO 3166 alpha-2 country code, rendered as an SVG flag (emoji flags don't show on Windows)
+  country: CountryCode;
   // Optional real photo or LinkedIn URL; without a photo an initials avatar is shown
   src?: string;
   linkedin?: string;
@@ -15,6 +19,7 @@ export const testimonials: Testimonial[] = [
     name: "Baraa Al Arabi",
     designation: "Co-Founder, LS4IT",
     projectSlug: "ls4it",
+    country: "AE",
   },
   {
     quote:
@@ -22,6 +27,7 @@ export const testimonials: Testimonial[] = [
     name: "Shakeel Siddiqui",
     designation: "Shareholder, Rukn Al Haya",
     projectSlug: "rukn-al-haya",
+    country: "AE",
   },
   {
     quote:
@@ -29,5 +35,6 @@ export const testimonials: Testimonial[] = [
     name: "Raed Dagher",
     designation: "Owner, RD Tech Group",
     projectSlug: "rd-tech",
+    country: "AE",
   },
 ];

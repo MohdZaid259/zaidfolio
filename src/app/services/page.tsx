@@ -17,6 +17,7 @@ import { faqs, pricingNote, process, services } from "@/data/services";
 import { testimonials } from "@/data/testimonials";
 import { EnquiryForm } from "@/components/sub/enquiry-form";
 import { AuroraText } from "@/components/magicui/aurora-text";
+import { Flag } from "@/components/ui/flag";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -128,7 +129,9 @@ export default function ServicesPage() {
                   {t.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
                 </span>
                 <span>
-                  <span className="block font-semibold text-white">{t.name}</span>
+                  <span className="flex items-center gap-2 font-semibold text-white">
+                    {t.name} <Flag code={t.country} />
+                  </span>
                   <span className="text-gray-400">{t.designation}</span>
                 </span>
               </figcaption>
