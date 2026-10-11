@@ -1,25 +1,38 @@
 ---
-title: "CI/CD for TypeScript services with GitHub Actions: a setup that stays fast"
-description: "Typecheck, lint, test against a real database, build, and deploy per environment, with caching, concurrency limits, path filters for multi-service repos and approval gates for production."
+title: "A CI pipeline people actually trust: GitHub Actions for TypeScript services"
+description: "Green should mean 'safe to merge', and it should get there fast. A practical GitHub Actions setup for TypeScript APIs: check order, real databases in CI, caching, multi-service repos, environment approvals, keyless cloud deploys, and the habits that keep it trustworthy."
 date: 2026-10-08
-tags: ["DevOps", "GitHub Actions", "CI/CD", "Docker", "TypeScript"]
+tags: ["DevOps"]
 draft: true
 ---
 
-A CI pipeline earns its keep when people trust it: when it's green, the code works, and it's fast enough that nobody is tempted to skip it. Here's the structure I use for TypeScript services, from a single API up to a repo with several services.
+Every team has had this conversation.
 
-## The order of checks
+"CI is red." "Oh, that test is flaky, just re-run it." *(re-runs, goes green)* "See? Merging."
 
-Run the cheapest checks first, so a typo fails in 30 seconds rather than 5 minutes:
+The moment that becomes normal, your pipeline has stopped doing its job. It's no longer answering "is this safe to merge?". It's a slot machine you pull until it pays out. And sooner or later, the red that everyone re-ran past was real.
+
+A good CI pipeline has two properties, and they pull against each other:
+
+1. **When it's green, the code works.** People trust it enough not to second-guess it.
+2. **It's fast.** Fast enough that nobody is tempted to skip it, batch changes to avoid it, or merge "just this once" without it.
+
+Here's the structure I use for TypeScript services, from a single API up to a repo with several services, and the reasoning behind each choice.
+
+## Order your checks like a funnel
+
+Run the cheapest checks first, so a typo fails in thirty seconds rather than after a five-minute test suite:
 
 1. **Install** (cached)
 2. **Typecheck**: `tsc --noEmit`
 3. **Lint**
-4. **Test**, against a real database in a service container
-5. **Build**: compile or build the Docker image
-6. **Deploy**, only from `main` or release branches, per environment
+4. **Test**, against a real database
+5. **Build**: compile, or build the Docker image
+6. **Deploy**, only from `main`, environment by environment
 
-## The CI workflow
+Typecheck and lint take seconds and catch a surprising share of mistakes. There's no reason to spin up a database to discover a missing import.
+
+## The workflow
 
 ```yaml
 name: CI
@@ -29,7 +42,7 @@ on:
   push:
     branches: [main]
 
-# A new push to the same branch cancels the run that's now outdated
+# A newer push to the same branch cancels the now-outdated run
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -67,24 +80,44 @@ jobs:
       - run: npm run build
 ```
 
-A few choices worth explaining:
+It's short, but a few lines carry a lot of weight:
 
-- **`concurrency` with `cancel-in-progress`.** Pushing three commits in a row runs CI once, not three times.
-- **`timeout-minutes`.** A hung test shouldn't burn six hours of runner time, which is the default limit.
-- **A real Postgres, not mocks.** Migrations, constraints and query behavior are exactly what mocks can't test. A service container adds about 10 seconds.
-- **`cache: npm`** on `setup-node` caches the npm download cache, keyed on the lockfile. `npm ci` then installs mostly from cache.
+- **`concurrency` with `cancel-in-progress`.** Push three commits in a row and CI runs once, for the latest, not three times in parallel burning minutes on code that's already outdated.
+- **`timeout-minutes`.** The default job limit is six hours. One hung test shouldn't be allowed to eat that.
+- **`cache: npm`** caches the npm download cache, keyed on your lockfile, so `npm ci` mostly installs from cache.
+- **A real Postgres.** More on that next, because it's the line people most want to delete.
 
-## Tests that match production
+## "Can't we just mock the database?"
 
-The database in CI should behave like the one in production:
+You can, and your tests will be fast and green, and they'll miss exactly the bugs that hurt in production: a migration that fails on real data, a unique constraint you forgot, a query that behaves differently from how you assumed.
 
-- Same **major version** (`postgres:16` in both).
-- Run **migrations** in CI exactly as you do on deploy, not a schema dump.
-- Connect as the **same kind of role** the app uses in production. If production relies on grants or Row-Level Security, tests running as a superuser will pass while production fails (more on that in [Multi-tenant isolation with Row-Level Security](/notes/postgres-rls-multi-tenancy)).
+A Postgres service container adds roughly ten seconds to the job, which is about the cheapest insurance you'll ever buy. To make it count:
 
-## Multi-service repos: only test what changed
+- **Use the same major version as production.** `postgres:16` in both places.
+- **Run migrations in CI exactly as you do on deploy.** Not a schema dump, not `sync()`, the real migration files in order.
+- **Connect as the kind of role your app uses in production.** If production relies on grants or row-level security, tests running as a superuser will pass while production fails. (I explain why in [The WHERE clause you'll forget](/notes/postgres-rls-multi-tenancy).)
 
-In a repo with several services, running everything on every change gets slow. Path filters keep each workflow scoped:
+## Fail with instructions, not just a red X
+
+The most underrated improvement to any pipeline: **when a check fails, tell people how to fix it.**
+
+For example, if someone changes the database schema but forgets to generate a migration, don't let it fail mysteriously three steps later. Catch it explicitly:
+
+```yaml
+- name: Check migrations match the schema
+  run: |
+    npx drizzle-kit generate
+    if [ -n "$(git status --porcelain drizzle)" ]; then
+      echo "::error::Schema changed without a migration. Run: npm run db:generate"
+      exit 1
+    fi
+```
+
+The `::error::` prefix makes GitHub highlight the message right in the pull request. Thirty seconds of YAML saves every future developer a log dive.
+
+## Several services in one repo
+
+Once a repo holds several services, running everything on every change gets slow and noisy. Path filters keep each workflow focused:
 
 ```yaml
 on:
@@ -95,11 +128,11 @@ on:
       - ".github/workflows/api.yml"
 ```
 
-Give each service its own workflow file with its own paths. Include shared packages in every service that depends on them, or a change to shared code merges untested.
+Give each service its own workflow file with its own paths. The trap to avoid: forgetting that **shared packages belong in every dependent service's paths**. Otherwise a change to shared code merges with none of its consumers tested.
 
-## Deploying per environment
+## Deploying: environments, approvals and no stored cloud passwords
 
-Keep deployment in a separate workflow (or job) that runs only after CI passes on `main`, and use **GitHub Environments** for configuration and approvals:
+Keep deployment separate from CI, triggered only after `main` is green, and use **GitHub Environments**:
 
 ```yaml
 name: Deploy
@@ -108,15 +141,22 @@ on:
   push:
     branches: [main]
 
+permissions:
+  id-token: write   # lets the job request an OIDC token for the cloud login below
+  contents: read
+
 jobs:
   staging:
     runs-on: ubuntu-latest
     environment: staging
     steps:
       - uses: actions/checkout@v4
-      - run: ./scripts/deploy.sh
-        env:
-          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}   # resolved from the "staging" environment
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - run: ./scripts/deploy.sh staging
 
   production:
     needs: staging
@@ -124,49 +164,47 @@ jobs:
     environment: production   # configure "required reviewers" on this environment
     steps:
       - uses: actions/checkout@v4
-      - run: ./scripts/deploy.sh
-        env:
-          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}   # same name, production value
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - run: ./scripts/deploy.sh production
 ```
 
-What Environments give you:
+What this buys you:
 
-- **Secrets with the same name and different values per environment.** The deploy script doesn't need `if staging … else …`.
-- **Required reviewers** on `production`. The job pauses until someone approves, with a record of who did.
-- **Deployment history** in the repo's sidebar, per environment.
+- **Secrets scoped per environment.** Same secret names, different values for staging and production, so the deploy script doesn't need an `if staging ... else ...` tangle.
+- **Human approval for production.** With "required reviewers" on the `production` environment, the job pauses until someone approves, and there's a record of who did.
+- **No long-lived cloud passwords in GitHub.** With OIDC federation (`id-token: write` plus `azure/login`), the workflow exchanges a short-lived token for cloud access. There's no service-principal secret sitting in your repo settings waiting to leak. AWS and GCP support the same pattern.
 
-## Building Docker images in CI
+## If you ship containers: build once, promote everywhere
 
-If you ship containers, build them once and promote the same image through environments. Rebuilding for production can produce a different image.
+Rebuilding the image for production means production runs something staging never tested, and builds aren't always perfectly reproducible.
 
-- Tag images with the **commit SHA** (`api:3f2c1ab`), and optionally also `staging` / `production` pointers.
-- Use **multi-stage Dockerfiles**: install and build in one stage, copy only `dist/` and production `node_modules` into a slim runtime stage.
-- Cache layers in CI (`docker/build-push-action` with `cache-from` / `cache-to: type=gha`), so unchanged dependency layers aren't rebuilt.
+- **Tag images with the commit SHA** (`api:3f2c1ab`). Point `staging` and `production` tags at whichever SHA is deployed.
+- **Use multi-stage Dockerfiles**: install and build in one stage, then copy only `dist/` and production dependencies into a slim runtime image.
+- **Cache layers in CI** (`docker/build-push-action` with `cache-from` / `cache-to: type=gha`), so an unchanged dependency layer isn't rebuilt on every push.
 
-## Keeping it trustworthy
+## Keeping it trustworthy (the human part)
 
-- **Flaky tests get fixed or deleted the day they flake.** A pipeline that's "usually green" trains people to re-run instead of read.
-- **Required checks** on the `main` branch protection rule, so a red pipeline can't be merged around.
-- **Fail with a message.** A step like "migrations missing for schema change" with the exact command to fix it saves everyone a log dive:
+The YAML is the easy bit. Trust comes from habits:
 
-```yaml
-- name: Check migrations match the schema
-  run: |
-    npx drizzle-kit generate
-    if [ -n "$(git status --porcelain drizzle)" ]; then
-      echo "Schema changed without a migration. Run: npm run db:generate"
-      exit 1
-    fi
-```
+- **Fix or delete flaky tests the day they flake.** A test that's "usually green" teaches everyone to re-run instead of read, and that habit eventually lets a real failure through.
+- **Make checks required** in the branch protection rules for `main`, so red can't be merged around.
+- **Watch the clock.** If CI creeps past ten minutes, people start working around it. Treat pipeline speed as a feature with an owner.
+- **Keep the pipeline in code review.** Workflow changes deserve the same scrutiny as application code. They hold the keys to production, after all.
 
-## Checklist
+## The checklist
 
 - [ ] Cheap checks first: typecheck and lint before tests
-- [ ] `concurrency` cancels superseded runs; jobs have timeouts
-- [ ] Tests run against a real database, migrated the same way production is
-- [ ] Path filters per service in multi-service repos, including shared packages
-- [ ] Deploys use Environments: scoped secrets, and approvals for production
-- [ ] Images are built once, tagged by commit, and promoted
-- [ ] Required status checks protect `main`
+- [ ] `concurrency` cancels outdated runs; every job has a timeout
+- [ ] Tests run against a real database, migrated the way production is
+- [ ] Failures explain how to fix them
+- [ ] Path filters per service, including shared packages
+- [ ] Deploys use Environments: scoped secrets, approvals for production
+- [ ] Cloud access via OIDC, with no stored passwords
+- [ ] Images built once, tagged by commit, promoted between environments
+- [ ] Flaky tests are fixed immediately; checks are required on `main`
 
-None of this is clever. Done consistently, it makes "is it safe to merge?" a question the pipeline answers, not a person.
+None of this is clever, and that's the point. A pipeline earns trust by being boringly reliable, so "is this safe to merge?" becomes a question the robot answers instead of a person.

@@ -33,5 +33,6 @@ ${items}
   </channel>
 </rss>`;
 
-  return new Response(xml, { headers: { "Content-Type": "application/rss+xml; charset=utf-8" } });
+  // application/xml so opening the link shows the feed instead of downloading a file; readers accept both
+  return new Response(xml, { headers: { "Content-Type": "application/xml; charset=utf-8" } });
 }

@@ -43,7 +43,7 @@ export const Navbar = () => {
             <Image src="/logo.png" alt="" width={44} height={45} draggable={false} />
           </Link>
 
-          <ul className="hidden items-center gap-1 rounded-full border border-[rgba(112,66,248,0.38)] bg-[rgba(3,0,20,0.37)] px-3 py-1.5 text-sm text-gray-200 lg:flex">
+          <ul className="hidden items-center gap-1 rounded-full border border-[rgba(112,66,248,0.38)] bg-[rgba(3,0,20,0.37)] px-3 py-1.5 text-sm text-gray-200 md:flex">
             {NAV_LINKS.map((link) => (
               <li key={link.title}>
                 <Link
@@ -56,7 +56,7 @@ export const Navbar = () => {
             ))}
           </ul>
 
-          <ul className="hidden items-center gap-1 lg:flex">
+          <ul className="hidden items-center gap-1 md:flex">
             {SOCIALS.map(({ link, name, icon: Icon }) => (
               <li key={name}>
                 <a
@@ -76,13 +76,13 @@ export const Navbar = () => {
             aria-label="Open menu"
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-menu"
-            className="flex size-11 items-center justify-center text-white lg:hidden"
+            className="flex size-11 items-center justify-center text-white md:hidden"
             onClick={() => setIsMobileMenuOpen(true)}
           >
             <Menu className="size-7" />
           </button>
         </nav>
-        <div aria-hidden className="scroll-progress lg:hidden" />
+        <div aria-hidden className="scroll-progress md:hidden" />
       </header>
 
       {isMobileMenuOpen && (

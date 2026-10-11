@@ -1,33 +1,54 @@
 ---
-title: "Multi-tenant isolation with PostgreSQL Row-Level Security, Fastify and Drizzle"
-description: "Stop relying on every query remembering WHERE tenant_id = ?. A production pattern for RLS policies, per-transaction tenant context, least-privilege roles, and the gotchas that quietly bypass it all."
+title: "The WHERE clause you'll forget: multi-tenant isolation with Postgres Row-Level Security"
+description: "Every multi-tenant app is one missing filter away from showing one customer another customer's data. Here's how I let PostgreSQL enforce tenant isolation instead, with Fastify and Drizzle, and the traps that quietly switch it off."
 date: 2026-10-11
-tags: ["PostgreSQL", "Multi-tenancy", "Security", "Fastify", "Drizzle"]
+tags: ["Backend", "Security"]
 draft: true
 ---
 
-Most multi-tenant SaaS apps keep every customer's data in the same tables and separate it with a `tenant_id` column. The isolation then lives in application code: every query has to remember `WHERE tenant_id = ?`.
+Picture a Friday evening. A customer emails support: *"Why can I see candidates from a company I've never heard of?"*
 
-That works until the one query that forgets. A new endpoint, a hurried bug fix, a report someone wrote at midnight. One missing clause and tenant A can read tenant B's candidates. Code review doesn't reliably catch it, because the bug is something that *isn't* there.
+Someone digs in and finds it fast. A new export endpoint shipped on Wednesday. It was reviewed, tested, and it worked perfectly, except that it fetched rows by `job_id` and never checked which tenant the job belonged to. One missing `WHERE tenant_id = ?`. That's all it takes.
 
-PostgreSQL Row-Level Security (RLS) moves that rule into the database. You write the policy once, and Postgres applies it to every query from the application role, including the ones nobody has written yet.
+The scary part isn't that someone made a mistake. It's that the mistake was **invisible**. Code review is great at spotting what's wrong in the code in front of you. It's terrible at spotting what isn't there.
 
-This is the pattern I use on a multi-service platform built on Fastify, Drizzle and PostgreSQL. It also covers the gotchas that silently turn RLS off.
+If your SaaS keeps every customer's data in shared tables (and most do, because it's the cheapest model to run), your isolation is only as strong as the most tired developer on the most rushed day. I'd rather it were as strong as the database.
 
-## The shape of the solution
+That's what PostgreSQL Row-Level Security (RLS) gives you. You write the rule once, and Postgres enforces it on every query from your application, including the ones nobody has written yet.
 
-Four pieces work together:
+This is the setup I use on a multi-service platform built with Fastify, Drizzle and Postgres, plus the gotchas that switch RLS off without telling you.
+
+## Why "just be careful" doesn't scale
+
+The usual approach looks harmless:
+
+```ts
+const rows = await db
+  .select()
+  .from(candidates)
+  .where(and(eq(candidates.tenantId, req.tenantId), eq(candidates.jobId, jobId)));
+```
+
+Now multiply that by every query in every service, every developer, every hotfix and every script someone writes to "quickly check something in prod". You aren't writing one security rule; you're writing it hundreds of times and hoping each copy is right.
+
+Helpers help: a `tenantScoped()` wrapper, a lint rule, a custom repository layer. But they all share the same weakness: they're opt-in. The query that bypasses the helper is exactly the one that leaks.
+
+RLS flips the default. Without the right tenant context, the database returns **nothing**, not everything.
+
+## The mental model
+
+Four pieces work together, and you need all four:
 
 1. **Tables** carry a `tenant_id` and have RLS enabled *and forced*.
-2. **Policies** compare `tenant_id` to a per-transaction setting, `app.tenant_id`.
-3. **The API** sets `app.tenant_id` at the start of every transaction, using the tenant from the verified token.
-4. **Roles** make sure the application connects as a user that RLS actually applies to.
+2. **Policies** compare each row's `tenant_id` to a setting called `app.tenant_id`.
+3. **The API** sets `app.tenant_id` at the start of every transaction, taken from the user's verified token.
+4. **Database roles** make sure your app connects as a user that RLS actually applies to.
 
-If any one of these is missing, you have the appearance of isolation without the guarantee.
+Skip any one of these and you get the *feeling* of isolation without the guarantee, which is arguably worse than having none, because now you've stopped worrying.
 
-## 1. Schema: tenant first
+## Step 1: Put the tenant first in your schema
 
-Every tenant-owned table gets a non-null `tenant_id`, and the indexes lead with it. Every query will now filter on `tenant_id`, so that's the column your indexes need first.
+Every tenant-owned table gets a non-null `tenant_id`, and the indexes **lead** with it. Every query is about to be filtered by tenant, so that's the first column your indexes need.
 
 ```ts
 // db/schema.ts
@@ -43,16 +64,16 @@ export const candidates = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
-    // Unique per tenant, not globally (see "gotchas" below)
+    // Unique per tenant, not globally (more on why below)
     uniqueIndex("candidates_tenant_email_uq").on(t.tenantId, t.email),
     index("candidates_tenant_created_idx").on(t.tenantId, t.createdAt),
   ],
 );
 ```
 
-## 2. Enable, force, and write the policy
+## Step 2: Turn it on, and turn it on properly
 
-Put this in a migration:
+This goes in a migration:
 
 ```sql
 ALTER TABLE candidates ENABLE ROW LEVEL SECURITY;
@@ -63,22 +84,31 @@ CREATE POLICY tenant_isolation ON candidates
   WITH CHECK (tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid);
 ```
 
-Each line is there for a reason:
+Five lines, and almost every word is doing a job:
 
-- **`ENABLE`** turns RLS on. With RLS enabled and no matching policy, the default is *deny*: queries return zero rows.
-- **`FORCE`** applies the policies to the table *owner* too. Without it, the owner bypasses RLS. That matters because the role that runs migrations usually owns the tables, and in many setups the app connects as that same role.
-- **`USING`** filters which existing rows are visible to `SELECT`, `UPDATE` and `DELETE`.
-- **`WITH CHECK`** validates rows being written. It stops an `INSERT` into another tenant, and an `UPDATE` that moves a row to another tenant.
-- **`current_setting('app.tenant_id', true)`**: the second argument means "return NULL instead of erroring if it's not set".
-- **`nullif(..., '')`** is the subtle one. Once a custom setting has been set locally in a transaction, later transactions on the same connection see it as an *empty string*, not NULL. `''::uuid` throws `invalid input syntax for type uuid`. With `nullif`, an unset tenant becomes NULL, `tenant_id = NULL` is never true, and the query safely returns nothing.
+- **`ENABLE`** switches RLS on. If RLS is enabled and no policy matches, the default is *deny*.
+- **`FORCE`** is the one people skip. Without it, the **table owner bypasses every policy**. The role that runs your migrations usually owns the tables, and in a surprising number of setups the app connects as that same role. Your policies exist, your tests pass, and none of it applies.
+- **`USING`** decides which existing rows are visible to `SELECT`, `UPDATE` and `DELETE`.
+- **`WITH CHECK`** validates rows being written. It's what stops an `INSERT` into another tenant, and an `UPDATE` that quietly moves a row to someone else.
+- **`current_setting('app.tenant_id', true)`**: the `true` means "give me NULL if this isn't set, don't throw".
 
-That last behavior is exactly what you want: **no tenant context means no data**, not an error page and definitely not all data.
+### The `nullif` that saves your Monday
 
-## 3. Set the tenant per transaction
+That `nullif(..., '')` looks like paranoia. It isn't.
 
-The setting must be **transaction-local**. With a connection pool, a session-level `SET app.tenant_id = ...` stays on the connection after it's returned to the pool, and the next request that borrows it inherits the previous tenant. That's precisely the leak RLS was supposed to prevent.
+Once a custom setting like `app.tenant_id` has been set on a connection, even transaction-locally, later transactions on that same connection don't see NULL. They see an **empty string**. And `''::uuid` doesn't return NULL; it throws `invalid input syntax for type uuid`.
 
-`set_config(name, value, is_local => true)` scopes the value to the current transaction. It also accepts bind parameters, which `SET LOCAL` does not:
+So without `nullif`, the first time a pooled connection is reused without tenant context, you get a crash instead of an empty result. With it, "no tenant" becomes NULL, `tenant_id = NULL` is never true, and the query safely returns zero rows.
+
+That's the behavior you want: **no context means no data.** Not an error page, and definitely not all the data.
+
+## Step 3: Set the tenant per transaction (not per connection)
+
+This is where most homegrown RLS setups leak.
+
+Your API uses a connection pool. If you run a session-level `SET app.tenant_id = '...'`, that value **stays on the connection** after it's returned to the pool. The next request that borrows the connection, possibly from a different tenant, inherits it. You've rebuilt the bug RLS was meant to prevent, just one layer deeper.
+
+The fix is to make the setting transaction-local with `set_config(name, value, is_local => true)`. As a bonus, `set_config` accepts bind parameters, which `SET LOCAL` doesn't:
 
 ```ts
 // db/with-tenant.ts
@@ -95,13 +125,15 @@ export function withTenant<T>(tenantId: string, fn: (tx: Tx) => Promise<T>): Pro
 }
 ```
 
-Because the value is transaction-scoped, it also works behind PgBouncer in transaction pooling mode.
+When the transaction ends, the setting is gone. It also plays nicely with PgBouncer in transaction-pooling mode.
 
-Outside an explicit transaction, every statement is its own transaction, so a local `set_config` would vanish before your next query ran. That's why the helper always opens one.
+One subtle thing: outside an explicit transaction, every statement is its own transaction. A local `set_config` would vanish before your next query even ran. That's why the helper always opens one.
 
-### Where the tenant comes from
+### Where the tenant comes from matters more than anything else
 
-The tenant ID must come from something the client can't forge: a claim in the verified access token, or a lookup keyed on the authenticated user. **Never** take it from a request header or body the client controls. Otherwise a user just changes the header.
+The tenant ID must come from something the client **can't forge**: a claim in a verified access token, or a server-side lookup keyed on the authenticated user.
+
+Never read it from a request header or body the client controls. If you do, RLS faithfully isolates tenants... from everyone except an attacker who changes one header.
 
 ```ts
 // routes/candidates.ts
@@ -113,63 +145,71 @@ app.get("/candidates", async (req) => {
 });
 ```
 
-The route has no `where(eq(candidates.tenantId, ...))` at all, and it doesn't need one. You can still add it as defense in depth and as a hint to the planner, but correctness no longer depends on it.
+Look at what's missing: there's no tenant filter in that query at all. You can still add one as defense in depth (it also helps the query planner), but correctness no longer depends on someone remembering it.
 
-## 4. Roles: make sure RLS applies to you
+## Step 4: Make sure RLS actually applies to you
 
-Superusers and roles with `BYPASSRLS` skip every policy. If your app connects as `postgres`, none of the above does anything.
+Here's the part that catches experienced people: **superusers and roles with `BYPASSRLS` skip every policy.** If your app connects as `postgres`, as many Docker setups and tutorials do, everything above is decoration.
 
-A minimal split:
+A minimal, sane role split:
 
 ```sql
--- Owns tables, runs migrations. The application never logs in as this role.
+-- Owns tables, runs migrations. The app never logs in as this.
 CREATE ROLE app_owner NOLOGIN;
 
 -- What the API uses for reads and writes
 CREATE ROLE app_rw LOGIN PASSWORD '...' NOBYPASSRLS;
 
--- What read-only services and reporting use
+-- Read-only services, reporting, dashboards
 CREATE ROLE app_ro LOGIN PASSWORD '...' NOBYPASSRLS;
 ALTER ROLE app_ro SET default_transaction_read_only = on;
 
 GRANT USAGE ON SCHEMA public TO app_rw, app_ro;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_rw;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO app_ro;
-
--- Apply the same grants to tables created by future migrations
-ALTER DEFAULT PRIVILEGES FOR ROLE app_owner IN SCHEMA public
-  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_rw;
-ALTER DEFAULT PRIVILEGES FOR ROLE app_owner IN SCHEMA public
-  GRANT SELECT ON TABLES TO app_ro;
 ```
 
-Read-only services get two independent guarantees. They *can't* write because of the grants, and they *won't* because the transaction is read-only by default. RLS still scopes what they can read.
+The read-only role gets two independent locks: it *can't* write because of its grants, and it *won't* because its transactions are read-only by default. Belt and braces.
 
-If you use serial or identity columns, `app_rw` also needs `USAGE` on the sequences. With `gen_random_uuid()` defaults it doesn't.
+### What about support staff and admin tools?
 
-## Gotchas that quietly bypass RLS
+Sooner or later someone asks, "how does support look at a customer's account?" Resist the urge to hand your admin panel the owner credentials. Give support its own role and an explicit, read-only policy:
 
-These are the ones worth checking in an existing codebase.
+```sql
+CREATE ROLE support_ro LOGIN PASSWORD '...' NOBYPASSRLS;
+GRANT SELECT ON candidates TO support_ro;
 
-### Tests that pass for the wrong reason
+-- Policies are OR'ed together, so this adds visibility for this role only
+CREATE POLICY support_read_all ON candidates FOR SELECT TO support_ro USING (true);
+```
 
-If your test database user is a superuser, which is the default in most Docker setups, **every RLS test passes trivially** because the policies never run. Run integration tests as `app_rw`.
+Now cross-tenant access is a deliberate, auditable decision with a name, not an accident.
 
-### Views
+## The traps that switch RLS off quietly
 
-By default a view runs with its *owner's* privileges, not the caller's. On PostgreSQL 15+, create views with `WITH (security_invoker = true)` so the caller's role and policies apply.
+These deserve a slow read, because none of them produces an error.
 
-### `SECURITY DEFINER` functions
+### 1. Tests that pass for the wrong reason
 
-Same idea: they run as the function owner. Keep them rare, and filter explicitly inside them.
+If your test database user is a superuser, every RLS test passes, because the policies never run. You'll feel great right up until production. **Run integration tests as the same role your app uses.** Better still, write a test that asserts the current role can't bypass RLS (there's one at the end).
 
-### Unique constraints are global
+### 2. Views run as their owner
 
-`UNIQUE (email)` across all tenants leaks information. Tenant B tries to add `jane@acme.com`, gets a duplicate-key error, and now knows tenant A has that candidate. Make uniqueness per tenant: `UNIQUE (tenant_id, email)`.
+By default, a view executes with its *owner's* privileges, not the caller's. On PostgreSQL 15+, create views with `WITH (security_invoker = true)` so the caller's role and policies apply.
 
-### Foreign keys ignore RLS
+### 3. `SECURITY DEFINER` functions
 
-Referential integrity checks bypass row security. If a client sends `job_id` for a job in another tenant, a plain foreign key happily accepts it. Make the reference carry the tenant:
+Same story: they run as the function's owner. Keep them rare, and filter explicitly inside them.
+
+### 4. Global unique constraints leak
+
+Say `email` is unique across the whole table. Tenant B tries to add `jane@acme.com`, gets a duplicate-key error, and now knows tenant A has a candidate called Jane. RLS hid the row; the constraint gave it away. Make uniqueness per tenant: `UNIQUE (tenant_id, email)`.
+
+### 5. Foreign keys ignore RLS entirely
+
+This one surprises almost everyone. **Referential integrity checks bypass row security.** If a client sends a `job_id` that belongs to another tenant, a normal foreign key happily accepts it, and you've just linked tenant B's application to tenant A's job.
+
+The fix is to make the reference carry the tenant:
 
 ```sql
 ALTER TABLE jobs ADD CONSTRAINT jobs_tenant_id_id_uq UNIQUE (tenant_id, id);
@@ -179,15 +219,30 @@ ALTER TABLE applications
   FOREIGN KEY (tenant_id, job_id) REFERENCES jobs (tenant_id, id);
 ```
 
-Now the database itself refuses a cross-tenant link.
+Now the database itself refuses cross-tenant links, no matter what the API sends.
 
-### Expensive policies
+### 6. Background jobs with no tenant
 
-The policy predicate is added to every query. A simple column comparison is cheap with the right index. A policy that runs a subquery for each row, such as "is this user a member of this tenant", can be slow. Wrap the lookup in `(select ...)` so Postgres evaluates it once per query instead of once per row.
+Your queue worker isn't handling an HTTP request, so there's no token. Put the tenant ID in the job payload when your server enqueues it (that payload is server-created, so it's trustworthy), and have the worker call `withTenant` like any route. A worker with no context will see nothing, which is noisy but safe.
+
+## "Won't this be slow?"
+
+Mostly, no. The policy adds a `tenant_id = ...` predicate to every query, and with indexes that lead on `tenant_id`, that's what you'd have written anyway. Run `EXPLAIN` on a hot query and you'll see the policy condition right there in the plan.
+
+Where it *can* hurt is a policy that runs a subquery for each row, like "is this user a member of this tenant?". Wrap lookups like that in `(select ...)` so Postgres evaluates them once per query instead of once per row.
+
+## Moving an existing app over
+
+You don't need a big-bang migration:
+
+1. Move the app off the owner/superuser role first. This is often the hardest step, because something always turns out to depend on it.
+2. Add `withTenant` and route all tenant-scoped queries through it. Keep your existing `WHERE` clauses for now.
+3. Enable RLS table by table in staging, starting with the most sensitive data, and let the test suite tell you what breaks.
+4. Once a table is stable, `FORCE` it, and fix uniques and foreign keys to include `tenant_id`.
 
 ## Prove it with tests
 
-These four tests catch most regressions. Run them as `app_rw`, against a real Postgres:
+Run these as the app role, against a real Postgres:
 
 ```ts
 // test/rls.test.ts
@@ -214,12 +269,11 @@ describe("tenant isolation", () => {
       withTenant(B, (tx) =>
         tx.insert(candidates).values({ tenantId: A, email: "sneaky@x.io", fullName: "S" }),
       ),
-    ).rejects.toThrow(/row-level security/);
+    ).rejects.toThrow();
   });
 
   it("returns nothing without tenant context", async () => {
-    const rows = await db.select().from(candidates);
-    expect(rows).toHaveLength(0);
+    expect(await db.select().from(candidates)).toHaveLength(0);
   });
 
   it("is not running as a role that bypasses RLS", async () => {
@@ -231,22 +285,22 @@ describe("tenant isolation", () => {
 });
 ```
 
-The last test looks paranoid, but it's the one that guards the other three.
+That last test looks paranoid. It's the one that keeps the other three honest.
 
-## Checklist
+## Try it yourself
 
-- [ ] Every tenant-owned table has `tenant_id NOT NULL`, with indexes leading on it
-- [ ] `ENABLE` **and** `FORCE ROW LEVEL SECURITY` on each of those tables
-- [ ] Policies have both `USING` and `WITH CHECK`, and handle the empty-string case with `nullif`
-- [ ] Tenant context is set with `set_config(..., true)` inside a transaction
-- [ ] The tenant comes from the verified token, never from client input
-- [ ] The app connects as a non-owner role without `BYPASSRLS`; read-only services use a read-only role
-- [ ] Uniqueness and foreign keys include `tenant_id`
-- [ ] Views use `security_invoker`, and `SECURITY DEFINER` functions are audited
-- [ ] Integration tests run as the app role and assert cross-tenant reads and writes fail
+I packaged everything above into a runnable, MIT-licensed starter with 20 isolation tests: [fastify-drizzle-rls-starter](https://github.com/MohdZaid259/fastify-drizzle-rls-starter). Clone it, run `npm test`, then point it at a superuser connection and watch the isolation tests fail. It's a surprisingly satisfying way to understand why each piece is there.
 
-## Try it
+## The short version
 
-Everything above is packaged as a runnable, MIT-licensed starter with 20 isolation tests: [fastify-drizzle-rls-starter](https://github.com/MohdZaid259/fastify-drizzle-rls-starter). Clone it, run `npm test`, then switch the connection to a superuser and watch the isolation tests fail.
+- [ ] Every tenant table has `tenant_id NOT NULL`, indexes lead on it
+- [ ] `ENABLE` **and** `FORCE ROW LEVEL SECURITY`
+- [ ] Policies have both `USING` and `WITH CHECK`, with the `nullif` fix
+- [ ] Tenant set with `set_config(..., true)` inside a transaction
+- [ ] Tenant comes from the verified token, never from client input
+- [ ] App connects as a non-owner role without `BYPASSRLS`
+- [ ] Uniques and foreign keys include `tenant_id`
+- [ ] Views use `security_invoker`; `SECURITY DEFINER` is rare and audited
+- [ ] Tests run as the app role and assert cross-tenant access fails
 
-RLS doesn't replace authorization in your API. Whether a user can *do* something is still your code's job. What it removes is the most dangerous class of multi-tenant bug: one forgotten `WHERE` clause.
+RLS won't replace authorization in your API. Whether a user may *do* something is still your code's job. What it removes is the most dangerous bug in multi-tenant software: the `WHERE` clause that someone, someday, will forget.

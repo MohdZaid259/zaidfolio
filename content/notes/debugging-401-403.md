@@ -1,74 +1,108 @@
 ---
-title: "Debugging 401 and 403 end to end: browser, gateway, API, database"
-description: "A layer-by-layer method for auth errors in a distributed app with Azure Entra ID: what each status really means, where it actually came from, and the checks that find the cause in minutes."
+title: "\"It says 401\": a field guide to debugging auth from browser to database"
+description: "In a distributed app, an auth error can start in five places and show up in a sixth. A calm, layer-by-layer method for 401s, 403s and fake CORS errors with Azure Entra ID, plus the logging that turns hour-long hunts into five-minute fixes."
 date: 2026-10-10
-tags: ["Auth", "Azure Entra", "CORS", "Fastify", "Debugging"]
+tags: ["Security"]
 draft: true
 ---
 
-"I'm getting a 401" is one of the least useful bug reports in a distributed system. In a typical setup, a request passes through:
+"I'm getting a 401."
 
-1. the browser and its CORS rules,
-2. the identity provider that issued the token (Azure Entra ID here),
-3. an API gateway,
-4. the service that validates the token and authorizes the action,
-5. the database, which may have its own permissions and row-level security.
+Few messages in a team chat carry less information. It's like a patient saying "it hurts". True, important, and almost no help in deciding where to look.
 
-Any of them can be the reason the user sees an error, and several of them *report* the problem somewhere other than where it happened. This note is the method I use to find the real layer quickly.
+In a modern app, one click travels through a surprising number of places before it reaches your data:
 
-## First, be precise about the status
+1. the **browser**, with its CORS rules,
+2. the **identity provider** that issued the token (Azure Entra ID, in my case),
+3. an **API gateway** or reverse proxy,
+4. the **service** that validates the token and decides what you're allowed to do,
+5. the **database**, which may have its own permissions and row-level security.
 
-- **401 Unauthorized** really means *unauthenticated*: "I don't know who you are." The token is missing, malformed, expired, signed by the wrong key, or issued for a different audience. The fix is on the token side.
-- **403 Forbidden** means *authenticated but not allowed*: "I know who you are, and you can't do this." The token is valid. The fix is in roles, scopes or authorization logic.
-- **A CORS error in the console** often isn't about CORS at all. It can be a 401 or 500 that came back without CORS headers (more below).
-- **An empty list or a 404** for something that exists can be row-level security working as designed, with the wrong tenant context.
+Any of them can reject the request. Worse, several of them *report* the failure somewhere other than where it happened. The browser blames CORS for an expired token. The service blames the token for a gateway that dropped a header. The database returns an empty list and everyone suspects a data bug.
 
-Getting this first classification right halves the search space.
+After enough of these hunts, I stopped guessing and started following a method. Here it is.
 
-## Step 1: take the browser out of the equation
+## First, the vocabulary (it really matters)
 
-Copy the exact token the frontend sends, from the request's `Authorization` header in DevTools → Network, and replay the call with curl:
+Two status codes, constantly confused:
+
+- **401 Unauthorized** is badly named. It really means **unauthenticated**: "I don't know who you are." The token is missing, malformed, expired, signed with the wrong key, or issued for someone else. *Fix it on the token side.*
+- **403 Forbidden** means **authenticated but not allowed**: "I know exactly who you are, and you can't do this." The token is fine. *Fix it in roles, scopes or business rules.*
+
+And two impostors:
+
+- **A CORS error in the console** is often not a CORS problem. It's frequently a 401 or 500 that came back *without CORS headers*, so the browser hid the real status from your JavaScript.
+- **An empty list or a 404** for something that definitely exists can be row-level security doing its job with the wrong tenant context.
+
+Getting this first classification right cuts the search space in half before you open a single log.
+
+## Step 1: Take the browser out of the picture
+
+The browser is the noisiest layer, so remove it first.
+
+Open DevTools → Network, find the failing request, copy the exact `Authorization` header, and replay the call from your terminal:
 
 ```bash
 curl -i https://api.example.com/v1/me -H "Authorization: Bearer $TOKEN"
 ```
 
-- **curl works but the browser fails:** the problem is browser-side. That means CORS, how the frontend attaches the header, or which token it requested.
-- **curl fails too:** the problem is the token or the server. Keep going.
+This one command splits the world in two:
 
-## Step 2: read the token
+- **curl works, browser fails** → the problem lives in the browser: CORS, how the frontend attaches the header, or *which* token it requested.
+- **curl fails too** → the browser is innocent. The problem is the token, the gateway or the service. Keep going.
 
-Decode the payload. It's base64url, not encrypted. You don't need a website for this, and you shouldn't paste production tokens into one:
+It takes ten seconds, and it's the single most useful thing on this page.
+
+## Step 2: Actually read the token
+
+A JWT isn't encrypted; it's just base64url-encoded JSON. You can read it with a one-liner, and you should, rather than pasting production tokens into a random website:
 
 ```bash
 node -e "console.log(JSON.parse(Buffer.from(process.argv[1].split('.')[1], 'base64url')))" "$TOKEN"
 ```
 
-Check these claims against what your API expects:
+Now compare what's inside with what your API expects:
 
-| Claim | What to check | Typical mistake |
+| Claim | What to check | The classic mistake |
 | --- | --- | --- |
-| `aud` | Your API's client ID or App ID URI | Token was issued for Microsoft Graph, not your API |
+| `aud` | Your API's client ID or App ID URI | The token was issued for Microsoft Graph, not your API |
 | `iss` | Matches the issuer your API validates | v1 vs v2 token mismatch |
-| `exp` / `nbf` | Current time is inside the window | Expired token cached in the frontend; server clock skew |
-| `tid` | Expected Entra tenant | User signed in to a different directory |
-| `scp` | Delegated scopes, e.g. `access_as_user` | Scope never requested or never consented |
-| `roles` | App roles assigned to the user or app | Role defined but not assigned |
+| `exp` / `nbf` | "Now" falls inside the window | A stale token cached in the frontend; clock skew |
+| `tid` | The Entra tenant you expect | User signed in to a different directory |
+| `scp` | Delegated scopes, e.g. `access_as_user` | Scope never requested, or never consented |
+| `roles` | App roles assigned to the user | Role defined in the app registration, never assigned |
+
+Nine times out of ten, the answer is sitting right there in the token.
 
 ### The two Entra mistakes behind most 401s
 
-**Requesting the wrong scope.** If the frontend asks for `User.Read`, it gets a token for Microsoft Graph (`aud` is Graph), and your API correctly rejects it. Request your API's own scope, e.g. `api://<api-client-id>/access_as_user`, when acquiring the token you send to your API.
+**Mistake one: asking for the wrong token.** The frontend calls something like:
 
-**v1 vs v2 tokens.** The token version follows the *API's* app registration (`accessTokenAcceptedVersion` in its manifest), not the client's. The two versions have different issuers:
+```ts
+const result = await msal.acquireTokenSilent({ scopes: ["User.Read"], account });
+```
+
+That returns a perfectly valid token... **for Microsoft Graph**. Its `aud` is Graph, and your API is right to reject it. The fix is to request your own API's scope when getting the token you send to your API:
+
+```ts
+const result = await msal.acquireTokenSilent({
+  scopes: ["api://<your-api-client-id>/access_as_user"],
+  account,
+});
+```
+
+**Mistake two: v1 vs v2 tokens.** This one is sneaky, because the token version is decided by the *API's* app registration (`accessTokenAcceptedVersion` in its manifest), not the client's. The two versions carry different issuers:
 
 - v1: `https://sts.windows.net/<tenant-id>/`
 - v2: `https://login.microsoftonline.com/<tenant-id>/v2.0`
 
-They also usually have different audience formats: the App ID URI in v1, the client ID GUID in v2. Validate against the version you actually receive. Pinning the version in the manifest is better than accepting both.
+They usually differ in audience format too: the App ID URI in v1, the client ID GUID in v2. If your validator expects one and receives the other, every request fails with a perfectly reasonable-looking token. Pin the version in the manifest and validate exactly that.
 
-## Step 3: make the API say *why*
+## Step 3: Make your API say *why*
 
-A bare `401` with no body costs everyone time. Validate the token in one place, log the specific reason on the server, and return a standard `WWW-Authenticate` header (RFC 6750):
+A bare `401` with an empty body helps nobody, and the person debugging it at 2 a.m. might be you.
+
+Validate tokens in one place, log the **specific** reason server-side, and return a standard `WWW-Authenticate` header (RFC 6750) so clients know what kind of failure it was:
 
 ```ts
 // plugins/auth.ts
@@ -96,7 +130,7 @@ app.addHook("onRequest", async (req, reply) => {
     });
     req.auth = payload;
   } catch (err) {
-    // The exact reason (expired, bad audience, unknown kid...) stays in your logs
+    // The exact reason (expired, wrong audience, unknown key...) stays in your logs
     req.log.warn({ err, reqId: req.id }, "access token rejected");
     return reply
       .code(401)
@@ -106,9 +140,12 @@ app.addHook("onRequest", async (req, reply) => {
 });
 ```
 
-`createRemoteJWKSet` caches the signing keys and refetches when it sees an unknown `kid`, so Entra's key rotation doesn't turn into a wave of 401s.
+Two small things here prevent big outages:
 
-Keep **authorization separate** and make it return 403 with an equally clear reason:
+- `createRemoteJWKSet` caches Entra's signing keys and refetches when it sees an unknown key ID. Key rotation then happens without a wave of mysterious 401s.
+- `clockTolerance` absorbs the few seconds of drift between your servers and Microsoft's. Without it, freshly issued tokens can be "not yet valid".
+
+Keep **authorization** separate, and make it just as clear when it fails:
 
 ```ts
 const requireRole = (role: string) => async (req, reply) => {
@@ -122,57 +159,61 @@ const requireRole = (role: string) => async (req, reply) => {
 app.delete("/v1/jobs/:id", { preHandler: requireRole("Jobs.Admin") }, deleteJob);
 ```
 
-## Step 4: the gateway can lie to you
+Now a 403 tells you which role was missing, and the log tells you which roles the user actually had.
 
-If a service behind a gateway or reverse proxy rejects a token that curl proves is valid, look at what the gateway forwards:
+## Step 4: Suspect the gateway
 
-- **Is `Authorization` forwarded at all?** Some proxies strip it, or move it to a different header after doing their own validation.
-- **Do the gateway and the service expect the same audience and issuer?** A gateway configured for v1 in front of a service expecting v2 produces errors that bounce between layers.
-- **Header size.** Tokens with many claims can exceed proxy header limits. You'll see `400` or `431` before your service ever runs.
-- **Path rewriting.** `/api/v1/jobs` at the edge becomes `/v1/jobs` at the service. An authorization rule keyed on the original path then never matches.
+Here's a scenario I've seen in many shapes. curl against the service directly works. The same request through the gateway gets a 401. The token is identical.
 
-The single most useful thing here is a **correlation ID**. Generate it at the edge, forward it as a header through every hop, and log it everywhere. Then "a 401 at 14:02" turns into one search across gateway and service logs.
+When that happens, the gateway is lying to you, or at least changing the request on the way through:
 
-## Step 5: when "CORS error" is really an auth error
+- **Is the `Authorization` header forwarded at all?** Some proxies strip it, or swap it for their own header after validating the token themselves.
+- **Do the gateway and the service agree on issuer and audience?** A gateway configured for v1 tokens in front of a service expecting v2 creates errors that bounce between teams for days.
+- **Is the token simply too big?** Tokens stuffed with group claims can exceed proxy header limits, and you'll see a `400` or `431` before your service even runs.
+- **Is the path being rewritten?** `/api/v1/jobs` at the edge becomes `/v1/jobs` at the service, and an authorization rule keyed on the original path never matches.
 
-The browser enforces CORS on the *response*. If your API, or the gateway in front of it, returns a 401 or 500 **without** `Access-Control-Allow-Origin`, the browser hides the status from your JavaScript and reports a CORS failure instead. The console points at CORS while the real cause is an expired token.
+The single most valuable thing you can add here is a **correlation ID**. Generate it at the edge, forward it as a header through every hop, and log it everywhere. Then "a 401 at 14:02" stops being archaeology and becomes one search across the gateway and service logs.
 
-Check, in order:
+## Step 5: When "CORS error" is a costume
+
+Browsers enforce CORS on the *response*. If your API or gateway sends a 401 or 500 **without** `Access-Control-Allow-Origin`, the browser hides the status from your JavaScript and reports a CORS failure instead. The console points at CORS; the real culprit is an expired token wearing a disguise.
+
+Check these, in order:
 
 1. **The preflight.** The `OPTIONS` request has no `Authorization` header. If your auth runs before CORS handling and rejects it, every real request fails. Let `OPTIONS` through (as in the hook above).
-2. **Allowed headers.** Sending `Authorization` or a custom header like `X-Tenant-Id` requires them in `Access-Control-Allow-Headers`.
+2. **Allowed headers.** Sending `Authorization` or a custom header like `X-Tenant-Id` requires listing them in `Access-Control-Allow-Headers`.
 3. **Credentials.** With `credentials: "include"`, `Access-Control-Allow-Origin: *` is invalid. Echo the specific allowed origin.
-4. **Error responses.** Make sure CORS headers are added to 4xx and 5xx responses too, not just successful ones, so the frontend can see the real status.
+4. **Error responses.** Make sure CORS headers are added to 4xx and 5xx responses too, not only to successful ones. This one change unmasks a huge number of "CORS bugs".
 
-## Step 6: the database layer doesn't speak HTTP
+## Step 6: The database doesn't speak HTTP
 
-Databases don't return 403. They fail in ways your API translates:
+Databases don't return 403s. They fail in their own ways, which your API then translates:
 
-- **`permission denied for table ...`** (SQLSTATE `42501`): the database role lacks a grant. That's a server misconfiguration, so return **500** and alert, not 403. Telling the client "forbidden" sends everyone looking at user roles.
-- **Row-level security** doesn't error on reads. It returns fewer rows. A missing or wrong tenant context shows up as an empty list or a 404, which looks like a data bug. Log the tenant your API set for the transaction alongside the request ID.
-- **RLS on writes** does error: `new row violates row-level security policy`. That usually means the tenant from the token and the tenant in the payload disagree, which is a real authorization failure. A 403 is reasonable there.
+- **`permission denied for table ...`** (SQLSTATE `42501`) means the database role is missing a grant. That's a deployment bug, so return **500** and alert. Answering "forbidden" sends everyone off to check user roles that were never the problem.
+- **Row-level security doesn't error on reads.** It just returns fewer rows. A missing or wrong tenant context shows up as an empty list or a 404, which looks like a data bug. Log the tenant your API set for the transaction next to the request ID.
+- **RLS on writes does error:** `new row violates row-level security policy`. That usually means the tenant in the token and the tenant in the payload disagree, which is a genuine authorization failure, so a 403 is fair.
 
-(I wrote up the RLS side in detail in [Multi-tenant isolation with PostgreSQL Row-Level Security](/notes/postgres-rls-multi-tenancy).)
+(I wrote up the row-level security side in detail in [The WHERE clause you'll forget](/notes/postgres-rls-multi-tenancy).)
 
-## Symptom → layer cheat sheet
+## The cheat sheet I wish I'd had
 
-| What you see | Most likely layer | First check |
+| What you see | Most likely layer | Check first |
 | --- | --- | --- |
-| CORS error in console, request has a status in Network tab | API/gateway error response missing CORS headers | Response headers of the failing call |
+| CORS error, but Network tab shows a status | API/gateway error response missing CORS headers | Response headers on the failing call |
 | Preflight `OPTIONS` fails | Auth running before CORS | Let `OPTIONS` skip auth |
-| 401, curl also 401 | Token | `aud`, `iss`, `exp` in the decoded token |
-| 401 only behind the gateway | Gateway | Is `Authorization` forwarded? Same issuer/audience config? |
-| 401 after working for an hour | Token lifetime | Frontend refresh / silent token acquisition |
+| 401, and curl is also 401 | The token | `aud`, `iss`, `exp` in the decoded token |
+| 401 only behind the gateway | The gateway | Is `Authorization` forwarded? Same issuer/audience? |
+| 401 after working for about an hour | Token lifetime | Silent refresh in the frontend |
 | 403 with a valid token | Authorization | `roles` / `scp` vs. what the endpoint requires |
 | 400 / 431 before reaching the service | Proxy header limits | Token size, claims included |
-| Empty list / 404 for data that exists | RLS tenant context | Tenant set for the transaction vs. data's `tenant_id` |
-| 500 with `42501` in logs | DB grants | Role privileges after the last migration |
+| Empty list / 404 for existing data | RLS tenant context | Tenant set for the transaction vs. the row's tenant |
+| 500 with `42501` in logs | Database grants | Role privileges after the last migration |
 
-## What I'd set up on day one
+## What I'd set up on day one, next time
 
-- One auth hook per service that logs the *reason* for every rejection, keyed by request ID.
-- A correlation ID that flows from the edge to the database logs.
-- CORS headers on error responses, not just successful ones.
-- A `/v1/me` endpoint that returns the claims the API saw: the fastest debugging tool there is. (Behind auth, and never in a public response for tokens that contain sensitive claims.)
+- **One auth hook per service** that logs the *reason* for every rejection, keyed by request ID.
+- **A correlation ID** that flows from the edge all the way to database logs.
+- **CORS headers on error responses**, not only on happy paths.
+- **A `/v1/me` endpoint** that returns the claims the API actually saw. It's the fastest debugging tool there is. (Keep it behind auth, and don't echo sensitive claims publicly.)
 
-With those in place, most auth errors become: read the log line, fix the one thing it names.
+None of this is glamorous. But with it in place, most auth bugs go from "can someone look at this?" to *read the log line, fix the one thing it names.* That's a much better Friday.

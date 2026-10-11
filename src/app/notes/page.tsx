@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Rss } from "lucide-react";
 import { getAllNotes } from "@/lib/notes";
 import NotesList from "@/components/sub/notes-list";
+import { RssButton } from "@/components/sub/rss-button";
 
 export const metadata: Metadata = {
   title: "Notes",
@@ -21,12 +21,7 @@ export default function NotesIndex() {
         Write-ups of problems I&apos;ve worked through in backend systems, multi-tenant SaaS, auth, and AI
         products. Each one is written so you can apply it to your own codebase.
       </p>
-      <a
-        href="/notes/rss.xml"
-        className="mt-4 inline-flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300"
-      >
-        <Rss className="size-4" /> Subscribe via RSS
-      </a>
+      <RssButton />
 
       <NotesList notes={notes} />
     </main>

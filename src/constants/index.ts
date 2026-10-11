@@ -58,32 +58,8 @@ export const SOCIALSFOOTER = [
   }
 ]
 export const NAV_LINKS = [
-  {
-    title: "About",
-    link: "/#about-me",
-  },
-  {
-    title: "Experience",
-    link: "/#experience",
-  },
-  {
-    title: "Projects",
-    link: "/#projects",
-  },
-  {
-    title: "Skills",
-    link: "/#skills",
-  },
-  {
-    title: "Notes",
-    link: "/notes",
-  },
-  {
-    title: "Services",
-    link: "/services",
-  },
-  {
-    title: "Contact",
-    link: "/#contact",
-  },
+  { title: "Projects", link: "/#projects" },
+  { title: "Notes", link: "/notes" },
+  { title: "Services", link: "/services" },
+  { title: "Contact", link: "/#contact" },
 ] as const;

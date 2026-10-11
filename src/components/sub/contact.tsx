@@ -1,42 +1,31 @@
 import Link from "next/link";
-import { Mail } from "lucide-react";
 import { SOCIALSFOOTER } from "@/constants";
-import { SectionHeading } from "../ui/section-heading";
+import { AuroraText } from "../magicui/aurora-text";
+import { AnimatedGradientText } from "../magicui/animated-gradient-text";
+import { LazyGlobe } from "../ui/lazy-globe";
 
 const EMAIL = "razvizaid259@gmail.com";
 
 function ContactSection() {
   return (
-    <section id="contact" aria-labelledby="contact-heading" className="container relative mx-auto scroll-mt-24 px-4 py-16">
-      {/* Decorative planet with an orbiting moon, CSS only */}
-      <div aria-hidden className="pointer-events-none absolute -top-6 right-[8%] hidden size-40 md:block">
-        <div className="absolute inset-6 rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-600 to-indigo-900 shadow-[0_0_80px_rgb(168_85_247/0.55)]" />
-        <div className="orbit" style={{ ["--inset" as string]: "0", ["--speed" as string]: "14s" }}>
-          <div style={{ ["--angle" as string]: "0deg", ["--radius" as string]: "80px" }}>
-            <div className="m-[15px] size-3.5 rounded-full bg-sky-300 shadow-[0_0_14px_#7dd3fc]" />
-          </div>
+    <section
+      id="contact"
+      aria-labelledby="contact-heading"
+      className="container relative mx-auto flex scroll-mt-24 items-center justify-between gap-8 overflow-hidden px-6 py-16 md:px-20"
+    >
+      <div className="reveal max-w-xl">
+        <div className="relative flex w-max items-center rounded-full px-3 py-1 shadow-[inset_0_-8px_10px_#8fdfff1f] md:px-4 md:py-1.5">
+          <span aria-hidden className="pill-border absolute inset-0 rounded-[inherit]" />
+          <span aria-hidden>👋</span>
+          <hr className="mx-2 h-4 w-px shrink-0 border-0 bg-neutral-500" />
+          <AnimatedGradientText className="text-xs font-medium md:text-sm">Say Hello</AnimatedGradientText>
         </div>
-      </div>
+        <h2 id="contact-heading" className="mt-3 text-[32px] font-semibold text-white sm:text-[40px]">
+          Let&apos;s have a <AuroraText>Convo</AuroraText>
+        </h2>
+        <p className="text-gray-300">Have an idea, project, or just a question? I&apos;d love to hear from you.</p>
 
-      <SectionHeading id="contact-heading" emoji="👋" eyebrow="Say Hello" title="Let's have a" highlight="Convo" />
-
-      <div className="spotlight reveal mx-auto mt-10 max-w-2xl rounded-3xl border border-white/10 bg-[#0a0720]/70 p-6 text-center backdrop-blur-sm md:p-10">
-        <p className="text-lg text-gray-300">
-          Hiring, have a project in mind, or just want to talk shop? I&apos;d love to hear from you.
-        </p>
-        <a
-          href={`mailto:${EMAIL}`}
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-purple-600 px-6 py-3 font-medium text-white transition hover:bg-purple-500"
-        >
-          <Mail aria-hidden className="size-5" /> {EMAIL}
-        </a>
-        <p className="mt-4 text-sm text-gray-400">
-          Freelance project?{" "}
-          <Link href="/services" className="font-medium text-purple-300 hover:underline">
-            See services
-          </Link>
-        </p>
-        <ul className="mt-8 flex justify-center gap-3">
+        <ul className="mt-6 flex gap-4 md:gap-6">
           {SOCIALSFOOTER.map(({ link, name, icon: Icon }) => (
             <li key={name}>
               <a
@@ -44,13 +33,34 @@ function ContactSection() {
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label={name}
-                className="flex size-11 items-center justify-center rounded-full border border-white/10 text-white transition hover:-translate-y-0.5 hover:border-purple-400 hover:text-purple-300"
+                className="group flex min-h-11 flex-col items-center justify-center"
               >
-                <Icon className="size-5" />
+                <Icon className="size-7 text-white transition duration-500 group-hover:translate-y-1 group-hover:text-violet-400 md:size-9" />
+                <span className="mt-2 h-0.5 w-8 scale-x-0 bg-gradient-to-r from-blue-500 to-violet-500 opacity-0 transition duration-500 group-hover:scale-x-100 group-hover:opacity-100" />
               </a>
             </li>
           ))}
         </ul>
+
+        <p className="mt-4 text-gray-300">
+          or mail at{" "}
+          <a
+            href={`mailto:${EMAIL}`}
+            className="bg-gradient-to-br from-violet-400 to-blue-400 bg-clip-text font-semibold text-transparent"
+          >
+            {EMAIL}
+          </a>
+        </p>
+        <p className="mt-2 text-sm text-gray-400">
+          Freelance project?{" "}
+          <Link href="/services" className="text-purple-300 underline underline-offset-2 hover:text-purple-200">
+            See services
+          </Link>
+        </p>
+      </div>
+
+      <div className="hidden shrink-0 sm:block">
+        <LazyGlobe />
       </div>
     </section>
   );

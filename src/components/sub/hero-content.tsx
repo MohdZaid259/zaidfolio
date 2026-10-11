@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import { AnimatedGradientText } from "../magicui/animated-gradient-text";
 import { ShimmerLink } from "../magicui/shimmer-button";
 import { TechOrbit } from "./tech-orbit";
+import { MorphingText } from "../magicui/morphing-text";
 
 export const HeroContent = () => {
   return (
@@ -17,10 +18,11 @@ export const HeroContent = () => {
           <ChevronRight aria-hidden className="ml-1 size-4 stroke-neutral-500" />
         </div>
 
-        <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-6xl">
+        <h1 className="w-full text-4xl font-extrabold tracking-tight text-white md:text-6xl">
           Hello, I&apos;m
-          <span className="mt-1 block bg-gradient-to-r from-violet-400 via-fuchsia-400 to-sky-400 bg-clip-text pb-1 text-transparent">
-            Mohd Zaid
+          <span className="sr-only"> Mohd Zaid, AI full-stack engineer</span>
+          <span aria-hidden>
+            <MorphingText texts={["Mohd Zaid", "Freelancer", "Developer"]} />
           </span>
         </h1>
 
