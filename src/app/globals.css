@@ -414,32 +414,36 @@ html {
   to { rotate: 360deg; }
 }
 
-/* Orbiting tech icons in the hero */
-.orbit {
+/* Hero atom: three tilted elliptical orbits; icons travel along them like electrons.
+   Each plane is rotated; each electron follows an ellipse path and counter-rotates
+   by the plane angle so its icon stays upright. */
+.atom-plane {
   position: absolute;
-  inset: var(--inset, 0);
-  border-radius: 9999px;
-  border: 1px dashed rgb(168 85 247 / 0.25);
-  animation: orbit-spin var(--speed, 40s) linear infinite var(--dir, normal);
+  inset: 0;
+  rotate: var(--tilt, 0deg);
 }
-.orbit > * {
+.electron {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  /* Place each icon on the ring, then counter-rotate so it stays upright */
-  transform: rotate(var(--angle)) translate(var(--radius)) rotate(calc(-1 * var(--angle)));
-  margin: -22px 0 0 -22px;
+  left: 0;
+  top: 0;
+  offset-path: path("M 30 230 A 200 74 0 1 0 430 230 A 200 74 0 1 0 30 230 Z");
+  offset-rotate: 0deg;
+  offset-anchor: center;
+  offset-distance: var(--start, 0%);
+  animation: electron-move var(--speed, 24s) linear infinite var(--dir, normal);
 }
-/* Icons spin the opposite way to their ring so they always stay upright */
-.orbit > * > * {
-  animation: orbit-spin var(--speed, 40s) linear infinite var(--counter, reverse);
+.electron > * {
+  rotate: calc(-1 * var(--tilt, 0deg));
 }
-.orbit-ccw {
-  --dir: reverse;
-  --counter: normal;
+@keyframes electron-move {
+  from { offset-distance: var(--start, 0%); }
+  to { offset-distance: calc(var(--start, 0%) + 100%); }
 }
-@keyframes orbit-spin {
-  to { rotate: 360deg; }
+.nucleus {
+  animation: nucleus-pulse 4s ease-in-out infinite;
+}
+@keyframes nucleus-pulse {
+  50% { scale: 1.06; filter: brightness(1.15); }
 }
 
 /* Card spotlight that follows the pointer (vars set by <Spotlight />) */

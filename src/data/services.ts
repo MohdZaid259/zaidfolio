@@ -16,7 +16,7 @@ export const services: Service[] = [
     id: "websites",
     title: "Business & marketing websites",
     summary:
-      "Fast, multilingual sites that explain what your business does and turn visitors into enquiries.",
+      "Fast, multilingual sites that turn visitors into enquiries.",
     includes: [
       "Next.js site, responsive on every screen size",
       "Multiple languages with i18n",
@@ -35,7 +35,7 @@ export const services: Service[] = [
     id: "saas",
     title: "SaaS MVPs & full-stack apps",
     summary:
-      "A working first version of your product, with real auth, payments and data, built so it can grow past the MVP.",
+      "A real first version of your product: auth, payments, data.",
     includes: [
       "Authentication and user accounts",
       "Payments and subscriptions",
@@ -53,7 +53,7 @@ export const services: Service[] = [
     id: "backend",
     title: "Backend, APIs & multi-tenancy",
     summary:
-      "APIs and data layers for products with many customers: tenant isolation, auth and pipelines that hold up in production.",
+      "Multi-tenant APIs, auth and pipelines that hold up in production.",
     includes: [
       "Fastify / Node.js APIs with clear resource contracts",
       "Multi-tenant isolation with PostgreSQL Row-Level Security",
@@ -72,7 +72,7 @@ export const services: Service[] = [
     id: "ai",
     title: "AI features",
     summary:
-      "LLM features that answer from your own data: document chat, extraction, ranking and assistants.",
+      "Document chat, extraction and assistants grounded in your data.",
     includes: [
       "Document ingestion pipelines with background processing",
       "Embeddings and semantic retrieval (RAG) grounded in your content",
@@ -89,26 +89,11 @@ export const services: Service[] = [
 ];
 
 export const process = [
-  {
-    title: "Understand the problem",
-    detail: "A call to go through what you need, who it's for, and what success looks like.",
-  },
-  {
-    title: "Scope and plan",
-    detail: "A written scope with features, technical approach and milestones, agreed before any code is written.",
-  },
-  {
-    title: "Build",
-    detail: "Development against the agreed milestones, with progress you can review along the way.",
-  },
-  {
-    title: "Launch and handover",
-    detail: "Deployment to production, plus access, credentials and documentation handed over to you.",
-  },
-  {
-    title: "After launch",
-    detail: "Fixes for issues that come up after delivery.",
-  },
+  { title: "Discover", detail: "A call about goals and users" },
+  { title: "Scope", detail: "Written plan and milestones" },
+  { title: "Build", detail: "Progress you can review" },
+  { title: "Launch", detail: "Deploy, docs and handover" },
+  { title: "Support", detail: "Fixes after delivery" },
 ];
 
 export const faqs = [
