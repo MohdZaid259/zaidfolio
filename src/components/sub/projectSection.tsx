@@ -12,8 +12,8 @@ export type CarouselProject = Pick<
 
 /**
  * Auto-advancing project carousel (CSS animations, no animation library).
- * Autoplay runs only while the carousel is on screen, and pauses on hover,
- * keyboard focus, and for users who prefer reduced motion.
+ * A progress bar fills under the active project and advances to the next one;
+ * it runs only on screen and pauses on hover, keyboard focus and reduced motion.
  */
 export default function ProjectCarousel({ projects }: { projects: CarouselProject[] }) {
   const [[index, direction], setState] = useState<[number, number]>([0, 1]);
@@ -33,12 +33,14 @@ export default function ProjectCarousel({ projects }: { projects: CarouselProjec
     return () => observer.disconnect();
   }, []);
 
+  const [reducedMotion, setReducedMotion] = useState(false);
   useEffect(() => {
-    if (!inView || paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const timer = setTimeout(() => go(index + 1, 1), 6000);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inView, paused, index]);
+    setReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }, []);
+
+  // The active indicator's fill animation is the timer: when it finishes, the next
+  // project shows. Pausing the animation (hover, focus, off-screen) pauses autoplay.
+  const autoplay = inView && !paused && !reducedMotion;
 
   const project = projects[index]!;
   const linkClass = 'inline-flex min-h-11 items-center px-1 text-purple-300 hover:text-purple-200 hover:underline';
@@ -140,16 +142,27 @@ export default function ProjectCarousel({ projects }: { projects: CarouselProjec
         </div>
       </div>
 
-      <div className="absolute -bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1 lg:bottom-16 lg:left-36 lg:translate-x-0">
+      {/* Progress bar: aligned with the project text on desktop */}
+      <div className="absolute -bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 lg:bottom-16 lg:left-16 lg:translate-x-0">
         {projects.map((p, i) => (
           <button
             key={p.slug}
             onClick={() => go(i, i > index ? 1 : -1)}
             aria-label={`Show ${p.name}`}
             aria-current={i === index}
-            className="flex h-11 min-w-6 cursor-pointer items-center sm:min-w-8"
+            className="flex h-11 w-8 cursor-pointer items-center sm:w-10"
           >
-            <span className={`h-1 w-full rounded-full transition-all duration-300 ${i === index ? 'bg-white' : 'bg-white/25'}`} />
+            <span className="relative h-1 w-full overflow-hidden rounded-full bg-white/20">
+              {i < index && <span className="absolute inset-0 bg-white/70" />}
+              {i === index && (
+                <span
+                  key={index}
+                  className={reducedMotion ? 'absolute inset-0 bg-white' : 'carousel-progress absolute inset-y-0 left-0 bg-white'}
+                  style={{ animationPlayState: autoplay ? 'running' : 'paused' }}
+                  onAnimationEnd={() => go(index + 1, 1)}
+                />
+              )}
+            </span>
           </button>
         ))}
       </div>

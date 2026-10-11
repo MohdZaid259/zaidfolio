@@ -636,3 +636,12 @@ html {
   height: calc(56 * var(--u));
 }
 
+
+/* Projects carousel: the active segment fills over 6s, then the next project shows */
+.carousel-progress {
+  width: 0;
+  animation: carousel-fill 6s linear forwards;
+}
+@keyframes carousel-fill {
+  to { width: 100%; }
+}

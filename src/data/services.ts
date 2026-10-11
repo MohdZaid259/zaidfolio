@@ -46,7 +46,6 @@ export const services: Service[] = [
     stack: ["Next.js", "Node.js", "PostgreSQL", "MongoDB", "Redis", "Clerk", "Razorpay"],
     proof: [
       { label: "IntelliPrompt", href: "/work/intelliprompt" },
-      { label: "NextGen E-Commerce", href: "/work/nextgen" },
     ],
   },
   {

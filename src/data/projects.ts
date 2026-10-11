@@ -18,6 +18,24 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    slug: 'ls4it',
+    name: 'LS4IT',
+    kind: 'Client work · Saudi Arabia',
+    role: 'Freelance full-stack developer',
+    summary:
+      'Website for a Saudi-based fabric manufacturing and supply company, with CMS-managed content in multiple languages.',
+    image: '/projects/lsit.png',
+    technologies: ['Next.js', 'Hygraph', 'i18n', 'Tailwind'],
+    live: 'https://ls4it.com',
+    context:
+      'A manufacturing and supply business needed a modern site to present its products to an international audience, with content that changes without a code release.',
+    built: [
+      'Content modeled in Hygraph (headless CMS) and rendered with Next.js.',
+      'Multilingual pages with i18n.',
+      'Owned the project from requirements through deployment and handover.',
+    ],
+  },
+  {
     slug: 'rd-tech',
     name: 'RD Tech Group',
     kind: 'Client work · UAE',
@@ -34,26 +52,6 @@ export const projects: Project[] = [
       'Multilingual content with i18n routing.',
       'Image delivery through ImageKit to keep pages fast with photo-heavy content.',
       'Owned the project from requirements through deployment and handover.',
-    ],
-  },
-  {
-    slug: 'docly',
-    name: 'Docly',
-    kind: 'Product · AI',
-    role: 'Solo — architecture, backend, frontend',
-    summary:
-      'AI document chat: upload several documents, process them in the background, and get answers grounded in their content.',
-    image: '/projects/docly.webp',
-    technologies: ['Node.js', 'Express', 'MongoDB', 'AWS S3', 'BullMQ', 'Redis', 'OpenAI Embeddings'],
-    live: 'https://docly-ai.vercel.app/',
-    github: 'https://github.com/MohdZaid259/Docly',
-    context:
-      'Chatting with documents breaks down when uploads are processed inline: large files block requests and answers drift away from the source. Docly separates ingestion from chat so both stay reliable.',
-    built: [
-      'Multi-document upload to AWS S3, with processing queued through BullMQ on Redis so the API never blocks on large files.',
-      'An ingestion pipeline that chunks documents and generates 1536-dimensional OpenAI embeddings for vector retrieval.',
-      'Semantic retrieval feeding an LLM response layer, so answers are grounded in the uploaded documents.',
-      'Conversational context built from the latest 5 messages to keep follow-up questions coherent.',
     ],
   },
   {
@@ -78,21 +76,23 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: 'ls4it',
-    name: 'LS4IT',
-    kind: 'Client work · Saudi Arabia',
-    role: 'Freelance full-stack developer',
+    slug: 'docly',
+    name: 'Docly',
+    kind: 'Product · AI',
+    role: 'Solo — architecture, backend, frontend',
     summary:
-      'Website for a Saudi-based fabric manufacturing and supply company, with CMS-managed content in multiple languages.',
-    image: '/projects/lsit.png',
-    technologies: ['Next.js', 'Hygraph', 'i18n', 'Tailwind'],
-    live: 'https://ls4it.com',
+      'AI document chat: upload several documents, process them in the background, and get answers grounded in their content.',
+    image: '/projects/docly.webp',
+    technologies: ['Node.js', 'Express', 'MongoDB', 'AWS S3', 'BullMQ', 'Redis', 'OpenAI Embeddings'],
+    live: 'https://docly-ai.vercel.app/',
+    github: 'https://github.com/MohdZaid259/Docly',
     context:
-      'A manufacturing and supply business needed a modern site to present its products to an international audience, with content that changes without a code release.',
+      'Chatting with documents breaks down when uploads are processed inline: large files block requests and answers drift away from the source. Docly separates ingestion from chat so both stay reliable.',
     built: [
-      'Content modeled in Hygraph (headless CMS) and rendered with Next.js.',
-      'Multilingual pages with i18n.',
-      'Owned the project from requirements through deployment and handover.',
+      'Multi-document upload to AWS S3, with processing queued through BullMQ on Redis so the API never blocks on large files.',
+      'An ingestion pipeline that chunks documents and generates 1536-dimensional OpenAI embeddings for vector retrieval.',
+      'Semantic retrieval feeding an LLM response layer, so answers are grounded in the uploaded documents.',
+      'Conversational context built from the latest 5 messages to keep follow-up questions coherent.',
     ],
   },
   {
@@ -109,23 +109,6 @@ export const projects: Project[] = [
     built: [
       'A responsive Next.js site with a page structure built around the service catalogue.',
       'Delivered in a few days, from first brief to production.',
-    ],
-  },
-  {
-    slug: 'nextgen',
-    name: 'NextGen E-Commerce',
-    kind: 'Personal project',
-    role: 'Solo',
-    summary: 'E-commerce app with Razorpay checkout, an AI chatbot and real-time order management.',
-    image: '/projects/nextgen.png',
-    technologies: ['React', 'Firebase', 'Razorpay', 'AI Chatbot'],
-    live: 'https://nextgen-herbals.vercel.app/',
-    github: 'https://github.com/MohdZaid259/NextGen',
-    context: 'A full storefront built end to end to learn payments, real-time data and chat in one app.',
-    built: [
-      'Razorpay payment integration.',
-      'Real-time order management on Firebase.',
-      'An AI chatbot for product questions.',
     ],
   },
   {
