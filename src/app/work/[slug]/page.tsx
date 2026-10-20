@@ -38,8 +38,8 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
       </Link>
 
       <p className="mt-8 text-xs uppercase tracking-widest text-purple-400">{project.kind}</p>
-      <h1 className="mt-2 text-4xl font-bold text-white md:text-5xl">{project.name}</h1>
-      <p className="mt-4 text-lg leading-relaxed md:text-xl">{project.summary}</p>
+      <h1 className="mt-2 text-[34px] font-bold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl">{project.name}</h1>
+      <p className="mt-4 text-base leading-relaxed sm:text-lg md:text-xl">{project.summary}</p>
 
       <dl className="mt-8 grid grid-cols-1 gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-sm sm:grid-cols-2">
         <div>
@@ -93,12 +93,12 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
       />
 
       <section className="mt-12">
-        <h2 className="text-2xl font-semibold text-white">The problem</h2>
+        <h2 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">The problem</h2>
         <p className="mt-3 leading-relaxed">{project.context}</p>
       </section>
 
       <section className="mt-10">
-        <h2 className="text-2xl font-semibold text-white">What I built</h2>
+        <h2 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">What I built</h2>
         <ul className="mt-4 space-y-3">
           {project.built.map((item) => (
             <li key={item} className="flex gap-3 leading-relaxed">
@@ -111,7 +111,7 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
 
       {testimonial && (
         <figure className="mt-12 rounded-2xl border border-purple-500/30 bg-purple-500/[0.06] p-6">
-          <blockquote className="text-lg leading-relaxed text-gray-200">“{testimonial.quote}”</blockquote>
+          <blockquote className="text-base leading-relaxed text-gray-200 sm:text-lg">“{testimonial.quote}”</blockquote>
           <figcaption className="mt-4 text-sm text-gray-400">
             <span className="font-semibold text-white">{testimonial.name}</span> · {testimonial.designation}
           </figcaption>

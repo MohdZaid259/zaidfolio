@@ -26,7 +26,7 @@ export const HeroContent = () => {
           </span>
         </h1>
 
-        <p className="max-w-[560px] text-base leading-relaxed text-gray-300 md:text-xl">
+        <p className="max-w-[560px] text-pretty text-[15px] leading-7 text-gray-300 sm:text-base md:text-xl md:leading-relaxed">
           I build backend systems, multi-tenant SaaS and AI-powered products, and ship them with Docker, CI/CD and
           the cloud. Currently at PGC Digital, building 10xTA.
         </p>

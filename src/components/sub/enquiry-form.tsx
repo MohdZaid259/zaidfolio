@@ -35,7 +35,7 @@ export function EnquiryForm({ services }: { services: { id: string; title: strin
   };
 
   const field =
-    "mt-1 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-purple-400 focus:outline-none";
+    "mt-1 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-base text-white placeholder:text-gray-400 sm:text-sm focus:border-purple-400 focus:outline-none";
 
   return (
     <form onSubmit={onSubmit} className="grid gap-4 sm:grid-cols-2">

@@ -20,7 +20,7 @@ export function SectionHeading({ id, emoji, eyebrow, title, highlight }: Section
         <hr className="mx-2 h-4 w-px shrink-0 border-0 bg-neutral-500" />
         <AnimatedGradientText className="text-xs font-medium md:text-sm">{eyebrow}</AnimatedGradientText>
       </div>
-      <h2 id={id} className="mt-3 text-[30px] font-semibold tracking-wide text-white md:text-[40px]">
+      <h2 id={id} className="mt-3 text-[28px] font-semibold tracking-tight text-white sm:text-[32px] md:text-[40px] md:tracking-wide">
         {title} <AuroraText>{highlight}</AuroraText>
       </h2>
     </div>

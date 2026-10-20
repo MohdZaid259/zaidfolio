@@ -18,17 +18,21 @@ export default function Experience() {
                 }`}
               />
               <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
-                <h3 className="text-xl font-semibold text-white md:text-2xl">
-                  {job.role} <span className="text-purple-400">· {job.company}</span>
+                <h3 className="text-lg font-semibold leading-snug tracking-tight text-white sm:text-xl md:text-2xl">
+                  {job.role}{" "}
+                  <span className="block text-purple-400 sm:inline">
+                    <span className="hidden sm:inline">· </span>
+                    {job.company}
+                  </span>
                 </h3>
-                <p className="shrink-0 text-sm text-gray-400">
+                <p className="shrink-0 text-[13px] text-gray-400 sm:text-sm">
                   {job.period}
                   {job.current && (
                     <span className="ml-2 rounded-full bg-green-500/15 px-2 py-0.5 text-xs text-green-400">Current</span>
                   )}
                 </p>
               </div>
-              {job.product && <p className="mt-1 text-sm text-gray-400">{job.product}</p>}
+              {job.product && <p className="mt-0.5 text-[13px] text-gray-500 sm:text-sm sm:text-gray-400">{job.product}</p>}
 
               <ExpandablePoints points={job.points} />
 

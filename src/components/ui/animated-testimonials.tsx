@@ -64,7 +64,7 @@ export const AnimatedTestimonials = ({ testimonials }: { testimonials: Testimoni
 
         <div className="flex flex-col justify-between py-4">
           <div key={active} aria-live="polite" className="quote-in">
-            <h3 className="text-2xl font-bold text-white max-sm:text-center">{current.name}</h3>
+            <h3 className="text-xl font-bold tracking-tight text-white max-sm:text-center sm:text-2xl">{current.name}</h3>
             <p className="text-sm text-gray-400 max-sm:text-center">
               {current.designation}
               {current.linkedin && (
@@ -86,7 +86,7 @@ export const AnimatedTestimonials = ({ testimonials }: { testimonials: Testimoni
             >
               See the project →
             </Link>
-            <blockquote className="mt-6 text-base text-gray-300 md:text-xl">
+            <blockquote className="mt-6 text-pretty text-[15px] leading-relaxed text-gray-300 max-sm:text-center sm:text-base md:text-xl">
               {current.quote.split(" ").map((word, index) => (
                 <span key={index} className="word-in inline-block" style={{ animationDelay: `${index * 20}ms` }}>
                   {word}&nbsp;
@@ -94,7 +94,7 @@ export const AnimatedTestimonials = ({ testimonials }: { testimonials: Testimoni
               ))}
             </blockquote>
           </div>
-          <div className="flex gap-4 self-end pt-6 max-sm:mr-8 md:pt-0">
+          <div className="flex gap-4 self-end pt-6 max-sm:self-center md:pt-0">
             <button
               onClick={prev}
               aria-label="Previous testimonial"

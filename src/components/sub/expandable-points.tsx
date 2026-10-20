@@ -11,10 +11,10 @@ export function ExpandablePoints({ points, visible = 3 }: { points: string[]; vi
 
   return (
     <>
-      <ul className="mt-4 space-y-2 leading-relaxed text-gray-300 md:text-lg">
+      <ul className="mt-4 space-y-2.5 text-[15px] leading-relaxed text-gray-300 sm:text-base md:text-lg">
         {shown.map((point, i) => (
           <li key={point} className={`flex gap-3 ${i >= visible ? "rise-in" : ""}`}>
-            <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-purple-500" />
+            <span aria-hidden className="mt-[0.6em] size-1.5 shrink-0 rounded-full bg-purple-500" />
             <span>{point}</span>
           </li>
         ))}

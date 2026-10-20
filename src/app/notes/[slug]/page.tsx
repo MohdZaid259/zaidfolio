@@ -75,8 +75,8 @@ export default async function NotePage({ params }: { params: { slug: string } })
               {" · "}
               {note.readingMinutes} min read
             </p>
-            <h1 className="mt-3 text-3xl font-bold leading-tight text-white md:text-5xl">{note.title}</h1>
-            <p className="mt-4 text-lg leading-relaxed text-gray-300">{note.description}</p>
+            <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight text-white md:text-5xl">{note.title}</h1>
+            <p className="mt-4 text-base leading-relaxed text-gray-300 sm:text-lg">{note.description}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {note.tags.map((tag) => (
                 <span key={tag} className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-xs text-gray-300">

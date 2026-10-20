@@ -20,10 +20,10 @@ function ContactSection() {
           <hr className="mx-2 h-4 w-px shrink-0 border-0 bg-neutral-500" />
           <AnimatedGradientText className="text-xs font-medium md:text-sm">Say Hello</AnimatedGradientText>
         </div>
-        <h2 id="contact-heading" className="mt-3 text-[32px] font-semibold text-white sm:text-[40px]">
+        <h2 id="contact-heading" className="mt-3 text-[28px] font-semibold tracking-tight text-white sm:text-[32px] md:text-[40px] md:tracking-wide">
           Let&apos;s have a <AuroraText>Convo</AuroraText>
         </h2>
-        <p className="text-gray-300">Have an idea, project, or just a question? I&apos;d love to hear from you.</p>
+        <p className="mt-2 text-[15px] text-gray-300 sm:text-base">Have an idea, project, or just a question? I&apos;d love to hear from you.</p>
 
         <ul className="mt-6 flex gap-4 md:gap-6">
           {SOCIALSFOOTER.map(({ link, name, icon: Icon }) => (
@@ -42,7 +42,7 @@ function ContactSection() {
           ))}
         </ul>
 
-        <p className="mt-4 text-gray-300">
+        <p className="mt-4 text-[15px] text-gray-300 sm:text-base">
           or mail at{" "}
           <a
             href={`mailto:${EMAIL}`}

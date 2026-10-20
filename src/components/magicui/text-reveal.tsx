@@ -6,11 +6,17 @@ import type { FC } from "react";
  * Server-rendered, no JavaScript.
  */
 export const TextReveal: FC<{ children: string; className?: string }> = ({ children, className }) => (
-  <p className={`flex max-w-4xl flex-wrap justify-center text-center text-lg leading-relaxed text-white md:text-2xl ${className ?? ""}`}>
-    {children.split(/\s+/).map((word, i) => (
-      <span key={i} className="reveal-word mx-1 lg:mx-1.5">
-        {word}
-      </span>
-    ))}
+  <p
+    className={`max-w-4xl text-pretty text-center text-[17px] leading-[1.7] text-white sm:text-lg md:text-2xl md:leading-relaxed md:[word-spacing:0.15em] ${className ?? ""}`}
+  >
+    {children
+      .trim()
+      .split(/\s+/)
+      .map((word, i) => (
+        <span key={i}>
+          {i > 0 && " "}
+          <span className="reveal-word">{word}</span>
+        </span>
+      ))}
   </p>
 );

@@ -42,10 +42,10 @@ export default function ServicesPage() {
       <header className="relative mx-auto max-w-3xl text-center">
         <div aria-hidden className="absolute left-1/2 top-1/2 -z-10 size-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/25 blur-3xl" />
         <p className="text-xs uppercase tracking-widest text-purple-300">Services</p>
-        <h1 className="mt-3 text-4xl font-bold leading-tight text-white md:text-6xl">
+        <h1 className="mt-3 text-[34px] font-bold leading-tight tracking-tight text-white sm:text-4xl md:text-6xl">
           Let&apos;s build your <AuroraText>next product</AuroraText>
         </h1>
-        <p className="mx-auto mt-4 max-w-xl text-lg">From idea to production, end to end.</p>
+        <p className="mx-auto mt-4 max-w-xl text-base sm:text-lg">From idea to production, end to end.</p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <a href="#enquire" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-purple-600 px-6 font-medium text-white transition hover:bg-purple-500">
             Start a project <ArrowRight className="size-4" />
@@ -64,13 +64,13 @@ export default function ServicesPage() {
             <article
               key={service.id}
               id={service.id}
-              className="spotlight reveal group flex flex-col rounded-3xl border border-white/10 bg-[#0a0720]/70 p-6 backdrop-blur-sm transition hover:-translate-y-1 hover:border-purple-400/40"
+              className="spotlight reveal group flex flex-col rounded-3xl border border-white/10 bg-[#0a0720]/70 p-5 backdrop-blur-sm sm:p-6 transition hover:-translate-y-1 hover:border-purple-400/40"
             >
               <div className={`flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient} shadow-lg shadow-purple-900/40 transition group-hover:scale-105`}>
                 <Icon aria-hidden className="size-7 text-white" />
               </div>
-              <h2 className="mt-5 text-xl font-semibold text-white">{service.title}</h2>
-              <p className="mt-1">{service.summary}</p>
+              <h2 className="mt-5 text-lg font-semibold leading-snug tracking-tight text-white sm:text-xl">{service.title}</h2>
+              <p className="mt-1 text-[15px] leading-relaxed sm:text-base">{service.summary}</p>
               <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Stack">
                 {service.stack.slice(0, 5).map((tech) => (
                   <li key={tech} className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs text-gray-200">
@@ -92,7 +92,7 @@ export default function ServicesPage() {
 
       {/* How it runs */}
       <section className="mt-24" aria-labelledby="process-heading">
-        <h2 id="process-heading" className="text-center text-2xl font-semibold text-white md:text-3xl">
+        <h2 id="process-heading" className="text-center text-2xl font-semibold tracking-tight text-white md:text-3xl">
           How it <AuroraText>works</AuroraText>
         </h2>
         <div className="relative mt-12">
@@ -116,14 +116,14 @@ export default function ServicesPage() {
 
       {/* Clients */}
       <section className="mt-24" aria-labelledby="clients-heading">
-        <h2 id="clients-heading" className="text-center text-2xl font-semibold text-white md:text-3xl">
+        <h2 id="clients-heading" className="text-center text-2xl font-semibold tracking-tight text-white md:text-3xl">
           Clients <AuroraText>say</AuroraText>
         </h2>
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {testimonials.map((t) => (
             <figure key={t.name} className="spotlight reveal flex flex-col rounded-3xl border border-purple-500/20 bg-purple-500/[0.05] p-5">
               <span aria-hidden className="text-4xl leading-none text-purple-400">“</span>
-              <blockquote className="line-clamp-4 text-gray-200">{t.quote}</blockquote>
+              <blockquote className="line-clamp-4 text-[15px] leading-relaxed text-gray-200 sm:text-base">{t.quote}</blockquote>
               <figcaption className="mt-auto flex items-center gap-3 pt-5 text-sm">
                 <span aria-hidden className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-blue-700 text-xs font-bold text-white">
                   {t.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
@@ -142,7 +142,7 @@ export default function ServicesPage() {
 
       {/* FAQ + enquiry */}
       <section className="mx-auto mt-24 max-w-3xl" aria-labelledby="faq-heading">
-        <h2 id="faq-heading" className="text-center text-2xl font-semibold text-white md:text-3xl">Questions</h2>
+        <h2 id="faq-heading" className="text-center text-2xl font-semibold tracking-tight text-white md:text-3xl">Questions</h2>
         <div className="mt-6 divide-y divide-white/10 border-y border-white/10">
           {faqs.map((f) => (
             <details key={f.q} className="group py-4">
@@ -150,7 +150,7 @@ export default function ServicesPage() {
                 <span aria-hidden className="text-purple-400 transition group-open:rotate-45">+</span>
                 {f.q}
               </summary>
-              <p className="mt-2 pl-5 text-gray-400">{f.a}</p>
+              <p className="mt-2 pl-5 text-[15px] leading-relaxed text-gray-400 sm:text-base">{f.a}</p>
             </details>
           ))}
         </div>

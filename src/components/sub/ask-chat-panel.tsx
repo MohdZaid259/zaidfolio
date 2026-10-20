@@ -171,7 +171,7 @@ export default function AskChatPanel({ open, setOpen }: { open: boolean; setOpen
                 maxLength={1000}
                 placeholder="Ask a question…"
                 aria-label="Your question"
-                className="max-h-32 flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:border-purple-400 focus:outline-none"
+                className="max-h-32 flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-base text-white placeholder:text-gray-400 sm:text-sm focus:border-purple-400 focus:outline-none"
               />
               <button
                 type="submit"
