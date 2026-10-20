@@ -44,7 +44,7 @@ export const experience: Experience[] = [
     product: 'International clients',
     period: 'Before Oct 2025',
     points: [
-      'Delivered 10+ web projects for 5+ international clients.',
+      'Delivered production websites and web apps for international clients.',
       'Owned each project end to end: requirements, architecture, build, deployment, handover and post-launch fixes.',
       'Worked directly with clients on scope, technical decisions and timelines.',
     ],
