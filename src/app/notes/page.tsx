@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getAllNotes } from "@/lib/notes";
 import NotesList from "@/components/sub/notes-list";
-import { RssButton } from "@/components/sub/rss-button";
 
 export const metadata: Metadata = {
   title: "Notes",
@@ -21,7 +20,6 @@ export default function NotesIndex() {
         Write-ups of problems I&apos;ve worked through in backend systems, multi-tenant SaaS, auth, and AI
         products. Each one is written so you can apply it to your own codebase.
       </p>
-      <RssButton />
 
       <NotesList notes={notes} />
     </main>

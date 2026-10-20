@@ -3,7 +3,7 @@ title: "The WHERE clause you'll forget: multi-tenant isolation with Postgres Row
 description: "Every multi-tenant app is one missing filter away from showing one customer another customer's data. Here's how I let PostgreSQL enforce tenant isolation instead, with Fastify and Drizzle, and the traps that quietly switch it off."
 date: 2026-10-11
 tags: ["Backend", "Security"]
-draft: true
+draft: false
 ---
 
 Picture a Friday evening. A customer emails support: *"Why can I see candidates from a company I've never heard of?"*
