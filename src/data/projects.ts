@@ -18,6 +18,29 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    slug: 'intelliprompt',
+    name: 'IntelliPrompt',
+    kind: 'Team product · AI SaaS',
+    role: 'Backend developer',
+    period: 'May 2025 – Jul 2025',
+    summary:
+      'AI prompt workbench: enhance a rough prompt, run it on up to 4 of 13 models side by side, and keep the version that wins.',
+    image: '/projects/intelliprompt.webp',
+    technologies: ['Next.js', 'PostgreSQL', 'Drizzle', 'Clerk', 'Razorpay', 'OpenRouter', 'BullMQ'],
+    live: 'https://www.intelliprompt.lol',
+    github: 'https://github.com/MohdZaid259/intelliprompt',
+    context:
+      'A team-built product, now live: one place to write a prompt, test it across models from 8 AI labs, and keep every version. I owned the backend.',
+    built: [
+      'Cross-model runs through OpenRouter: one prompt on up to 4 models at once, with speed, tokens and cost for each answer.',
+      'One-click AI enhancement with a reviewable diff, plus versions you can compare, restore and sort into folders.',
+      'Community layer: publish, like, save and fork prompts, with a points leaderboard and streaks.',
+      'Free and Pro plans with daily run quotas, Redis rate limiting and Razorpay payments.',
+      'Postgres with Drizzle, Clerk auth, and a BullMQ email worker sending through Resend.',
+      'Tests and GitHub Actions CI (typecheck, lint, test), deployed on Vercel.',
+    ],
+  },
+  {
     slug: 'ls4it',
     name: 'LS4IT',
     kind: 'Client work · Saudi Arabia',
@@ -52,27 +75,6 @@ export const projects: Project[] = [
       'Multilingual content with i18n routing.',
       'Image delivery through ImageKit to keep pages fast with photo-heavy content.',
       'Owned the project from requirements through deployment and handover.',
-    ],
-  },
-  {
-    slug: 'intelliprompt',
-    name: 'IntelliPrompt',
-    kind: 'Team product · AI SaaS',
-    role: 'Backend developer',
-    period: 'May 2025 – Jul 2025',
-    summary:
-      'Prompt management SaaS for creating, enhancing, versioning and testing prompts across 8+ AI models.',
-    image: '/projects/intelliprompt.jpeg',
-    technologies: ['Next.js', 'MongoDB', 'Redis', 'OpenRouter', 'Clerk', 'Razorpay'],
-    github: 'https://github.com/Genius-30/intelli-prompt',
-    githubLabel: 'Team repo',
-    context:
-      'A team-built product. I owned the backend: the APIs, data access, auth, payments and the protections around them.',
-    built: [
-      'REST APIs for prompt creation, enhancement and versioning across 8+ models, including OpenAI, Claude and Gemini.',
-      'Made prompt search 3× faster with targeted MongoDB indexes and query optimization.',
-      'Clerk authentication, Razorpay payments, input validation, encrypted cookies, Redis caching and rate limiting.',
-      'A hybrid-rendered landing page that contributed to 600+ early signups.',
     ],
   },
   {

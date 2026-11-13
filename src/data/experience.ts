@@ -28,7 +28,7 @@ export const experience: Experience[] = [
   {
     company: 'IntelliPrompt',
     role: 'Backend Developer',
-    product: 'AI prompt management SaaS',
+    product: 'AI prompt SaaS · live',
     period: 'May 2025 – Jul 2025',
     points: [
       'Built REST APIs for prompt creation, enhancement and versioning across 8+ AI models.',
