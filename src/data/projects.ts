@@ -86,7 +86,7 @@ export const projects: Project[] = [
     slug: 'docly',
     name: 'Docly',
     kind: 'Product · AI',
-    role: 'Solo — architecture, backend, frontend',
+    role: 'Solo full-stack developer',
     summary:
       'AI document chat: upload several documents, process them in the background, and get answers grounded in their content.',
     image: '/projects/docly.webp',
@@ -124,7 +124,7 @@ export const projects: Project[] = [
     slug: 'youtube-clone',
     name: 'YouTube Clone',
     kind: 'Personal project',
-    role: 'Solo',
+    role: 'Solo full-stack developer',
     summary: 'Full-stack YouTube clone with a custom Node.js backend and YouTube API integration.',
     image: '/projects/yt.png',
     accent: '#ef4444',

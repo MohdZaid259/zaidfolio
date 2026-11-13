@@ -82,7 +82,7 @@ export default function ProjectCarousel({ projects }: { projects: CarouselProjec
             <div className="order-2 mt-6 w-full md:order-1 md:w-2/5">
               <p className="mb-2 text-xs uppercase tracking-widest text-purple-300">{project.kind}</p>
               <h3 className="mb-1 text-xl font-bold leading-tight text-white md:text-3xl">{project.name}</h3>
-              <p className="mb-3 text-sm text-gray-400">My role: {project.role}</p>
+              <p className="mb-3 text-sm text-gray-400">{project.role}</p>
               <p className="mb-3 text-pretty text-[15px] leading-relaxed text-gray-300 sm:text-base md:text-lg">{project.summary}</p>
               <ul className="mb-4 flex flex-wrap justify-center gap-2 md:justify-start" aria-label="Stack">
                 {project.technologies.map((tech) => (

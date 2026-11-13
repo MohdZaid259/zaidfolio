@@ -33,8 +33,8 @@ export const experience: Experience[] = [
     points: [
       'Built the APIs for prompt creation, AI enhancement and versioning, running prompts on up to 4 of 13 models side by side.',
       'Designed the PostgreSQL schema with Drizzle for prompts, versions, folders and community activity.',
-      'Added Clerk auth, Razorpay payments, daily run quotas and Redis rate limiting.',
       'Set up a BullMQ email worker and CI, and launched with 100+ early signups.',
+      'Added Clerk auth, Razorpay payments, daily run quotas and Redis rate limiting.',
     ],
     stack: ['Next.js', 'PostgreSQL', 'Drizzle', 'Redis', 'Clerk', 'Razorpay', 'OpenRouter'],
   },
