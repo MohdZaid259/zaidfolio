@@ -31,12 +31,12 @@ export const experience: Experience[] = [
     product: 'AI prompt SaaS · live',
     period: 'May 2025 – Jul 2025',
     points: [
-      'Built REST APIs for prompt creation, enhancement and versioning across 8+ AI models.',
-      'Made prompt search 3× faster with MongoDB indexing and query optimization.',
-      'Added Clerk auth, Razorpay payments, encrypted cookies, Redis caching and rate limiting.',
-      'Built the hybrid-rendered landing page behind 600+ early signups.',
+      'Built the APIs for prompt creation, AI enhancement and versioning, running prompts on up to 4 of 13 models side by side.',
+      'Designed the PostgreSQL schema with Drizzle for prompts, versions, folders and community activity.',
+      'Added Clerk auth, Razorpay payments, daily run quotas and Redis rate limiting.',
+      'Set up a BullMQ email worker and CI, and launched with 100+ early signups.',
     ],
-    stack: ['Node.js', 'MongoDB', 'Redis', 'Clerk', 'Razorpay', 'OpenRouter'],
+    stack: ['Next.js', 'PostgreSQL', 'Drizzle', 'Redis', 'Clerk', 'Razorpay', 'OpenRouter'],
   },
   {
     company: 'Freelance',
