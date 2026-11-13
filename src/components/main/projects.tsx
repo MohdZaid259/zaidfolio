@@ -4,13 +4,14 @@ import { projects } from "@/data/projects";
 
 // Only the fields the carousel shows go to the client; case-study text stays on the server
 const carouselProjects = projects.map(
-  ({ slug, name, kind, role, summary, image, technologies, live, github, githubLabel }) => ({
+  ({ slug, name, kind, role, summary, image, accent, technologies, live, github, githubLabel }) => ({
     slug,
     name,
     kind,
     role,
     summary,
     image,
+    accent,
     technologies,
     live,
     github,

@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import type { Project } from '@/data/projects';
 
 export type CarouselProject = Pick<
   Project,
-  'slug' | 'name' | 'kind' | 'role' | 'summary' | 'image' | 'technologies' | 'live' | 'github' | 'githubLabel'
+  'slug' | 'name' | 'kind' | 'role' | 'summary' | 'image' | 'accent' | 'technologies' | 'live' | 'github' | 'githubLabel'
 >;
 
 /**
@@ -93,12 +92,6 @@ export default function ProjectCarousel({ projects }: { projects: CarouselProjec
                 ))}
               </ul>
               <div className="flex flex-wrap items-center justify-center gap-4 text-sm font-medium md:justify-start">
-                <Link
-                  href={`/work/${project.slug}`}
-                  className="inline-flex min-h-11 items-center rounded-full bg-purple-700/70 px-5 text-white transition hover:bg-purple-600"
-                >
-                  Read case study
-                </Link>
                 {project.live && (
                   <a href={project.live} target="_blank" rel="noopener noreferrer" className={linkClass}>
                     Live site ↗
@@ -114,13 +107,14 @@ export default function ProjectCarousel({ projects }: { projects: CarouselProjec
 
             <div className="order-1 flex w-full items-center justify-center md:order-2 md:w-3/5">
               <Image
+                style={{ '--accent': project.accent } as CSSProperties}
                 src={project.image}
                 alt={`${project.name} screenshot`}
                 width={800}
                 height={500}
                 sizes="(max-width: 768px) 92vw, 60vw"
                 unoptimized={project.image.endsWith('.svg')}
-                className="h-auto w-auto rounded-md object-contain"
+                className="project-shot h-auto w-auto rounded-md object-contain"
               />
             </div>
           </div>
@@ -132,8 +126,9 @@ export default function ProjectCarousel({ projects }: { projects: CarouselProjec
               key={p.slug}
               onClick={() => go(i, i > index ? 1 : -1)}
               aria-label={`Show ${p.name}`}
-              className={`relative h-14 w-20 cursor-pointer overflow-hidden rounded-lg transition-all duration-300 hover:opacity-80 ${
-                i === index ? 'opacity-100 ring-2 ring-purple-400/70' : 'opacity-40'
+              style={{ '--accent': p.accent } as CSSProperties}
+              className={`project-thumb relative h-14 w-20 cursor-pointer overflow-hidden rounded-lg transition-all duration-300 hover:opacity-80 ${
+                i === index ? 'is-active opacity-100' : 'opacity-40'
               }`}
             >
               <Image src={p.image} alt="" fill sizes="80px" unoptimized={p.image.endsWith('.svg')} className="object-cover" />

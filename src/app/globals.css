@@ -693,3 +693,15 @@ html[data-splash="seen"] #splash {
 @keyframes fade-out {
   to { opacity: 0; }
 }
+
+/* Project covers: very light border + faint glow in each image's own accent, so dark screenshots have a visible edge */
+.project-shot {
+  border: 1px solid color-mix(in srgb, var(--accent) 15%, transparent);
+  box-shadow: 0 0 8px -3px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.project-thumb {
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.project-thumb.is-active {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}

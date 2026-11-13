@@ -6,6 +6,8 @@ export interface Project {
   period?: string;
   summary: string;
   image: string;
+  // Accent color picked from the cover image, used for its border and glow
+  accent: string;
   technologies: string[];
   live?: string;
   github?: string;
@@ -26,6 +28,7 @@ export const projects: Project[] = [
     summary:
       'AI prompt workbench: enhance a rough prompt, run it on up to 4 of 13 models side by side, and keep the version that wins.',
     image: '/projects/intelliprompt.webp',
+    accent: '#a855f7',
     technologies: ['Next.js', 'PostgreSQL', 'Drizzle', 'Clerk', 'Razorpay', 'OpenRouter', 'BullMQ'],
     live: 'https://www.intelliprompt.lol',
     github: 'https://github.com/MohdZaid259/intelliprompt',
@@ -48,6 +51,7 @@ export const projects: Project[] = [
     summary:
       'Website for a Saudi-based fabric manufacturing and supply company, with CMS-managed content in multiple languages.',
     image: '/projects/lsit.png',
+    accent: '#f97316',
     technologies: ['Next.js', 'Hygraph', 'i18n', 'Tailwind'],
     live: 'https://ls4it.com',
     context:
@@ -66,6 +70,7 @@ export const projects: Project[] = [
     summary:
       'One site for a UAE group running three businesses: general contracting, cybersecurity and building automation.',
     image: '/projects/rd.png',
+    accent: '#3b82f6',
     technologies: ['Next.js', 'ImageKit', 'i18n', 'Tailwind'],
     live: 'https://rdtech-group.com/',
     context:
@@ -85,6 +90,7 @@ export const projects: Project[] = [
     summary:
       'AI document chat: upload several documents, process them in the background, and get answers grounded in their content.',
     image: '/projects/docly.webp',
+    accent: '#60a5fa',
     technologies: ['Node.js', 'Express', 'MongoDB', 'AWS S3', 'BullMQ', 'Redis', 'OpenAI Embeddings'],
     live: 'https://docly-ai.vercel.app/',
     github: 'https://github.com/MohdZaid259/Docly',
@@ -104,6 +110,7 @@ export const projects: Project[] = [
     role: 'Freelance developer',
     summary: 'Marketing site for a one-stop technical services company.',
     image: '/projects/alhaya.png',
+    accent: '#22d3ee',
     technologies: ['Next.js', 'Tailwind'],
     live: 'https://al-haya.vercel.app/',
     context:
@@ -120,6 +127,7 @@ export const projects: Project[] = [
     role: 'Solo',
     summary: 'Full-stack YouTube clone with a custom Node.js backend and YouTube API integration.',
     image: '/projects/yt.png',
+    accent: '#ef4444',
     technologies: ['Next.js', 'Node.js', 'YouTube API', 'MongoDB'],
     live: 'https://yt-frontend-three.vercel.app/',
     github: 'https://github.com/MohdZaid259/Youtube',
